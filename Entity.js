@@ -117,6 +117,8 @@ var Entity = Class({
     this._runChildren = false;
     this._pixelsPerSecond = 0;
 
+    this._matrix = new Matrix2();
+
     this._children = [];
   },
 
@@ -159,9 +161,9 @@ var Entity = Class({
 
   Destroy:function()
    {
-       this._parent = NULL;
-       this._avatar = NULL;
-       this._rootParent = NULL;
+       this._parent = null;
+       this._avatar = null;
+       this._rootParent = null;
        this.ClearChildren();
        this._destroyed = true;
    },
@@ -185,5 +187,217 @@ var Entity = Class({
   {
     return this._children;
   },
+
+  Update:function()
+   {
+       var currentUpdateTime = EffectsLibrary.GetCurrentUpdateTime();
+
+       // Update speed in pixels per second
+       if (this._updateSpeed && this._speed)
+       {
+           this._pixelsPerSecond = this._speed / currentUpdateTime;
+           this._speedVec.x = sin(this._direction / 180.0 * M_PI) * this._pixelsPerSecond;
+           this._speedVec.y = cos(this._direction / 180.0 * M_PI) * this._pixelsPerSecond;
+
+           this._x += this._speedVec.x * this._z;
+           this._y -= this._speedVec.y * this._z;
+       }
+
+       // update the gravity
+       if (this._weight !== 0)
+       {
+           this._gravity += this._weight / currentUpdateTime;
+           this._y += (this._gravity / currentUpdateTime) * this._z;
+       }
+
+       // set the matrix if it is relative to the parent
+       if (this._relative)
+           this._matrix.Set(cos(this._angle / 180 * M_PI), sin(this._angle / 180.0 * M_PI), -sin(this._angle / 180.0 * M_PI), cos(this._angle / 180.0 * M_PI));
+
+       // calculate where the entity is in the world
+       if (this._parent && this._relative)
+       {
+           this._z = this._parent._z;
+           this._matrix = this._matrix.Transform(this._parent._matrix);
+           var rotVec = this._parent._matrix.TransformVector(new Vector2(this._x, this._y));
+           if (this._z !== 1.0)
+           {
+               this._wx = this._parent._wx + rotVec.x * this._z;
+               this._wy = this._parent._wy + rotVec.y * this._z;
+           }
+           else
+           {
+               this._wx = this._parent._wx + rotVec.x;
+               this._wy = this._parent._wy + rotVec.y;
+           }
+           this._relativeAngle = this._parent._relativeAngle + this._angle;
+       }
+       else
+       {
+           // If parent setz(parent.z)
+           this._wx = this._x;
+           this._wy = this._y;
+       }
+
+       if (!this._parent)
+           this._relativeAngle = this._angle;
+
+       // update animation frame
+       if (this._avatar && this._animating)
+       {
+           this._currentFrame += this._framerate / currentUpdateTime;
+           if (this._animateOnce)
+           {
+               if (this._currentFrame > this._avatar.GetFramesCount() - 1)
+               {
+                   this._currentFrame = (this._avatar.GetFramesCount() - 1);
+               }
+               else if (this._currentFrame <= 0)
+               {
+                   this._currentFrame = 0;
+               }
+           }
+       }
+
+       // update the Axis Aligned Bounding Box
+       if (this._AABB_Calculate)
+           this.UpdateBoundingBox();
+
+       // update the radius of influence
+       if (this._radiusCalculate)
+           this.UpdateEntityRadius();
+
+       // update the children
+       this.UpdateChildren();
+
+       return true;
+   },
+
+   UpdateChildren:function()
+   {
+     for (var i=0;i<this._children.length;i++)
+     {
+         if(!this._children[i].Update())
+         {
+           this._children.splice(i, 1);
+           i--;
+         }
+     }
+   },
+
+   GetChildCount:function()
+    {
+        return this._children.length;
+    },
+
+    UpdateBoundingBox:function()
+    {
+        if (this._z !== 1.0)
+        {
+            this._collisionXMin = this._AABB_MinWidth * this._scaleX * this._z;
+            this._collisionYMin = this._AABB_MinHeight * this._scaleY * this._z;
+            this._collisionXMax = this._AABB_MaxWidth * this._scaleX * this._z;
+            this._collisionYMax = this._AABB_MaxHeight * this._scaleY * this._z;
+        }
+        else
+        {
+            this._collisionXMin = this._AABB_MinWidth * this._scaleX;
+            this._collisionYMin = this._AABB_MinHeight * this._scaleY;
+            this._collisionXMax = this._AABB_MaxWidth * this._scaleX;
+            this._collisionYMax = this._AABB_MaxHeight * this._scaleY;
+        }
+
+        this._AABB_XMin = this._collisionXMin;
+        this._AABB_YMin = this._collisionYMin;
+        this._AABB_XMax = this._collisionXMax;
+        this._AABB_YMax = this._collisionYMax;
+
+        if (this._children.length === 0)
+            this.UpdateParentBoundingBox();
+    },
+
+    UpdateEntityRadius:function()
+    {
+        if (this._autoCenter)
+        {
+            if (this._avatar)
+            {
+                var aMaxRadius = this._avatar.GetMaxRadius();
+                var aWidth = this._avatar.GetWidth();
+                var aHeight = this._avatar.GetHeight();
+
+                if (aMaxRadius !== 0)
+                    this._imageRadius = Math.Max(aMaxRadius * this._scaleX * this._z, aMaxRadius * this._scaleY * this._z);
+                else
+                    this._imageRadius = Vector2.GetDistance(aWidth / 2.0 * this._scaleX * this._z, aHeight / 2.0 * this._scaleY * this._z, aWidth * this._scaleX * this._z, aHeight * this._scaleY * this._z);
+            }
+            else
+            {
+                this._imageRadius = 0;
+            }
+        }
+        else
+        {
+            var aMaxRadius = this._avatar.GetMaxRadius();
+            var aWidth = this._avatar.GetWidth();
+            var aHeight = this._avatar.GetHeight();
+
+            if (aMaxRadius !== 0)
+                this._imageRadius = Vector2.GetDistance(this._handleX * this._scaleX * this._z, this._handleY * this._scaleY * this._z, aWidth / 2.0 * this._scaleX * this._z, aHeight / 2.0 * this._scaleY * this._z)
+                               + Math.Max(aMaxRadius * this._scaleX * this._z, aMaxRadius * this._scaleY * this._z);
+            else
+                this._imageRadius = Vector2.GetDistance(this._handleX * this._scaleX * this._z, this._handleY * this._scaleY * this._z, aWidth * this._scaleX * this._z, aHeight * this._scaleY * this._z);
+        }
+
+        this._entityRadius = this._imageRadius;
+        this._imageDiameter = this._imageRadius * 2.0;
+
+        if (this._rootParent)
+            UpdateRootParentEntityRadius();
+    },
+
+    UpdateParentEntityRadius:function()
+    {
+        if (this._parent)
+        {
+            if (this._children.length > 0)
+                this._parent._entityRadius += Math.Max(0.0, Vector2.GetDistance(this._wx, this._wy, this._parent._wx, this._parent._wy) + this._entityRadius - this._parent._entityRadius);
+            else
+                this._parent._entityRadius += Math.Max(0.0, Vector2.GetDistance(this._wx, this._wy, this._parent._wx, this._parent._wy) + this._imageRadius - this._parent._entityRadius);
+            // DebugLog name + " - Radius: " + entity_Radius + " | Distance to Parent: " + getdistance(wx, wy, parent.wx, parent.wy)
+            this._parent.UpdateParentEntityRadius();
+        }
+    },
+
+    UpdateRootParentEntityRadius:function()
+    {
+        if (this._rootParent)
+        {
+            if (this._alpha !== 0)
+                this._rootParent._entityRadius += Math.Max(0.0, Vector2.GetDistance(this._wx, this._wy, this._rootParent._wx, this._rootParent._wy) + this._imageRadius - this._rootParent._entityRadius);
+            // DebugLog name + " - Radius: " + entity_Radius + " | Distance to Parent: " + getdistance(wx, wy, rootparent.wx, rootparent.wy)
+        }
+    },
+
+    UpdateParentBoundingBox:function()
+    {
+        if (this._parent)
+        {
+            var parent = this._parent;
+            parent._AABB_XMax += Math.Max(0.0, this._wx - parent._wx + this._AABB_XMax - parent._AABB_XMax);
+            parent._AABB_YMax += Math.Max(0.0, this._wy - parent._wx + this._AABB_YMax - parent._AABB_YMax);
+            parent._AABB_XMin += Math.Max(0.0, this._wx - parent._wx + this._AABB_XMin - parent._AABB_XMin);
+            parent._AABB_YMin += Math.Max(0.0, this._wy - parent._wy + this._AABB_YMin - parent._AABB_YMin);
+        }
+    },
+
+    AssignRootParent:function( e )
+    {
+        if (this._parent)
+            this._parent.AssignRootParent(e);
+        else
+            e._rootParent = this;
+    }
+
 
 });

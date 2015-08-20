@@ -32,12 +32,25 @@ var g_particleManager = new ParticleManager(1000,1);
 var g_xml = null;
 //var g_img = null;
 function preload() {
+
+  var path = "data/Explosions/";
+
   //g_xml = loadXML("data/Explosions/DATA.XML");
-  g_xml=loadXMLDoc("data/Explosions/DATA.XML");
+  g_xml=loadXMLDoc(path + "DATA.XML");
 //  g_img = loadImage("data/Explosions/Flare7.png");
 
   EffectsLibrary.Init();
   EffectsLibrary.Load(g_xml);
+
+  var images = EffectsLibrary.GetShapes();
+
+  for(var i=0;i<images.length;i++)
+  {
+    var filename = path + stripFilePath(images[i].GetFilename());
+
+    //  console.log(filename);
+    images[i].m_images = loadImage(filename);
+  }
 
   // PASS xml data to particle manager
 //  EffectsLibrary.ClearAll();
@@ -53,12 +66,21 @@ function setup() {
   g_particleManager.SetScreenSize(w,h);
   g_particleManager.SetOrigin(0, 0);
 
-  var eff = EffectsLibrary.GetEffect("Stylised/Stylised 2");
+  var e = EffectsLibrary.GetEffect("Stylised/Stylised 4");
 
-  console.log(eff);
+  g_particleManager.AddEffect(e);
+
+  e.SetParticleManager(g_particleManager);
+
+  //var copy = new TLFX::Effect(*eff, gPM);
+
+    //  copy->SetPosition(0.0f, 0.0f);
+    //gPM->AddEffect(copy);
+
+//  console.log(eff);
 
 //  console.log(pm);
-  imageMode(CENTER);
+//  imageMode(CENTER);
 }
 
 

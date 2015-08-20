@@ -408,47 +408,47 @@ var Emitter = Class(Entity,{
      this._alphaRepeat = repeat;
  },
 
- SetOneShot( bool value )
+ SetOneShot:function( value )
  {
      this._oneShot = value;
  },
 
- SetHandleCenter( bool value )
+ SetHandleCenter:function( value )
  {
      this._handleCenter = value;
  },
 
- SetParticlesRelative( bool value )
+ SetParticlesRelative:function( value )
  {
      this._particlesRelative = value;
  },
 
- SetTweenSpawns( bool value )
+ SetTweenSpawns:function( value )
  {
      this._tweenSpawns = value;
  },
 
- SetLockAngle( bool value )
+ SetLockAngle:function( value )
  {
      this._lockedAngle = value;
  },
 
- SetAngleRelative( bool value )
+ SetAngleRelative:function( value )
  {
      this._angleRelative = value;
  },
 
- SetOnce( bool value )
+ SetOnce:function( value )
  {
      this._once = value;
  },
 
- SetGroupParticles( bool value )
+ SetGroupParticles:function( value )
  {
      this._groupParticles = value;
  },
 
- Effect* Emitter::GetParentEffect()
+ GetParentEffect:function()
  {
      return this._parentEffect;
  },
@@ -595,7 +595,7 @@ var Emitter = Class(Entity,{
 
      this._effects = [];
 
-     base::Destroy(false);
+     Emitter.$superp.Destroy.call( this, false );
  },
 
  ChangeDoB:function( dob )
@@ -618,7 +618,7 @@ var Emitter = Class(Entity,{
      {
          this.SetZ(this._parent.GetZ());
          this._matrix = this._matrix.Transform(this._parent.GetMatrix());
-         Vector2 rotvec = this._parent.GetMatrix().TransformVector(Vector2(this._x, this._y));
+         var rotvec = this._parent.GetMatrix().TransformVector(Vector2(this._x, this._y));
 
          this._wx = this._parent.GetWX() + rotvec.x * this._z;
          this._wy = this._parent.GetWY() + rotvec.y * this._z;
@@ -639,10 +639,10 @@ var Emitter = Class(Entity,{
 
      this._dying = this._parentEffect.IsDying();
 
-     base::UpdateBoundingBox();
+     Emitter.$superp.UpdateBoundingBox.call( this );
 
      if (this._radiusCalculate)
-         base::UpdateEntityRadius();
+        Emitter.$superp.UpdateEntityRadius.call( this );
 
      UpdateChildren();
 
@@ -664,7 +664,7 @@ var Emitter = Class(Entity,{
          }
      }
      return true;
- }
+ },
 
  UpdateSpawns:function( eSingle /*= NULL*/ )
  {
@@ -753,9 +753,8 @@ var Emitter = Class(Entity,{
 
              if (e)
              {
-#ifdef _DEBUG
-                 ++EffectsLibrary.particlesCreated;
-#endif
+//                 ++EffectsLibrary.particlesCreated;
+
                  // -----Link to its emitter and assign the control source (which is this emitter)----
                  e.SetEmitter(this);
                  e.SetParent(this);
@@ -781,7 +780,7 @@ var Emitter = Class(Entity,{
                      else
                      {
                          var tween = c / intCounter;
-                         if (parentEffect.GetHandleCenter() || (parentEffect.GetHandleX() + parentEffect.GetHandleY() == 0))
+                         if (parentEffect.GetHandleCenter() || (parentEffect.GetHandleX() + parentEffect.GetHandleY() === 0))
                          {
                              // @dan already set? tween = c / intCounter;
                              e.SetX(TweenValues(this._oldWX, this._wx, tween));
@@ -872,7 +871,7 @@ var Emitter = Class(Entity,{
                      if (!e.IsRelative())
                      {
                         var parent = this._parent;
-                         Vector2 rotvec = parent.GetMatrix().TransformVector(Vector2(e.GetX(), e.GetY()));
+                         var rotvec = parent.GetMatrix().TransformVector(new Vector2(e.GetX(), e.GetY()));
                          if (this._z != 1)
                          {
                              e.SetX(parent.GetWX() + rotvec.x * this._z);
@@ -889,13 +888,13 @@ var Emitter = Class(Entity,{
 
                  case TypeEllipse:
                      {
-                         var tx = parentEffect.GetCurrentWidth()  / 2.0f;
-                         var ty = parentEffect.GetCurrentHeight() / 2.0f;
+                         var tx = parentEffect.GetCurrentWidth()  / 2.0;
+                         var ty = parentEffect.GetCurrentHeight() / 2.0;
                          var th = 0;
 
                          if (parentEffect.GetEmitAtPoints())
                          {
-                             if (parentEffect.GetMGX() == 0)
+                             if (parentEffect.GetMGX() === 0)
                                  parentEffect.SetMGX(1);
 
                              this._gx += parentEffect.GetSpawnDirection();
@@ -919,7 +918,7 @@ var Emitter = Class(Entity,{
 
                          if (!e.IsRelative())
                          {
-                             Vector2 rotvec = this._parent.GetMatrix().TransformVector(Vector2(e.GetX(), e.GetY()));
+                             var rotvec = this._parent.GetMatrix().TransformVector(new Vector2(e.GetX(), e.GetY()));
                              if (this._z != 1)
                              {
                                  e.SetX(this._parent.GetWX() + rotvec.x * this._z);
@@ -1015,7 +1014,7 @@ var Emitter = Class(Entity,{
                      // rotate
                      if (!e.IsRelative())
                      {
-                         Vector2 rotvec = this._parent.GetMatrix().TransformVector(Vector2(e.GetX(), e.GetY()));
+                         var rotvec = this._parent.GetMatrix().TransformVector(new Vector2(e.GetX(), e.GetY()));
                          if (this._z != 1)
                          {
                              e.SetX(this._parent.GetWX() + rotvec.x * this._z);
@@ -1050,7 +1049,7 @@ var Emitter = Class(Entity,{
                      e.SetSpeed(this._cVelocity.Get(0));
                      e.SetVelVariation(Rnd(-_currentSpeedVariation, this._currentSpeedVariation));
                      e.SetBaseSpeed((this._currentSpeed + e.GetVelVariation()) * parentEffect.GetCurrentVelocity());
-                     //e._velSeed = Rnd(0, 1.0f);
+                     //e._velSeed = Rnd(0, 1.0);
                      e.SetSpeed(this._cVelocity.Get(0) * e.GetBaseSpeed() * this._cGlobalVelocity.Get(0));
                  }
                  else
@@ -1067,7 +1066,7 @@ var Emitter = Class(Entity,{
                  var sizeTemp = 0;
                  e.SetScaleVariationX(Rnd(this._currentSizeXVariation));
                  e.SetWidth(e.GetScaleVariationX() + this._currentSizeX);
-                 if (scaleTemp != 0)
+                 if (scaleTemp !== 0)
                  {
                      sizeTemp = (e.GetWidth() / this._image.GetWidth()) * scaleTemp * e.GetGSizeX();
                  }
@@ -1094,13 +1093,13 @@ var Emitter = Class(Entity,{
                      sizeTemp = 0;
                      e.SetScaleVariationY(Rnd(this._currentSizeYVariation));
                      e.SetHeight(e.GetScaleVariationY() + this._currentSizeY);
-                     if (scaleTemp != 0)
+                     if (scaleTemp !== 0)
                      {
                          sizeTemp = (e.GetHeight() / this._image.GetHeight()) * scaleTemp * e.GetGSizeY();
                      }
                      e.SetScaleY(sizeTemp);
 
-                     if (!this._bypassStretch && e.GetSpeed() != 0)
+                     if (!this._bypassStretch && e.GetSpeed() !== 0)
                      {
                          e.SetScaleY((GetEmitterScaleY(0) * e.GetGSizeY() * (e.GetHeight() + (fabsf(e.GetSpeed()) * this.GEmitterStretch(0) * parentEffect.GetCurrentStretch()))) / this._image.GetHeight());
                          if (e.GetScaleY() < e.GetScaleX())
@@ -1117,7 +1116,7 @@ var Emitter = Class(Entity,{
                      var splatX = Rnd(-splatterTemp, splatterTemp);
                      var splatY = Rnd(-splatterTemp, splatterTemp);
 
-                     while (Vector2::GetDistance(0, 0, splatX, splatY) >= splatterTemp && splatterTemp > 0)
+                     while (Vector2.GetDistance(0, 0, splatX, splatY) >= splatterTemp && splatterTemp > 0)
                      {
                          splatX = Rnd(-splatterTemp, splatterTemp);
                          splatY = Rnd(-splatterTemp, splatterTemp);
@@ -1138,7 +1137,7 @@ var Emitter = Class(Entity,{
                  if (parentEffect.GetTraverseEdge() && parentEffect.GetClass() == TypeLine)
                  {
                      e.SetDirectionLocked(true);
-                     e.SetEntityDirection(90.0f);
+                     e.SetEntityDirection(90.0);
                  }
                  else
                  {
@@ -1151,32 +1150,32 @@ var Emitter = Class(Entity,{
                              {
                              case EmInwards:
                                  if (e.IsRelative())
-                                     e.SetEmissionAngle(e.GetEmissionAngle() + Vector2::GetDirection(e.GetX(), e.GetY(), 0, 0));
+                                     e.SetEmissionAngle(e.GetEmissionAngle() + Vector2.GetDirection(e.GetX(), e.GetY(), 0, 0));
                                  else
-                                     e.SetEmissionAngle(e.GetEmissionAngle() + Vector2::GetDirection(e.GetWX(), e.GetWY(), e.GetParent().GetWX(), e.GetParent().GetWY()));
+                                     e.SetEmissionAngle(e.GetEmissionAngle() + Vector2.GetDirection(e.GetWX(), e.GetWY(), e.GetParent().GetWX(), e.GetParent().GetWY()));
                                  break;
 
                              case EmOutwards:
                                  if (e.IsRelative())
-                                     e.SetEmissionAngle(e.GetEmissionAngle() + Vector2::GetDirection(0, 0, e.GetX(), e.GetY()));
+                                     e.SetEmissionAngle(e.GetEmissionAngle() + Vector2.GetDirection(0, 0, e.GetX(), e.GetY()));
                                  else
-                                     e.SetEmissionAngle(e.GetEmissionAngle() + Vector2::GetDirection(e.GetParent().GetWX(), e.GetParent().GetWY(), e.GetWX(), e.GetWY()));
+                                     e.SetEmissionAngle(e.GetEmissionAngle() + Vector2.GetDirection(e.GetParent().GetWX(), e.GetParent().GetWY(), e.GetWX(), e.GetWY()));
                                  break;
 
                              case EmInAndOut:
                                  if (this._dirAlternater)
                                  {
                                      if (e.IsRelative())
-                                         e.SetEmissionAngle(e.GetEmissionAngle() + Vector2::GetDirection(0, 0, e.GetX(), e.GetY()));
+                                         e.SetEmissionAngle(e.GetEmissionAngle() + Vector2.GetDirection(0, 0, e.GetX(), e.GetY()));
                                      else
-                                         e.SetEmissionAngle(e.GetEmissionAngle() + Vector2::GetDirection(e.GetParent().GetWX(), e.GetParent().GetWY(), e.GetWX(), e.GetWY()));
+                                         e.SetEmissionAngle(e.GetEmissionAngle() + Vector2.GetDirection(e.GetParent().GetWX(), e.GetParent().GetWY(), e.GetWX(), e.GetWY()));
                                  }
                                  else
                                  {
                                      if (e.IsRelative())
-                                         e.SetEmissionAngle(e.GetEmissionAngle() + Vector2::GetDirection(e.GetX(), e.GetY(), 0, 0));
+                                         e.SetEmissionAngle(e.GetEmissionAngle() + Vector2.GetDirection(e.GetX(), e.GetY(), 0, 0));
                                      else
-                                         e.SetEmissionAngle(e.GetEmissionAngle() + Vector2::GetDirection(e.GetWX(), e.GetWY(), e.GetParent().GetWX(), e.GetParent().GetWY()));
+                                         e.SetEmissionAngle(e.GetEmissionAngle() + Vector2.GetDirection(e.GetWX(), e.GetWY(), e.GetParent().GetWX(), e.GetParent().GetWY()));
                                  }
                                  this._dirAlternater = !this._dirAlternater;
                                  break;
@@ -1225,7 +1224,7 @@ var Emitter = Class(Entity,{
                      {
                          e.SetSpeedVecX(sinf(e.GetEntityDirection() / 180.0* M_PI));
                          e.SetSpeedVecY(cosf(e.GetEntityDirection() / 180.0* M_PI));
-                         e.SetAngle(Vector2::GetDirection(0, 0, e.GetSpeedVecX(), -e.GetSpeedVecY()));
+                         e.SetAngle(Vector2.GetDirection(0, 0, e.GetSpeedVecX(), -e.GetSpeedVecY()));
                      }
                      else
                      {
@@ -1295,7 +1294,7 @@ var Emitter = Class(Entity,{
                  {
                      this._effects[i].ChangeDoB(dob);
 
-                     Effect* newEffect = new Effect(this._effects[i]., pm);
+                     var newEffect = new Effect(this._effects[i], pm);
                      newEffect.SetParent(e);
                      newEffect.SetParentEmitter(this);
                      newEffect.SetEffectLayer(e._effectLayer);
@@ -1325,7 +1324,7 @@ var Emitter = Class(Entity,{
  ControlParticle:function( e )
  {
      var parentEffect = this._parentEffect;
-     ParticleManager* pm = parentEffect.GetParticleManager();
+     var pm = parentEffect.GetParticleManager();
 
      // alpha change
      if (this._alphaRepeat > 1)
@@ -1357,9 +1356,9 @@ var Emitter = Class(Entity,{
                  if (e._oldWX != e._wx && e._oldWY != e._wy)
                  {
                      if (e._relative)
-                         e._angle = Vector2::GetDirection(e._oldX, e._oldY, e._x, e._y);
+                         e._angle = Vector2.GetDirection(e._oldX, e._oldY, e._x, e._y);
                      else
-                         e._angle = Vector2::GetDirection(e._oldWX, e._oldWY, e._wx, e._wy);
+                         e._angle = Vector2.GetDirection(e._oldWX, e._oldWY, e._wx, e._wy);
 
                      if (fabsf(e._oldAngle - e._angle) > 180)
                      {
@@ -1430,7 +1429,7 @@ var Emitter = Class(Entity,{
          if (!this._bypassDirectionvariation)
          {
              var dv = e._directionVariation * this.GEmitterDirectionVariationOT(e._age, e._lifeTime);
-             e._timeTracker += (int)EffectsLibrary.GetUpdateTime();
+             e._timeTracker += EffectsLibrary.GetUpdateTime();
              if (e._timeTracker > EffectsLibrary.motionVariationInterval)
              {
                  e._randomDirection += EffectsLibrary.maxDirectionVariation * Rnd(-dv, dv);
@@ -1553,12 +1552,12 @@ var Emitter = Class(Entity,{
      return this._cB.GetOT(randomAge, e.GetLifeTime(), false);
  },
 
- DrawCurrentFrame:function( x /*= 0*/, y /*= 0*/, w /*= 128.0f*/, h /*= 128.0f*/ )
+ DrawCurrentFrame:function( x /*= 0*/, y /*= 0*/, w /*= 128.0*/, h /*= 128.0*/ )
  {
      if (this._image)
      {
          /*
-         SetAlpha(1.0f);
+         SetAlpha(1.0);
          SetBlend(this._blendMode);
          SetImageHandle(this._image.GetImage(), 0, 0);
          SetColor(255, 255, 255);
@@ -1689,9 +1688,9 @@ var Emitter = Class(Entity,{
 
      if (this._cR.GetAttributesCount() <= 1)
      {
-         this._bRed = this.GetEmitterR(0, 1.0) != 0;             // @todo dan ???
-         this._bGreen = this.GetEmitterG(0, 1.0) != 0;
-         this._bBlue = this.GetEmitterB(0, 1.0) != 0;
+         this._bRed = this.GetEmitterR(0, 1.0) !== 0;             // @todo dan ???
+         this._bGreen = this.GetEmitterG(0, 1.0) !== 0;
+         this._bBlue = this.GetEmitterB(0, 1.0) !== 0;
          this._bypassColor = true;
      }
 
@@ -1897,7 +1896,7 @@ var Emitter = Class(Entity,{
      return this._dying;
  },
 
- SetPath:function( char *path )
+ SetPath:function( path )
  {
      this._path = path;
  },

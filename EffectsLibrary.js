@@ -95,7 +95,7 @@ var EffectsLibrary = Class(
 
     for (var i=0;i<shapes.length;i++)
     {
-      //console.log(shapes[i].attributes.getNamedItem("URL").nodeValue);
+  //    console.log(shapes[i].attributes.getNamedItem("URL").nodeValue);
       var img = new AnimImage();
       img.LoadFromXML(shapes[i]);
       this._shapeList.push(img);
@@ -149,6 +149,11 @@ var EffectsLibrary = Class(
     this._effects = []; // indexed by name
     this._emitters = [];// indexed by name
     this._shapeList = [];
+  },
+
+  GetShapes:function()
+  {
+      return this._shapeList;
   },
 
   GetEffect:function(name)

@@ -31,12 +31,13 @@ var AttributeNode = Class({
 
   LoadFromXML:function(xml)
   {
-    var x = new XMLHelper(xml);
-
-    this.SetCurvePoints( x.GetAttr("LEFT_CURVE_POINT_X"),
-                         x.GetAttr("LEFT_CURVE_POINT_Y"),
-                         x.GetAttr("RIGHT_CURVE_POINT_X"),
-                         x.GetAttr("RIGHT_CURVE_POINT_Y"));
+    if(xml)
+    {
+      this.SetCurvePoints(  GetNodeAttrValue(n,"LEFT_CURVE_POINT_X"),
+                            GetNodeAttrValue(n,"LEFT_CURVE_POINT_Y"),
+                            GetNodeAttrValue(n,"RIGHT_CURVE_POINT_X"),
+                            GetNodeAttrValue(n,"RIGHT_CURVE_POINT_Y"));
+    }
   },
 
 /*

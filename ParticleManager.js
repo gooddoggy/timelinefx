@@ -29,13 +29,6 @@ var ParticleManager = Class({
     this._centerX = 0;
     this._centerY = 0;
 
-    this._tv = 0;
-    this._tx = 0;
-    this._ty = 0;
-    this._tz = 0;
-    this._px = 0;
-    this._py = 0;
-
     this._angleTweened = 0;
     this._globalAmountScale = 1.0;
 
@@ -55,7 +48,7 @@ var ParticleManager = Class({
     this._renderCount = 0;
     this._currentTween = 0;
 
-    this._effectLayers = 0;
+    this._effectLayers = layers;
     this._inUseCount= 0;
 
     this._inUse = [];
@@ -64,6 +57,7 @@ var ParticleManager = Class({
     for (var el = 0; el < layers; ++el)
     {
         this._inUse[el] = [];
+        this._effects[el] = [];
     }
 
     this._unused = [];
@@ -270,10 +264,11 @@ var ParticleManager = Class({
 
   AddEffect:function( e, layer /*= 0*/ )
   {
-      if (layer >= _effectLayers)
+      layer = GetDefaultArg(layer,0);
+      if (layer >= this._effectLayers)
           layer = 0;
       e.SetEffectLayer(layer);
-      _effects[layer].insert(e);
+      this._effects[layer].push(e);
   },
 
   RemoveEffect:function( e )
@@ -386,22 +381,22 @@ var ParticleManager = Class({
    {
        if (p.GetAge() !== 0 || p.GetEmitter().IsSingleParticle())
        {
-           var _px = TweenValues(p.GetOldWX(), p.GetWX(), this._currentTween);
-           var _py = TweenValues(p.GetOldWY(), p.GetWY(), this._currentTween);
+           var px = TweenValues(p.GetOldWX(), p.GetWX(), this._currentTween);
+           var py = TweenValues(p.GetOldWY(), p.GetWY(), this._currentTween);
 
            if (this._angle !== 0)
            {
               // Vector2 rotVec = _matrix.TransformVector(Vector2(this._px, this._py));
-               _px = (rotVec.x * this._camtz) + this._centerX + (this._camtz * this._camtx);
-               _py = (rotVec.y * this._camtz) + this._centerY + (this._camtz * this._camty);
+               px = (rotVec.x * this._camtz) + this._centerX + (this._camtz * this._camtx);
+               py = (rotVec.y * this._camtz) + this._centerY + (this._camtz * this._camty);
            }
            else
            {
-               _px = (_px * this._camtz) + this._centerX + (this._camtz * this._camtx);
-               _py = (_py * this._camtz) + this._centerY + (this._camtz * this._camty);
+               px = (px * this._camtz) + this._centerX + (this._camtz * this._camtx);
+               py = (py * this._camtz) + this._centerY + (this._camtz * this._camty);
            }
 
-           if (_px > _vpX - p.GetImageDiameter() && _px < _vpX + _vpW + p.GetImageDiameter() && _py > _vpY - p.GetImageDiameter() && _py < _vpY + _vpH + p.GetImageDiameter())
+           if (px > _vpX - p.GetImageDiameter() && px < _vpX + _vpW + p.GetImageDiameter() && py > _vpY - p.GetImageDiameter() && py < _vpY + _vpH + p.GetImageDiameter())
            {
                if (p.GetAvatar())
                {
@@ -438,38 +433,39 @@ var ParticleManager = Class({
 
                    var rotation;
 
-                   _tv = TweenValues(p.GetOldAngle(), p.GetAngle(), _currentTween);
+                   var tv = TweenValues(p.GetOldAngle(), p.GetAngle(), _currentTween);
+                   var tx;
                    if (p.GetEmitter().IsAngleRelative())
                    {
                        if (fabsf(p.GetOldRelativeAngle() - p.GetRelativeAngle()) > 180)
-                           _tx = TweenValues(p.GetOldRelativeAngle() - 360, p.GetRelativeAngle(), _currentTween);
+                           tx = TweenValues(p.GetOldRelativeAngle() - 360, p.GetRelativeAngle(), _currentTween);
                        else
-                           _tx = TweenValues(p.GetOldRelativeAngle(), p.GetRelativeAngle(), _currentTween);
-                       //SetRotation(_tv + _tx + _angleTweened);
-                       rotation = _tv + _tx + _angleTweened;
+                           tx = TweenValues(p.GetOldRelativeAngle(), p.GetRelativeAngle(), _currentTween);
+                       //SetRotation(tv + tx + _angleTweened);
+                       rotation = tv + tx + _angleTweened;
                    }
                    else
                    {
-                       //SetRotation(_tv + _angleTweened);
-                       rotation = _tv + _angleTweened;
+                       //SetRotation(tv + _angleTweened);
+                       rotation = tv + _angleTweened;
                    }
 
                    var scaleX, scaleY;
 
-                   _tx = TweenValues(p.GetOldScaleX(), p.GetScaleX(), _currentTween);
-                   _ty = TweenValues(p.GetOldScaleY(), p.GetScaleY(), _currentTween);
-                   _tz = TweenValues(p.GetOldZ(), p.GetZ(), _currentTween);
-                   if (_tz !== 1.0)
+                   tx = TweenValues(p.GetOldScaleX(), p.GetScaleX(), _currentTween);
+                   var ty = TweenValues(p.GetOldScaleY(), p.GetScaleY(), _currentTween);
+                   var tz = TweenValues(p.GetOldZ(), p.GetZ(), _currentTween);
+                   if (tz !== 1.0)
                    {
-                       //SetScale(_tx * _tz * _camtz, _ty * _tz * _camtz);
-                       scaleX = this._tx * this._tz * this._camtz;
-                       scaleY = this._ty * this._tz * this._camtz;
+                       //SetScale(tx * tz * _camtz, ty * tz * _camtz);
+                       scaleX = tx * tz * this._camtz;
+                       scaleY = ty * tz * this._camtz;
                    }
                    else
                    {
-                       //SetScale(_tx * _camtz, _ty * _camtz);
-                       scaleX = this._tx * this._camtz;
-                       scaleY = this._ty * this._camtz;
+                       //SetScale(tx * _camtz, ty * _camtz);
+                       scaleX = tx * this._camtz;
+                       scaleY = ty * this._camtz;
                    }
 
                    var r, g, b;
@@ -483,23 +479,23 @@ var ParticleManager = Class({
 
                    if (p.IsAnimating())
                    {
-                       _tv = TweenValues(p.GetOldCurrentFrame(), p.GetCurrentFrame(), _currentTween);
-                       if (_tv < 0)
+                       tv = TweenValues(p.GetOldCurrentFrame(), p.GetCurrentFrame(), _currentTween);
+                       if (tv < 0)
                        {
-                           this._tv = p.GetAvatar().GetFramesCount() + (fmod(this._tv, p.GetAvatar().GetFramesCount()));
-                           if (_tv == p.GetAvatar().GetFramesCount())
-                               _tv = 0;
+                           tv = p.GetAvatar().GetFramesCount() + (fmod(tv, p.GetAvatar().GetFramesCount()));
+                           if (tv == p.GetAvatar().GetFramesCount())
+                               tv = 0;
                        }
                        else
                        {
-                           this._tv = fmodf(_tv, p.GetAvatar().GetFramesCount());
+                           tv = fmodf(tv, p.GetAvatar().GetFramesCount());
                        }
                    }
                    else
                    {
-                       this._tv = p.GetCurrentFrame();
+                       tv = p.GetCurrentFrame();
                    }
-                   DrawSprite(sprite, this._px, this._py, this._tv, x, y, rotation, scaleX, scaleY, r, g, b, a, blend === Blend.BMLightBlend);
+                   DrawSprite(sprite, px, py, tv, x, y, rotation, scaleX, scaleY, r, g, b, a, blend === Blend.BMLightBlend);
                    // ++rendercount
                }
            }

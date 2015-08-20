@@ -71,12 +71,12 @@ var AnimImage = Class({
 
   SetFilename:function( filename )
   {
-      this._filename = filename;
+      this._imageSourceName = filename;
   },
 
   GetFilename:function()
   {
-      return this._filename;
+      return this._imageSourceName;
   },
 
   SetName:function( name )
