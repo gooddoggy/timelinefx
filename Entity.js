@@ -118,6 +118,7 @@ var Entity = Class({
     this._pixelsPerSecond = 0;
 
     this._matrix = new Matrix2();
+    this._speedVec = new Vector2();
 
     this._children = [];
   },
@@ -181,6 +182,15 @@ var Entity = Class({
         this._children[i].Destroy();
     }
     this._children = [];
+  },
+
+  KillChildren:function()
+  {
+    for (var i=0;i<this._children.length;i++)
+    {
+      this._children[i].KillChildren();
+        this._children[i]._dead = true;
+    }
   },
 
   GetChildren:function()
@@ -285,6 +295,36 @@ var Entity = Class({
      }
    },
 
+    MiniUpdate:function()
+    {
+        this._matrix.Set(cos(this._angle / 180 * M_PI), sin(this._angle / 180.0 * M_PI), -sin(this._angle / 180.0 * M_PI), cos(this._angle / 180.0 * M_PI));
+
+        if (this._parent && this._relative)
+        {
+            this._z = this._parent._z;
+            this._matrix = this._matrix.Transform(this._parent._matrix);
+            var rotVec = this._parent._matrix.TransformVector(new Vector2(this._x, this._y));
+            if (this._z !== 1.0)
+            {
+                this._wx = this._parent._wx + rotVec.x * this._z;
+                this._wy = this._parent._wy + rotVec.y * this._z;
+            }
+            else
+            {
+                this._wx = this._parent._wx + rotVec.x;
+                this._wy = this._parent._wy + rotVec.y;
+            }
+        }
+        else
+        {
+            if (this._parent)
+                this._z = this._parent._z;
+            this._wx = this._x;
+            this._wy = this._y;
+        }
+    },
+
+
    GetChildCount:function()
     {
         return this._children.length;
@@ -327,9 +367,9 @@ var Entity = Class({
                 var aHeight = this._avatar.GetHeight();
 
                 if (aMaxRadius !== 0)
-                    this._imageRadius = Math.Max(aMaxRadius * this._scaleX * this._z, aMaxRadius * this._scaleY * this._z);
+                    this._imageRadius = Math.max(aMaxRadius * this._scaleX * this._z, aMaxRadius * this._scaleY * this._z);
                 else
-                    this._imageRadius = Vector2.GetDistance(aWidth / 2.0 * this._scaleX * this._z, aHeight / 2.0 * this._scaleY * this._z, aWidth * this._scaleX * this._z, aHeight * this._scaleY * this._z);
+                    this._imageRadius = GetDistance2D(aWidth / 2.0 * this._scaleX * this._z, aHeight / 2.0 * this._scaleY * this._z, aWidth * this._scaleX * this._z, aHeight * this._scaleY * this._z);
             }
             else
             {
@@ -343,17 +383,17 @@ var Entity = Class({
             var aHeight = this._avatar.GetHeight();
 
             if (aMaxRadius !== 0)
-                this._imageRadius = Vector2.GetDistance(this._handleX * this._scaleX * this._z, this._handleY * this._scaleY * this._z, aWidth / 2.0 * this._scaleX * this._z, aHeight / 2.0 * this._scaleY * this._z)
-                               + Math.Max(aMaxRadius * this._scaleX * this._z, aMaxRadius * this._scaleY * this._z);
+                this._imageRadius = GetDistance2D(this._handleX * this._scaleX * this._z, this._handleY * this._scaleY * this._z, aWidth / 2.0 * this._scaleX * this._z, aHeight / 2.0 * this._scaleY * this._z)
+                               + Math.max(aMaxRadius * this._scaleX * this._z, aMaxRadius * this._scaleY * this._z);
             else
-                this._imageRadius = Vector2.GetDistance(this._handleX * this._scaleX * this._z, this._handleY * this._scaleY * this._z, aWidth * this._scaleX * this._z, aHeight * this._scaleY * this._z);
+                this._imageRadius = GetDistance2D(this._handleX * this._scaleX * this._z, this._handleY * this._scaleY * this._z, aWidth * this._scaleX * this._z, aHeight * this._scaleY * this._z);
         }
 
         this._entityRadius = this._imageRadius;
         this._imageDiameter = this._imageRadius * 2.0;
 
         if (this._rootParent)
-            UpdateRootParentEntityRadius();
+            this.UpdateRootParentEntityRadius();
     },
 
     UpdateParentEntityRadius:function()
@@ -361,9 +401,9 @@ var Entity = Class({
         if (this._parent)
         {
             if (this._children.length > 0)
-                this._parent._entityRadius += Math.Max(0.0, Vector2.GetDistance(this._wx, this._wy, this._parent._wx, this._parent._wy) + this._entityRadius - this._parent._entityRadius);
+                this._parent._entityRadius += Math.max(0.0, GetDistance2D(this._wx, this._wy, this._parent._wx, this._parent._wy) + this._entityRadius - this._parent._entityRadius);
             else
-                this._parent._entityRadius += Math.Max(0.0, Vector2.GetDistance(this._wx, this._wy, this._parent._wx, this._parent._wy) + this._imageRadius - this._parent._entityRadius);
+                this._parent._entityRadius += Math.max(0.0, GetDistance2D(this._wx, this._wy, this._parent._wx, this._parent._wy) + this._imageRadius - this._parent._entityRadius);
             // DebugLog name + " - Radius: " + entity_Radius + " | Distance to Parent: " + getdistance(wx, wy, parent.wx, parent.wy)
             this._parent.UpdateParentEntityRadius();
         }
@@ -374,7 +414,7 @@ var Entity = Class({
         if (this._rootParent)
         {
             if (this._alpha !== 0)
-                this._rootParent._entityRadius += Math.Max(0.0, Vector2.GetDistance(this._wx, this._wy, this._rootParent._wx, this._rootParent._wy) + this._imageRadius - this._rootParent._entityRadius);
+                this._rootParent._entityRadius += Math.max(0.0, GetDistance2D(this._wx, this._wy, this._rootParent._wx, this._rootParent._wy) + this._imageRadius - this._rootParent._entityRadius);
             // DebugLog name + " - Radius: " + entity_Radius + " | Distance to Parent: " + getdistance(wx, wy, rootparent.wx, rootparent.wy)
         }
     },
@@ -384,10 +424,10 @@ var Entity = Class({
         if (this._parent)
         {
             var parent = this._parent;
-            parent._AABB_XMax += Math.Max(0.0, this._wx - parent._wx + this._AABB_XMax - parent._AABB_XMax);
-            parent._AABB_YMax += Math.Max(0.0, this._wy - parent._wx + this._AABB_YMax - parent._AABB_YMax);
-            parent._AABB_XMin += Math.Max(0.0, this._wx - parent._wx + this._AABB_XMin - parent._AABB_XMin);
-            parent._AABB_YMin += Math.Max(0.0, this._wy - parent._wy + this._AABB_YMin - parent._AABB_YMin);
+            parent._AABB_XMax += Math.max(0.0, this._wx - parent._wx + this._AABB_XMax - parent._AABB_XMax);
+            parent._AABB_YMax += Math.max(0.0, this._wy - parent._wx + this._AABB_YMax - parent._AABB_YMax);
+            parent._AABB_XMin += Math.max(0.0, this._wx - parent._wx + this._AABB_XMin - parent._AABB_XMin);
+            parent._AABB_YMin += Math.max(0.0, this._wy - parent._wy + this._AABB_YMin - parent._AABB_YMin);
         }
     },
 
@@ -397,7 +437,259 @@ var Entity = Class({
             this._parent.AssignRootParent(e);
         else
             e._rootParent = this;
+    },
+
+    SetHandleX:function( x )
+    {
+        this._handleX = x;
+    },
+
+    SetHandleY:function( y )
+    {
+        this._handleY = y;
+    },
+
+    SetParent:function( e )
+    {
+        e.AddChild(this);
+    },
+
+    SetRelative:function( value )
+    {
+        this._relative = value;
+    },
+
+    SetEntityScale:function( sx, sy )
+    {
+        this._scaleX = sx;
+        this._scaleY = sy;
+    },
+
+    SetSpeed:function( speed )
+    {
+        this._speed = speed;
+    },
+
+    GetSpeed:function()
+    {
+        return this._speed;
+    },
+
+    SetBlendMode:function( mode )
+    {
+     // todo: check supported
+       this._blendMode = mode;
+    },
+
+    GetCurrentFrame:function()
+    {
+       return this._currentFrame;
+    },
+
+    SetCurrentFrame:function(frame)
+    {
+       this._currentFrame = frame;
+    },
+
+    AddChild:function( e )
+   {
+       this._children.push(e);
+       e._parent = this;
+       e._radiusCalculate = this._radiusCalculate;
+       e.AssignRootParent(e);
+   },
+
+   GetMatrix:function()
+   {
+     return this._matrix;
+   },
+
+   GetWX:function()
+  {
+      return this._wx;
+  },
+
+    GetWY:function()
+    {
+        return this._wy;
+    },
+
+
+    GetRelativeAngle:function()
+    {
+        return this._relativeAngle;
+    },
+
+    SetDoB:function(dob)
+    {
+        this._dob = dob;
+    },
+
+    SetAvatar:function( avatar )
+    {
+        this._avatar = avatar;
+        this._AABB_MaxWidth = this._avatar.GetWidth() * 0.5;
+        this._AABB_MaxHeight = this._avatar.GetHeight() * 0.5;
+        this._AABB_MinWidth = this._avatar.GetWidth() * -0.5;
+        this._AABB_MinHeight = this._avatar.GetHeight() * -0.5;
+    },
+
+    SetAutocenter:function( value )
+    {
+        this._autoCenter = value;
+    },
+
+    GetLifeTime:function()
+    {
+        return this._lifeTime;
+    },
+
+    SetLifeTime:function( lifeTime )
+    {
+        this._lifeTime = lifeTime;
+    },
+
+    SetSpeedVecX:function( x )
+    {
+        this._speedVec.x = x;
+    },
+
+    SetSpeedVecY:function( y )
+    {
+        this._speedVec.y = y;
+    },
+
+    SetBaseSpeed:function( speed )
+    {
+        this._baseSpeed = speed;
+    },
+
+    GetBaseSpeed:function()
+    {
+        return this._baseSpeed;
+    },
+
+    SetWidth:function( width )
+     {
+         this._width = width;
+     },
+
+     GetWidth:function()
+     {
+         return this._width;
+     },
+
+     SetScaleX:function( scaleX )
+     {
+         this._scaleX = scaleX;
+     },
+
+     SetScaleY:function( scaleY )
+     {
+         this._scaleY = scaleY;
+     },
+
+    GetScaleX:function()
+    {
+        return this._scaleX;
+    },
+
+    GetScaleY:function()
+    {
+        return this._scaleY;
+    },
+
+    SetWidthHeightAABB:function( minWidth, minHeight, maxWidth, maxHeight )
+    {
+       this._AABB_MaxWidth = maxWidth;
+       this._AABB_MaxHeight = maxHeight;
+       this._AABB_MinWidth = minWidth;
+       this._AABB_MinHeight = minHeight;
+    },
+
+    SetDirectionLocked:function( value )
+    {
+       this._directionLocked = value;
+    },
+
+    IsDirectionLocked:function()
+    {
+       return this._directionLocked;
+    },
+
+    GetEntityDirection:function()
+    {
+        return _direction;
+    },
+
+    SetEntityDirection:function( direction )
+    {
+        this._direction = direction;
+    },
+
+    SetWeight:function( weight )
+    {
+        this._weight = weight;
+    },
+
+    GetWeight:function()
+    {
+        return this._weight;
+    },
+
+    SetBaseWeight:function( weight )
+    {
+        this._baseWeight = weight;
+    },
+
+    GetBaseWeight:function()
+    {
+        return this._weight;
+    },
+
+
+    GetRed:function()
+    {
+        return this._red;
+    },
+
+    SetRed:function( r )
+    {
+        this._red = r;
+    },
+
+    GetGreen:function()
+    {
+        return this._green;
+    },
+
+    SetGreen:function( g )
+    {
+        this._green = g;
+    },
+
+    GetBlue:function()
+    {
+        return this._blue;
+    },
+
+    SetBlue:function( b )
+    {
+        this._blue = b;
+    },
+
+    GetAge:function()
+    {
+        return this._age;
+    },
+
+    SetAge:function( age )
+    {
+        this._age = age;
+    },
+
+    SetEntityAlpha:function( alpha )
+    {
+        this._alpha = alpha;
     }
-
-
 });

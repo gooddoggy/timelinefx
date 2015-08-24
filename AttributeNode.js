@@ -33,10 +33,10 @@ var AttributeNode = Class({
   {
     if(xml)
     {
-      this.SetCurvePoints(  GetNodeAttrValue(n,"LEFT_CURVE_POINT_X"),
-                            GetNodeAttrValue(n,"LEFT_CURVE_POINT_Y"),
-                            GetNodeAttrValue(n,"RIGHT_CURVE_POINT_X"),
-                            GetNodeAttrValue(n,"RIGHT_CURVE_POINT_Y"));
+      this.SetCurvePoints(  GetNodeAttrValue(xml,"LEFT_CURVE_POINT_X"),
+                            GetNodeAttrValue(xml,"LEFT_CURVE_POINT_Y"),
+                            GetNodeAttrValue(xml,"RIGHT_CURVE_POINT_X"),
+                            GetNodeAttrValue(xml,"RIGHT_CURVE_POINT_Y"));
     }
   },
 

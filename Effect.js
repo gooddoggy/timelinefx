@@ -303,6 +303,21 @@ var Effect = Class(Entity,{
       return false;
   },
 
+  GetParticleManager:function()
+  {
+    return this._particleManager;
+  },
+
+  GetParticles:function( layer )
+   {
+       return this._inUse[layer];
+   },
+
+  IsDying:function()
+  {
+      return this._dying;
+  },
+
   SoftKill:function()
   {
       this._dying = true;
@@ -332,6 +347,162 @@ var Effect = Class(Entity,{
       }
 
       Effect.$superp.Destroy.call( this, releaseChildren );
+  },
+
+  SetEndBehavior:function( behavior )
+  {
+      this._endBehavior = behavior;
+  },
+
+  SetDistanceSetByLife:function( value )
+  {
+      this._distanceSetByLife = value;
+  },
+
+  SetHandleCenter:function( center )
+  {
+      this._handleCenter = center;
+  },
+
+  SetReverseSpawn:function( reverse )
+  {
+      this._reverseSpawn = reverse;
+  },
+
+  SetSpawnDirection:function()
+  {
+      if (this._reverseSpawn)
+          this._spawnDirection = -1;
+      else
+          this._spawnDirection = 1;
+  },
+
+  SetAreaSize:function( width, height )
+  {
+      this._overrideSize = true;
+      this._currentWidth = width;
+      this._currentHeight = height;
+  },
+
+  SetLineLength:function( length )
+  {
+      this._overrideSize = true;
+      this._currentWidth = length;
+  },
+
+  SetEmissionAngle:function( angle )
+  {
+      this._overrideEmissionAngle = true;
+      this._currentEmissionAngle = angle;
+  },
+
+  SetEffectAngle:function( angle )
+  {
+      this._overrideAngle = true;
+      this._angle = angle;
+  },
+
+  SetLife:function( life )
+  {
+      this._overrideLife = true;
+      this._currentLife = life;
+  },
+
+  SetAmount:function( amount )
+  {
+      this._overrideAmount = true;
+      this._currentAmount = amount;
+  },
+
+  SetVelocity:function( velocity )
+  {
+      this._overrideVelocity = true;
+      this._currentVelocity = velocity;    // @todo dan _currentAmount
+  },
+
+  SetSpin:function( spin )
+  {
+      this._overrideSpin = true;
+      this._currentSpin = spin;
+  },
+
+  SetWeight:function( weight )
+  {
+      this._overrideWeight = true;
+      this._currentWeight = weight;
+  },
+
+  SetEffectParticleSize:function( sizeX, sizeY )
+  {
+      this._overrideSizeX = true;
+      this._overrideSizeY = true;
+      this._currentSizeX = sizeX;
+      this._currentSizeY = sizeY;
+  },
+
+  SetSizeX:function( sizeX )
+  {
+      this._overrideSizeX = true;
+      this._currentSizeX = sizeX;
+  },
+
+  SetSizeY:function( sizeY )
+  {
+      this._overrideSizeY = true;
+      this._currentSizeY = sizeY;
+  },
+
+  SetEffectAlpha:function( alpha )
+  {
+      this._overrideAlpha = true;
+      this._currentAlpha = alpha;
+  },
+
+  SetEffectEmissionRange:function( emissionRange )
+  {
+      this._overrideEmissionRange = true;
+      this._currentEmissionRange = emissionRange;
+  },
+
+  SetEllipseArc:function( degrees )
+  {
+      this._ellipseArc = degrees;
+      this._ellipseOffset = 90 - (int)(degrees / 2);
+  },
+
+  SetZ:function( z )
+  {
+      this._overrideGlobalZ = true;
+      this._z = z;
+  },
+
+  SetStretch:function( stretch )
+  {
+      this._overrideStretch = true;
+      this._currentStretch = stretch;
+  },
+
+  SetGroupParticles:function( v )
+  {
+    for (var i=0;i<this._children.length;i++)
+    {
+        var e = this._children[i];
+
+        e.SetGroupParticles(v);
+
+        var effects = e.GetEffects();
+        for (var j=0;j<effects.length;j++)
+        {
+          effects[j].SetGroupParticles(v);
+        }
+    }
+  },
+
+  AddInUse:function( layer, p )
+  {
+      // the particle is managed by this Effect
+      this.SetGroupParticles(true);
+      this._inUse[layer].push(p);
   },
 
   RemoveInUse:function( layer, p )
@@ -600,6 +771,21 @@ var Effect = Class(Entity,{
     this.ReadAttribute( xml, this.AddAngle.bind(this), "ANGLE" );
     this.ReadAttribute( xml, this.AddStretch.bind(this), "STRETCH" );
 
+    if(xml.getElementsByTagName("STRETCH").length === 0)
+    {
+        this.AddStretch(0, 1.0);
+    }
+
+    this.ReadAttribute( xml, this.AddStretch.bind(this), "GLOBAL_ZOOM" );
+
+    var _this = this;
+    ForEachInXMLNodeList(xml.getElementsByTagName("PARTICLE"), function(n){
+        var emit = new Emitter();
+        emit.LoadFromXML(n,_this);
+        _this.AddChild(emit);
+      }
+    );
+
 
 /*
     var amt = xml.getElementsByTagName("AMOUNT");
@@ -712,6 +898,103 @@ var Effect = Class(Entity,{
   {
       return this._path;
   },
+
+  GetLifeMaxValue:function()
+  {
+     return this._cLife.GetMaxValue();
+  },
+
+
+    GetCurrentAmount:function()
+    {
+        return this._currentAmount;
+    },
+
+    GetCurrentLife:function()
+    {
+        return this._currentLife;
+    },
+
+    GetCurrentEmissionAngle:function()
+    {
+        return this._currentEmissionAngle;
+    },
+
+    GetCurrentEmissionRange:function()
+    {
+        return this._currentEmissionRange;
+    },
+
+    GetClass:function()
+    {
+        return this._class;
+    },
+
+  SetCurrentEffectFrame:function( frame )
+  {
+      this._currentEffectFrame = frame;
+  },
+
+  GetCurrentEffectFrame:function()
+  {
+      return this._currentEffectFrame;
+  },
+
+  GetTraverseEdge:function()
+  {
+      return this._traverseEdge;
+  },
+
+  GetCurrentVelocity:function()
+  {
+      return this._currentVelocity;
+  },
+
+  GetCurrentSizeX:function()
+  {
+      return this._currentSizeX;
+  },
+
+  GetCurrentSizeY:function()
+  {
+      return this._currentSizeY;
+  },
+
+  GetCurrentStretch:function()
+  {
+      return this._currentStretch;
+  },
+
+  GetCurrentWeight:function()
+  {
+      return this._currentWeight;
+  },
+
+  IsBypassWeight:function()
+  {
+      return this._bypassWeight;
+  },
+
+  GetCurrentAlpha:function()
+  {
+      return this._currentAlpha;
+  },
+
+  SetParticlesCreated:function( value )
+    {
+        _particlesCreated = value;
+    },
+
+    GetCurrentSpin:function()
+    {
+        return _currentSpin;
+    },
+
+    GetLifeLastFrame:function()
+    {
+        return this._cLife.GetLastFrame();
+    },
+
 
 
 });

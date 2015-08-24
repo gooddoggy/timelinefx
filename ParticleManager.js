@@ -58,6 +58,13 @@ var ParticleManager = Class({
     {
         this._inUse[el] = [];
         this._effects[el] = [];
+
+
+        // Seems ridiculous
+        for (var i = 0; i < 10; ++i)
+        {
+            this._inUse[el][i] = [];
+        }
     }
 
     this._unused = [];
@@ -98,7 +105,7 @@ var ParticleManager = Class({
   GrabParticle: function( effect, pool, layer /*= 0*/ )
   {
     layer = GetDefaultArg(layer,0);
-    if (!_unused.empty())
+    if (this._unused.length > 0)
     {
        var p = this._unused.pop();
 
@@ -136,13 +143,13 @@ var ParticleManager = Class({
 
     // tween origin
     this._currentTween = tween;
-    this._camtx = -TweenValues(this._oldOriginX, this._originX, tween);
-    this._camty = -TweenValues(this._oldOriginY, this._originY, tween);
-    this._camtz =  TweenValues(this._oldOriginZ, this._originZ, tween);
+    this._camtx = -this.TweenValues(this._oldOriginX, this._originX, tween);
+    this._camty = -this.TweenValues(this._oldOriginY, this._originY, tween);
+    this._camtz =  this.TweenValues(this._oldOriginZ, this._originZ, tween);
 
     if (this._angle !== 0)
     {
-        this._angleTweened = TweenValues(_oldAngle, _angle, tween);
+        this._angleTweened = this.TweenValues(_oldAngle, _angle, tween);
         var a = this._angleTweened / 180.0 * M_PI;
       //  this._matrix.Set(cos(a), sin(a), -sin(a), cos(a));  // CHECK
     }
@@ -356,7 +363,7 @@ var ParticleManager = Class({
      {
        var elist = this._effects[el];
        for (var j = 0; j < elist.length; j++)
-          DrawEffect(elist[j]);
+          this.DrawEffect(elist[j]);
      }
    },
 
@@ -368,11 +375,11 @@ var ParticleManager = Class({
           var plist = e.GetParticles(i);
           for (var j = 0; j < plist.length; j++)
           {
-              DrawParticle(plist[j]);
+              this.DrawParticle(plist[j]);
               // effect
               var subeffects = plist[j].GetChildren();
               for (var k = 0; k < subeffects.length; k++)
-                DrawEffect(subeffects[k]);
+                this.DrawEffect(subeffects[k]);
           }
       }
   },
@@ -396,7 +403,7 @@ var ParticleManager = Class({
                py = (py * this._camtz) + this._centerY + (this._camtz * this._camty);
            }
 
-           if (px > _vpX - p.GetImageDiameter() && px < _vpX + _vpW + p.GetImageDiameter() && py > _vpY - p.GetImageDiameter() && py < _vpY + _vpH + p.GetImageDiameter())
+           if (px > this._vpX - p.GetImageDiameter() && px < this._vpX + this._vpW + p.GetImageDiameter() && py > this._vpY - p.GetImageDiameter() && py < this._vpY + this._vpH + p.GetImageDiameter())
            {
                if (p.GetAvatar())
                {

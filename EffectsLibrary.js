@@ -156,6 +156,11 @@ var EffectsLibrary = Class(
       return this._shapeList;
   },
 
+  GetImage:function(index)
+  {
+    return this._shapeList[index];
+  },
+
   GetEffect:function(name)
   {
     return this._effects[name];

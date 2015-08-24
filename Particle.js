@@ -69,17 +69,17 @@ var Particle = Class(Entity,{
   },
   SetX:function( x )
   {
-    this._oldX = (_age > 0) ? _x : x;
+    this._oldX = (this._age > 0) ? this._x : x;
     this._x = x;
   },
   SetY:function( y )
   {
-    this._oldY = (_age > 0) ? _y : y;
+    this._oldY = (this._age > 0) ? this._y : y;
     this._y = y;
   },
   SetZ:function( z )
   {
-    this._oldZ = (_age > 0) ? _z : z;
+    this._oldZ = (this._age > 0) ? this._z : z;
     this._z = z;
   },
 
@@ -93,5 +93,106 @@ var Particle = Class(Entity,{
   GetEmitter:function(){ return this._emitter; },
 
   GetEffectLayer:function(){ return this._effectLayer; },
+
+  SetParticleManager:function( pm )
+  {
+      this._particleManager = pm;
+  },
+
+  SetEffectLayer:function( layer )
+  {
+      this._effectLayer = layer;
+  },
+
+  SetVelVariation:function( velVariation )
+  {
+      this._velVariation = velVariation;
+  },
+
+  GetVelVariation:function()
+  {
+      return this._velVariation;
+  },
+
+  SetGSizeX:function( gSizeX )
+ {
+     this._gSizeX = gSizeX;
+ },
+
+ SetGSizeY:function( gSizeY )
+ {
+     this._gSizeY = gSizeY;
+ },
+
+ GetGSizeX:function()
+ {
+     return this._gSizeX;
+ },
+
+ GetGSizeY:function()
+ {
+     return this._gSizeY;
+ },
+
+ SetScaleVariationX:function( scaleVarX )
+ {
+     this._scaleVariationX = scaleVarX;
+ },
+
+ GetScaleVariationX:function()
+ {
+     return this._scaleVariationX;
+ },
+
+ SetScaleVariationY:function( scaleVarY )
+ {
+     this._scaleVariationY = scaleVarY;
+ },
+
+ GetScaleVariationY:function()
+ {
+     return this._scaleVariationY;
+ },
+
+ SetEmissionAngle:function( emissionAngle )
+ {
+     this._emissionAngle = emissionAngle;
+ },
+
+ GetEmissionAngle:function()
+ {
+     return this._emissionAngle;
+ },
+
+ SetDirectionVairation:function( dirVar )
+ {
+     this._directionVariation = dirVar;
+ },
+
+ GetDirectionVariation:function()
+ {
+     return this._directionVariation;
+ },
+
+ SetSpinVariation:function( spinVar )
+ {
+     this._spinVariation = spinVar;
+ },
+
+ GetSpinVariation:function()
+ {
+     return this._spinVariation;
+ },
+
+ SetWeightVariation:function( weightVar )
+ {
+     this._weightVariation = weightVar;
+ },
+
+ GetWeightVariation:function()
+ {
+     return this._weightVariation;
+ },
+
 
 });

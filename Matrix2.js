@@ -36,16 +36,16 @@ var Matrix2 = Class({
   Transform:function( m )
   {
       var r = new Matrix2();
-      r.aa = aa * m.aa + ab * m.ba;
-      r.ab = aa * m.ab + ab * m.bb;
-      r.ba = ba * m.aa + bb * m.ba;
-      r.bb = ba * m.ab + bb * m.bb;
+      r.aa = this.aa * m.aa + this.ab * m.ba;
+      r.ab = this.aa * m.ab + this.ab * m.bb;
+      r.ba = this.ba * m.aa + this.bb * m.ba;
+      r.bb = this.ba * m.ab + this.bb * m.bb;
       return r;
   },
 
   TransformVector:function( v )
   {
-      var tv;
+      var tv = new Vector2();
       tv.x = v.x * this.aa + v.y * this.ba;
       tv.y = v.x * this.ab + v.y * this.bb;
       return tv;

@@ -84,21 +84,21 @@ var EmitterArray = Class({
           var lookupFrequency = EffectsLibrary.GetLookupFrequencyOverTime();
           var frame = Math.ceil(longestLife / lookupFrequency);
 
-          this._changes.resize(frame+1);
+          this._changes = new Array(frame+1);
           frame = 0;
           var age = 0;
           while (age < longestLife)
           {
-              this.SetCompiled(frame, InterpolateOT(age, longestLife));
+              this.SetCompiled(frame, this.InterpolateOT(age, longestLife));
               ++frame;
               age = frame * lookupFrequency;
           }
-          SetLife(longestLife);
-          this.this.SetCompiled(frame, lastec.value);
+          this.SetLife(longestLife);
+          this.SetCompiled(frame, lastec.value);
       }
       else
       {
-          this._changes.resize(1);
+          this._changes = new Array(1);
       }
       this._compiled = true;
   },
@@ -138,7 +138,7 @@ var EmitterArray = Class({
               var p3x = a.frame;
               var p3y = a.value;
 
-              return GetCubicBezier(p0x, p0y, p1x, p1y, p2x, p2y, p3x, p3y, t, yMin, yMax).y;
+              return this.GetCubicBezier(p0x, p0y, p1x, p1y, p2x, p2y, p3x, p3y, t, yMin, yMax).y;
           }
           else
           {
@@ -147,7 +147,7 @@ var EmitterArray = Class({
               var p2x = a.frame;
               var p2y = a.value;
 
-              return GetQuadBezier(p0x, p0y, p1x, p1y, p2x, p2y, t, yMin, yMax, x, y).y;
+              return this.GetQuadBezier(p0x, p0y, p1x, p1y, p2x, p2y, t, yMin, yMax).y;
           }
       }
       else if (lastec.isCurve)
@@ -159,7 +159,7 @@ var EmitterArray = Class({
           var p2x = a.frame;
           var p2y = a.value;
 
-          return GetQuadBezier(p0x, p0y, p1x, p1y, p2x, p2y, t, yMin, yMax, x, y).y;
+          return this.GetQuadBezier(p0x, p0y, p1x, p1y, p2x, p2y, t, yMin, yMax).y;
       }
       else
       {
@@ -235,6 +235,34 @@ var EmitterArray = Class({
       }
       return lasty;
   },
+
+  GetOT:function( age, lifetime )
+  {
+      var frame = 0;
+      if (lifetime > 0)
+      {
+          frame = age / lifetime * this._life / EffectsLibrary.GetLookupFrequencyOverTime();
+      }
+      return this.Get(frame);
+  },
+
+  GetAttributesCount:function()
+  {
+      return this._attributes.length;
+  },
+
+  GetMaxValue:function()
+  {
+      var max = 0;
+      for (var i=0;i<this._attributes.length;i++)
+      {
+          var val = this._attributes[i].value;
+          if (val > max)
+              max = val;
+      }
+
+      return max;
+  }
 
 
 });

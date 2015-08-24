@@ -87,17 +87,6 @@ var Vector2 = Class({
       return x * v.x + y * v.y;
   },
 
-  GetDistance:function( fromx, fromy, tox, toy, fast /*= false*/ )
-  {
-      w = tox - fromx;
-      h = toy - fromy;
-
-      if (GetDefaultArg(fast,false))
-          return w * w + h * h;
-      else
-          return sqrt(w * w + h * h);
-  },
-
   /**
    * Get the direction from 1 point to another
    * Thanks to "Snarkbait" for this little code snippit
