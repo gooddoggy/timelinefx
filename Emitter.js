@@ -122,31 +122,32 @@ var Emitter = Class(Entity,{
   {
     var x = new XMLHelper(xml);
 
-     this.SetHandleX           (x.GetAttr("HANDLE_X"));
-     this.SetHandleY           (x.GetAttr("HANDLE_Y"));
-     this.SetBlendMode         (x.GetAttr("BLENDMODE"));
-     this.SetParticlesRelative (x.GetAttr("RELATIVE"));
-     this.SetRandomColor       (x.GetAttr("RANDOM_COLOR"));
-     this.SetZLayer            (x.GetAttr("LAYER"));
-     this.SetSingleParticle    (x.GetAttr("SINGLE_PARTICLE"));
+     this.SetHandleX           (x.GetAttrAsInt("HANDLE_X"));
+     this.SetHandleY           (x.GetAttrAsInt("HANDLE_Y"));
+     this.SetBlendMode         (x.GetAttrAsInt("BLENDMODE"));
+     this.SetParticlesRelative (x.GetAttrAsBool("RELATIVE"));
+     this.SetRandomColor       (x.GetAttrAsBool("RANDOM_COLOR"));
+     this.SetZLayer            (x.GetAttrAsInt("LAYER"));
+     this.SetSingleParticle    (x.GetAttrAsBool("SINGLE_PARTICLE"));
      this.SetName              (x.GetAttr("NAME"));
-     this.SetAnimate           (x.GetAttr("ANIMATE"));
-     this.SetOnce              (x.GetAttr("ANIMATE_ONCE"));
+     this.SetAnimate           (x.GetAttrAsBool("ANIMATE"));
+     this.SetOnce              (x.GetAttrAsBool("ANIMATE_ONCE"));
      this.SetCurrentFrame      (x.GetAttr("FRAME"));
-     this.SetRandomStartFrame  (x.GetAttr("RANDOM_START_FRAME"));
-     this.SetAnimationDirection(x.GetAttr("ANIMATION_DIRECTION"));
-     this.SetUniform           (x.GetAttr("UNIFORM"));
-     this.SetAngleType         (x.GetAttr("ANGLE_TYPE"));
-     this.SetAngleOffset       (x.GetAttr("ANGLE_OFFSET"));
-     this.SetLockAngle         (x.GetAttr("LOCK_ANGLE"));
-     this.SetAngleRelative     (x.GetAttr("ANGLE_RELATIVE"));
-     this.SetUseEffectEmission (x.GetAttr("USE_EFFECT_EMISSION"));
-     this.SetColorRepeat       (x.GetAttr("COLOR_REPEAT"));
-     this.SetAlphaRepeat       (x.GetAttr("ALPHA_REPEAT"));
-     this.SetOneShot           (x.GetAttr("ONE_SHOT"));
-     this.SetHandleCenter      (x.GetAttr("HANDLE_CENTERED"));
-     this.SetGroupParticles    (x.GetAttr("GROUP_PARTICLES"));
+     this.SetRandomStartFrame  (x.GetAttrAsBool("RANDOM_START_FRAME"));
+     this.SetAnimationDirection(x.GetAttrAsInt("ANIMATION_DIRECTION"));
+     this.SetUniform           (x.GetAttrAsBool("UNIFORM"));
+     this.SetAngleType         (x.GetAttrAsInt("ANGLE_TYPE"));
+     this.SetAngleOffset       (x.GetAttrAsInt("ANGLE_OFFSET"));
+     this.SetLockAngle         (x.GetAttrAsBool("LOCK_ANGLE"));
+     this.SetAngleRelative     (x.GetAttrAsBool("ANGLE_RELATIVE"));
+     this.SetUseEffectEmission (x.GetAttrAsBool("USE_EFFECT_EMISSION"));
+     this.SetColorRepeat       (x.GetAttrAsInt("COLOR_REPEAT"));
+     this.SetAlphaRepeat       (x.GetAttrAsInt("ALPHA_REPEAT"));
+     this.SetOneShot           (x.GetAttrAsBool("ONE_SHOT"));
+     this.SetHandleCenter      (x.GetAttrAsBool("HANDLE_CENTERED"));
+     this.SetGroupParticles    (x.GetAttrAsBool("GROUP_PARTICLES"));
 
+     // ?
      if (this.GetAnimationDirection() === 0)
         this.SetAnimationDirection(1);
 
@@ -155,16 +156,20 @@ var Emitter = Class(Entity,{
     this.SetPath(path);
 
   //  this.SetImage( x.GetChildAttr("SHAPE_INDEX","VALUE") );
-    this.SetImage(1);
-    this.SetAngleType( x.GetChildAttr("ANGLE_TYPE","VALUE") );
-    this.SetAngleOffset(x.GetChildAttr("ANGLE_OFFSET","VALUE"));
-    this.SetLockAngle(x.GetChildAttr("LOCKED_ANGLE","VALUE"));
-    this.SetAngleRelative(x.GetChildAttr("ANGLE_RELATIVE","VALUE"));
-    this.SetUseEffectEmission(x.GetChildAttr("USE_EFFECT_EMISSION","VALUE"));
-    this.SetColorRepeat(x.GetChildAttr("COLOR_REPEAT","VALUE"));
-    this.SetAlphaRepeat(x.GetChildAttr("ALPHA_REPEAT","VALUE"));
-    this.SetOneShot(x.GetChildAttr("ONE_SHOT","VALUE"));
-    this.SetHandleCenter(x.GetChildAttr("HANDLE_CENTERED","VALUE"));
+//    this.SetImage(x.GetChildAttrAsInt("SHAPE_INDEX","VALUE"));
+
+    var imgNode = xml.getElementsByTagName("SHAPE_INDEX")[0];
+    this.SetImage(AsInt(imgNode.innerHTML));
+
+    this.SetAngleType(    x.GetChildAttrAsInt("ANGLE_TYPE","VALUE") );
+    this.SetAngleOffset(  x.GetChildAttrAsInt("ANGLE_OFFSET","VALUE"));
+    this.SetLockAngle(        x.GetChildAttrAsBool("LOCKED_ANGLE","VALUE"));
+    this.SetAngleRelative(    x.GetChildAttrAsBool("ANGLE_RELATIVE","VALUE"));
+    this.SetUseEffectEmission(x.GetChildAttrAsBool("USE_EFFECT_EMISSION","VALUE"));
+    this.SetColorRepeat(      x.GetChildAttrAsInt("COLOR_REPEAT","VALUE"));
+    this.SetAlphaRepeat(      x.GetChildAttrAsInt("ALPHA_REPEAT","VALUE"));
+    this.SetOneShot(          x.GetChildAttrAsBool("ONE_SHOT","VALUE"));
+    this.SetHandleCenter(     x.GetChildAttrAsBool("HANDLE_CENTERED","VALUE"));
 
     this.ReadAttribute( xml, this.AddLife.bind(this), "LIFE" );
     this.ReadAttribute( xml, this.AddAmount.bind(this), "AMOUNT" );
@@ -220,6 +225,20 @@ var Emitter = Class(Entity,{
     this.ReadAttribute( xml, this.AddGlobalVelocity.bind(this), "GLOBAL_VELOCITY" );
     this.ReadAttribute( xml, this.AddEmissionAngle.bind(this), "EMISSION_ANGLE" );
     this.ReadAttribute( xml, this.AddEmissionRange.bind(this), "EMISSION_RANGE" );
+
+    // This seems suspect? only one child?
+    var childNode = xml.getElementsByTagName("EFFECT")[0];
+
+    if (childNode)
+    {
+      var e = new Effect();
+      e.LoadFromXML(childNode);
+      //e.CompileAll();
+
+      e.SetParentEmitter(this);
+
+      this.AddEffect(e);
+    }
 
   },
 
@@ -487,9 +506,7 @@ var Emitter = Class(Entity,{
 
  SetSingleParticle:function( value )
  {
-     this._singleParticle = value > 0;
-
-     console.log("this._singleParticle = " + this._singleParticle);
+     this._singleParticle = value;
  },
 
  SetRandomColor:function( value )
@@ -908,8 +925,8 @@ var Emitter = Class(Entity,{
                          if (parentEffect.GetHandleCenter() || (parentEffect.GetHandleX() + parentEffect.GetHandleY() === 0))
                          {
                              // @dan already set? tween = c / intCounter;
-                             e.SetX(TweenValues(this._oldWX, this._wx, tween));
-                             e.SetY(TweenValues(this._oldWY, this._wy, tween));
+                             e.SetX(Lerp(this._oldWX, this._wx, tween));
+                             e.SetY(Lerp(this._oldWY, this._wy, tween));
                              if (this._z != 1)
                              {
                                  e.SetWX(e.GetX() - parentEffect.GetHandleX() * this._z);
@@ -926,8 +943,8 @@ var Emitter = Class(Entity,{
                              e.SetX((0 - parentEffect.GetHandleX()));
                              e.SetY((0 - parentEffect.GetHandleY()));
                              var rotvec = this._parent.GetMatrix().TransformVector(new Vector2(e.GetX(), e.GetY()));
-                             e.SetX(TweenValues(this._oldWX, this._wx, tween) + rotvec.x);
-                             e.SetY(TweenValues(this._oldWY, this._wy, tween) + rotvec.y);
+                             e.SetX(Lerp(this._oldWX, this._wx, tween) + rotvec.x);
+                             e.SetY(Lerp(this._oldWY, this._wy, tween) + rotvec.y);
                              if (this._z != 1)
                              {
                                  e.SetWX(e.GetX() * this._z);
@@ -1213,7 +1230,7 @@ var Emitter = Class(Entity,{
                  else
                  {
                      // height
-                     scaleTemp = this.GEmitterScaleY(0);
+                     scaleTemp = this.GetEmitterScaleY(0);
                      sizeTemp = 0;
                      e.SetScaleVariationY(RandomBetween(this._currentSizeYVariation));
                      e.SetHeight(e.GetScaleVariationY() + this._currentSizeY);
@@ -1225,7 +1242,7 @@ var Emitter = Class(Entity,{
 
                      if (!this._bypassStretch && e.GetSpeed() !== 0)
                      {
-                         e.SetScaleY((this.GetEmitterScaleY(0) * e.GetGSizeY() * (e.GetHeight() + (Math.abs(e.GetSpeed()) * this.GEmitterStretch(0) * parentEffect.GetCurrentStretch()))) / this._image.GetHeight());
+                         e.SetScaleY((this.GetEmitterScaleY(0) * e.GetGSizeY() * (e.GetHeight() + (Math.abs(e.GetSpeed()) * this.GetEmitterStretch(0) * parentEffect.GetCurrentStretch()))) / this._image.GetHeight());
                          if (e.GetScaleY() < e.GetScaleX())
                              e.SetScaleY(e.GetScaleX());
                      }
@@ -1236,7 +1253,7 @@ var Emitter = Class(Entity,{
                  // splatter
                  if (!this._bypassSplatter)
                  {
-                     var splatterTemp = this.GEmitterSplatter(curFrame);
+                     var splatterTemp = this.GetEmitterSplatter(curFrame);
                      var splatX = RandomBetween(-splatterTemp, splatterTemp);
                      var splatY = RandomBetween(-splatterTemp, splatterTemp);
 
@@ -1416,8 +1433,6 @@ var Emitter = Class(Entity,{
 
                  for (var i=0;i<this._effects.length;i++)
                  {
-                     this._effects[i].ChangeDoB(dob);
-
                      var newEffect = new Effect(this._effects[i], pm);
                      newEffect.SetParent(e);
                      newEffect.SetParentEmitter(this);
@@ -1454,7 +1469,7 @@ var Emitter = Class(Entity,{
      if (this._alphaRepeat > 1)
      {
          e._rptAgeA += EffectsLibrary.GetCurrentUpdateTime() * this._alphaRepeat;
-         e._alpha = this.GEmitterAlpha(e._rptAgeA, e._lifeTime) * parentEffect.GetCurrentAlpha();
+         e._alpha = this.GetEmitterAlpha(e._rptAgeA, e._lifeTime) * parentEffect.GetCurrentAlpha();
          if (e._rptAgeA > e._lifeTime && e._aCycles < this._alphaRepeat)
          {
              e._rptAgeA -= e._lifeTime;
@@ -1463,7 +1478,7 @@ var Emitter = Class(Entity,{
      }
      else
      {
-         e._alpha = this.GEmitterAlpha(e._age, e._lifeTime) * parentEffect.GetCurrentAlpha();
+         e._alpha = this.GetEmitterAlpha(e._age, e._lifeTime) * parentEffect.GetCurrentAlpha();
      }
 
      // angle changes
@@ -1502,7 +1517,7 @@ var Emitter = Class(Entity,{
      else
      {
          if (!this._bypassSpin)
-             e._angle += (GetEmitterSpin(e._age, e._lifeTime) * e._spinVariation * parentEffect.GetCurrentSpin()) / EffectsLibrary.GetCurrentUpdateTime();
+             e._angle += (this.GetEmitterSpin(e._age, e._lifeTime) * e._spinVariation * parentEffect.GetCurrentSpin()) / EffectsLibrary.GetCurrentUpdateTime();
      }
 
      // direction changes and motion randomness
@@ -1552,7 +1567,7 @@ var Emitter = Class(Entity,{
      {
          if (!this._bypassDirectionvariation)
          {
-             var dv = e._directionVariation * this.GEmitterDirectionVariationOT(e._age, e._lifeTime);
+             var dv = e._directionVariation * this.GetEmitterDirectionVariationOT(e._age, e._lifeTime);
              e._timeTracker += EffectsLibrary.GetUpdateTime();
              if (e._timeTracker > EffectsLibrary.motionVariationInterval)
              {
@@ -1561,7 +1576,7 @@ var Emitter = Class(Entity,{
                  e._timeTracker = 0;
              }
          }
-         e._direction = e._emissionAngle + this.GEmitterDirection(e._age, e._lifeTime) + e._randomDirection;
+         e._direction = e._emissionAngle + this.GetEmitterDirection(e._age, e._lifeTime) + e._randomDirection;
      }
 
      // size changes
@@ -1590,9 +1605,9 @@ var Emitter = Class(Entity,{
              if (this._colorRepeat > 1)
              {
                  e._rptAgeC += EffectsLibrary.GetCurrentUpdateTime() * this._colorRepeat;
-                 e._red = this.GEmitterR(e._rptAgeC, e._lifeTime);
-                 e._green = this.GEmitterG(e._rptAgeC, e._lifeTime);
-                 e._blue = this.GEmitterB(e._rptAgeC, e._lifeTime);
+                 e._red = this.GetEmitterR(e._rptAgeC, e._lifeTime);
+                 e._green = this.GetEmitterG(e._rptAgeC, e._lifeTime);
+                 e._blue = this.GetEmitterB(e._rptAgeC, e._lifeTime);
                  if (e._rptAgeC > e._lifeTime && e._cCycles < this._colorRepeat)
                  {
                      e._rptAgeC -= e._lifeTime;
@@ -1601,9 +1616,9 @@ var Emitter = Class(Entity,{
              }
              else
              {
-                 e._red = this.GEmitterR(e._age, e._lifeTime);
-                 e._green = this.GEmitterG(e._age, e._lifeTime);
-                 e._blue = this.GEmitterB(e._age, e._lifeTime);
+                 e._red = this.GetEmitterR(e._age, e._lifeTime);
+                 e._green = this.GetEmitterG(e._age, e._lifeTime);
+                 e._blue = this.GetEmitterB(e._age, e._lifeTime);
              }
          }
      }
@@ -1615,7 +1630,7 @@ var Emitter = Class(Entity,{
      // speed changes
      if (!this._bypassSpeed)
      {
-         e._speed = this.GEmitterVelocity(e._age, e._lifeTime) * e._baseSpeed * this.GEmitterGlobalVelocity(parentEffect.GetCurrentEffectFrame());
+         e._speed = this.GetEmitterVelocity(e._age, e._lifeTime) * e._baseSpeed * this.GetEmitterGlobalVelocity(parentEffect.GetCurrentEffectFrame());
          e._speed += e._randomSpeed;
      }
      else
@@ -1640,16 +1655,16 @@ var Emitter = Class(Entity,{
              }
 
              if (this._uniform)
-                 e._scaleY = (this.GetEmitterScaleX(e._age, e._lifeTime) * e._gSizeX * (e._width + (Math.abs(e._speed) * this.GEmitterStretch(e._age, e._lifeTime) * parentEffect.GetCurrentStretch()))) / this._image.GetWidth();
+                 e._scaleY = (this.GetEmitterScaleX(e._age, e._lifeTime) * e._gSizeX * (e._width + (Math.abs(e._speed) * this.GetEmitterStretch(e._age, e._lifeTime) * parentEffect.GetCurrentStretch()))) / this._image.GetWidth();
              else
-                 e._scaleY = (this.GetEmitterScaleY(e._age, e._lifeTime) * e._gSizeY * (e._height + (Math.abs(e._speed) * this.GEmitterStretch(e._age, e._lifeTime) * parentEffect.GetCurrentStretch()))) / this._image.GetHeight();
+                 e._scaleY = (this.GetEmitterScaleY(e._age, e._lifeTime) * e._gSizeY * (e._height + (Math.abs(e._speed) * this.GetEmitterStretch(e._age, e._lifeTime) * parentEffect.GetCurrentStretch()))) / this._image.GetHeight();
          }
          else
          {
              if (this._uniform)
-                 e._scaleY = (this.GetEmitterScaleX(e._age, e._lifeTime) * e._gSizeX * (e._width + (Math.abs(e._speed) * this.GEmitterStretch(e._age, e._lifeTime) * parentEffect.GetCurrentStretch()))) / this._image.GetWidth();
+                 e._scaleY = (this.GetEmitterScaleX(e._age, e._lifeTime) * e._gSizeX * (e._width + (Math.abs(e._speed) * this.GetEmitterStretch(e._age, e._lifeTime) * parentEffect.GetCurrentStretch()))) / this._image.GetWidth();
              else
-                 e._scaleY = (this.GetEmitterScaleY(e._age, e._lifeTime) * e._gSizeY * (e._height + (Math.abs(e._speed) * this.GEmitterStretch(e._age, e._lifeTime) * parentEffect.GetCurrentStretch()))) / this._image.GetHeight();
+                 e._scaleY = (this.GetEmitterScaleY(e._age, e._lifeTime) * e._gSizeY * (e._height + (Math.abs(e._speed) * this.GetEmitterStretch(e._age, e._lifeTime) * parentEffect.GetCurrentStretch()))) / this._image.GetHeight();
          }
 
          if (e._scaleY < e._scaleX)
@@ -1658,7 +1673,7 @@ var Emitter = Class(Entity,{
 
      // weight changes
      if (!this._bypassWeight)
-         e._weight = this.GEmitterWeight(e._age, e._lifeTime) * e._baseWeight;
+         e._weight = this.GetEmitterWeight(e._age, e._lifeTime) * e._baseWeight;
  },
 
  RandomizeR:function( e, randomAge )
@@ -1743,7 +1758,7 @@ var Emitter = Class(Entity,{
      var longestLife = this.GetLongestLife();
 
      this._cAlpha.Clear(1);
-     this._cAlpha.SetCompiled(0, this.GEmitterAlpha(0, longestLife));
+     this._cAlpha.SetCompiled(0, this.GetEmitterAlpha(0, longestLife));
 
      this._cR.Clear(1);
      this._cG.Clear(1);
@@ -2032,5 +2047,15 @@ var Emitter = Class(Entity,{
  {
      this._path = path;
  },
+
+/*
+ SetParticleManagerOnEffects:function( particleManager )
+ {
+     for (var i=0;i<this._effects.length;i++)
+     {
+         this._effects[i].SetParticleManager(particleManager);
+     }
+ },
+*/
 
 });

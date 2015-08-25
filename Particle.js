@@ -61,6 +61,54 @@ var Particle = Class(Entity,{
       this._emitter = null;
   },
 
+    Update:function()
+    {
+        this.Capture();
+
+        if (this._emitter.IsDying() || this._emitter.IsOneShot() || this._dead)
+            this._releaseSingleParticle = true;
+
+        if (this._emitter.IsSingleParticle() && !this._releaseSingleParticle)
+        {
+            this._age = this._particleManager.GetCurrentTime() - this._dob;
+            if (this._age > this._lifeTime)
+            {
+                this._age = 0;
+                this._dob = this._particleManager.GetCurrentTime();
+            }
+        }
+        else
+        {
+            this._age = this._particleManager.GetCurrentTime() - this._dob;
+        }
+
+        Particle.$superp.Update.call( this );
+
+        if (this._age > this._lifeTime || this._dead == 2)                 // if dead=2 then that means its reached the end of the line (in kill mode) for line traversal effects
+        {
+            this._dead = 1;
+            if (this._children.length === 0)
+            {
+                this._particleManager.ReleaseParticle(this);
+                if (this._emitter.IsGroupParticles())
+                    this._emitter.GetParentEffect().RemoveInUse(_layer, this);
+
+                this.Reset();
+                return false;               // RemoveChild
+            }
+            else
+            {
+                this._emitter.ControlParticle(this);
+                this.KillChildren();
+            }
+
+            return true;
+        }
+
+        this._emitter.ControlParticle(this);
+        return true;
+    },
+
   Destroy:function(releaseChildren)
   {
       this._particleManager.ReleaseParticle(this);

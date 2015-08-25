@@ -21,6 +21,19 @@ function stripFilePath(filename)
   return filename.substring(index + 1);
 }
 
+Math.fmod = function (a,b) { return Number((a - (Math.floor(a / b) * b)).toPrecision(8)); };
+
+
+var CopyHelper = Class({
+ constructor: function(fromObj,toObj) {
+    this.m_fromObj = fromObj;
+    this.m_toObj = toObj;
+  },
+  copy: function(key,defaultVal)
+  {
+    this.m_toObj[key] = this.m_fromObj ? this.m_fromObj[key] : defaultVal;
+  }
+});
 
 var XMLHelper = Class({
  constructor: function(xml) {
@@ -31,15 +44,37 @@ var XMLHelper = Class({
   {
     return this.m_attr.getNamedItem(attrName).nodeValue;
   },
+  GetAttrAsInt:function(attrName)
+  {
+    return parseInt(this.GetAttr(attrName));
+  },
+  GetAttrAsBool:function(attrName)
+  {
+    return this.GetAttrAsInt(attrName) > 0;
+  },
+
   GetChildAttr:function(childName,attrName)
   {
     var childNode = this.m_xml.getElementsByTagName(childName)[0];
     if(childNode)
       return GetXMLAttrSafe(childNode,attrName,null);
     return null;
-  }
+  },
+
+  GetChildAttrAsInt:function(attrName)
+  {
+    return parseInt(this.GetChildAttr(attrName));
+  },
+  GetChildAttrAsBool:function(attrName)
+  {
+    return this.GetChildAttrAsInt(attrName) > 0;
+  },
 
 });
+
+function AsInt(x) { return parseInt(x); }
+function AsBool(x) { return x > 0; }
+
 
 function GetNodeAttrValue(elem,attrName)
 {
@@ -59,7 +94,6 @@ function GetXMLAttrSafe(xmlNode,attrName,defaultResult /* ="" */)
   var attr = xmlNode.attributes ? xmlNode.attributes.getNamedItem(attrName) : null;
   return attr ? attr.nodeValue : GetDefaultArg(defaultResult,"");
 }
-
 
 function Lerp(a,b,fract)
 {

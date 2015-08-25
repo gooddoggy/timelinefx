@@ -143,13 +143,13 @@ var ParticleManager = Class({
 
     // tween origin
     this._currentTween = tween;
-    this._camtx = -this.TweenValues(this._oldOriginX, this._originX, tween);
-    this._camty = -this.TweenValues(this._oldOriginY, this._originY, tween);
-    this._camtz =  this.TweenValues(this._oldOriginZ, this._originZ, tween);
+    this._camtx = -Lerp(this._oldOriginX, this._originX, tween);
+    this._camty = -Lerp(this._oldOriginY, this._originY, tween);
+    this._camtz =  Lerp(this._oldOriginZ, this._originZ, tween);
 
     if (this._angle !== 0)
     {
-        this._angleTweened = this.TweenValues(_oldAngle, _angle, tween);
+        this._angleTweened = Lerp(_oldAngle, _angle, tween);
         var a = this._angleTweened / 180.0 * M_PI;
       //  this._matrix.Set(cos(a), sin(a), -sin(a), cos(a));  // CHECK
     }
@@ -352,11 +352,6 @@ var ParticleManager = Class({
      this._paused = !this._paused;
   },
 
-   TweenValues:function( oldValue, value, tween )
-   {
-       return oldValue + (value - oldValue) * tween;
-   },
-
    DrawEffects:function()
    {
      for (var el = 0; el < this._effects.length; ++el)
@@ -388,8 +383,8 @@ var ParticleManager = Class({
    {
        if (p.GetAge() !== 0 || p.GetEmitter().IsSingleParticle())
        {
-           var px = TweenValues(p.GetOldWX(), p.GetWX(), this._currentTween);
-           var py = TweenValues(p.GetOldWY(), p.GetWY(), this._currentTween);
+           var px = Lerp(p.GetOldWX(), p.GetWX(), this._currentTween);
+           var py = Lerp(p.GetOldWY(), p.GetWY(), this._currentTween);
 
            if (this._angle !== 0)
            {
@@ -440,28 +435,28 @@ var ParticleManager = Class({
 
                    var rotation;
 
-                   var tv = TweenValues(p.GetOldAngle(), p.GetAngle(), _currentTween);
+                   var tv = Lerp(p.GetOldAngle(), p.GetAngle(), this._currentTween);
                    var tx;
                    if (p.GetEmitter().IsAngleRelative())
                    {
                        if (fabsf(p.GetOldRelativeAngle() - p.GetRelativeAngle()) > 180)
-                           tx = TweenValues(p.GetOldRelativeAngle() - 360, p.GetRelativeAngle(), _currentTween);
+                           tx = Lerp(p.GetOldRelativeAngle() - 360, p.GetRelativeAngle(), _currentTween);
                        else
-                           tx = TweenValues(p.GetOldRelativeAngle(), p.GetRelativeAngle(), _currentTween);
+                           tx = Lerp(p.GetOldRelativeAngle(), p.GetRelativeAngle(), _currentTween);
                        //SetRotation(tv + tx + _angleTweened);
                        rotation = tv + tx + _angleTweened;
                    }
                    else
                    {
                        //SetRotation(tv + _angleTweened);
-                       rotation = tv + _angleTweened;
+                       rotation = tv + this._angleTweened;
                    }
 
                    var scaleX, scaleY;
 
-                   tx = TweenValues(p.GetOldScaleX(), p.GetScaleX(), _currentTween);
-                   var ty = TweenValues(p.GetOldScaleY(), p.GetScaleY(), _currentTween);
-                   var tz = TweenValues(p.GetOldZ(), p.GetZ(), _currentTween);
+                   tx = Lerp(p.GetOldScaleX(), p.GetScaleX(), this._currentTween);
+                   var ty = Lerp(p.GetOldScaleY(), p.GetScaleY(), this._currentTween);
+                   var tz = Lerp(p.GetOldZ(), p.GetZ(), this._currentTween);
                    if (tz !== 1.0)
                    {
                        //SetScale(tx * tz * _camtz, ty * tz * _camtz);
@@ -486,7 +481,7 @@ var ParticleManager = Class({
 
                    if (p.IsAnimating())
                    {
-                       tv = TweenValues(p.GetOldCurrentFrame(), p.GetCurrentFrame(), _currentTween);
+                       tv = Lerp(p.GetOldCurrentFrame(), p.GetCurrentFrame(), this._currentTween);
                        if (tv < 0)
                        {
                            tv = p.GetAvatar().GetFramesCount() + (fmod(tv, p.GetAvatar().GetFramesCount()));
@@ -495,7 +490,7 @@ var ParticleManager = Class({
                        }
                        else
                        {
-                           tv = fmodf(tv, p.GetAvatar().GetFramesCount());
+                           tv = Math.fmod(tv, p.GetAvatar().GetFramesCount());
                        }
                    }
                    else

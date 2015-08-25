@@ -4,6 +4,12 @@ var Blend =
   BMLightBlend:1
 };
 
+var g_entityFields =
+{
+  _x : 0,
+  _y : 0,
+};
+
 var Entity = Class({
   $const: {
 
@@ -11,7 +17,7 @@ var Entity = Class({
     MAX_AGE: 150
   },
 
-  constructor: function() {
+  constructor: function(other) {
 
     this._x = 0;
     this._y = 0;
@@ -525,6 +531,11 @@ var Entity = Class({
         this._dob = dob;
     },
 
+    GetOldCurrentFrame:function()
+    {
+        return this._oldCurrentFrame;
+    },
+
     SetAvatar:function( avatar )
     {
         this._avatar = avatar;
@@ -691,5 +702,123 @@ var Entity = Class({
     SetEntityAlpha:function( alpha )
     {
         this._alpha = alpha;
-    }
+    },
+
+    GetOldWX:function()
+   {
+       return this._oldWX;
+   },
+
+   GetOldWY:function()
+   {
+       return this._oldWY;
+   },
+
+   GetImageDiameter:function()
+   {
+       return this._imageDiameter;
+   },
+
+   GetOldAngle:function()
+   {
+       return this._oldAngle;
+   },
+
+   GetOldRelativeAngle:function()
+   {
+       return this._oldRelativeAngle;
+   },
+
+   GetAvatar:function()
+  {
+      return this._avatar;
+  },
+
+
+      GetHandleX:function()
+      {
+          return this._handleX;
+      },
+
+      GetHandleY:function()
+      {
+          return this._handleY;
+      },
+
+      GetBlendMode:function()
+      {
+          return this._blendMode;
+      },
+
+      GetAngle:function()
+      {
+          return this._angle;
+      },
+
+      GetOldScaleX:function()
+    {
+        return this._oldScaleX;
+    },
+
+    GetOldScaleY:function()
+    {
+        return this._oldScaleY;
+    },
+
+    GetOldZ:function()
+    {
+        return this._oldZ;
+    },
+
+    SetEntityColor:function( r, g, b )
+    {
+        this._red = r;
+        this._green = g;
+        this._blue = b;
+    },
+
+    GetEntityAlpha:function()
+    {
+        return this._alpha;
+    },
+
+    GetImageRadius:function()
+    {
+        return this._imageRadius;
+    },
+
+    GetFramerate:function()
+     {
+         return this._framerate;
+     },
+
+    SetFramerate:function( framerate )
+     {
+         this._framerate = framerate;
+     },
+
+    IsAnimating:function()
+     {
+         return this._animating;
+     },
+
+    SetAnimating:function( value )
+     {
+         this._animating = value;
+     },
+     IsRelative:function()
+     {
+         return this._relative;
+     },
+
+    SetWX:function( wx )
+    {
+        this._wx = wx;
+    },
+
+    SetWY:function( wy )
+    {
+        this._wy = wy;
+    },
+
 });

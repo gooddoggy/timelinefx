@@ -14,107 +14,236 @@ EndLoopAround = 1;
 EndLetFree = 2;
 
 
+
 var Effect = Class(Entity,{
-  constructor: function() {
+  constructor: function(other, particleManager) {
 
-    this._class = TypePoint;
-    this._currentEffectFrame = 0;
-    this._handleCenter = false;
-    this._source = null;
-    this._lockAspect = true;
-    this._particlesCreated = false;
-    this._suspendTime = 0;
-    this._gx = 0;
-    this._gy = 0;
-    this._mgx = 0;
-    this._mgy = 0;
-    this._emitAtPoints = false;
-    this._emissionType = EmInwards;
-    this._effectLength = 0;
-    this._parentEmitter = null;
-    this._spawnAge = 0;
-    this._index = 0;
-    this._particleCount = 0;
-    this._idleTime = 0;
-    this._traverseEdge = false;
-    this._endBehavior = EndKill;
-    this._distanceSetByLife = false;
-    this._reverseSpawn = false;
-    this._spawnDirection = 1;
-    this._dying = false;
-    this._allowSpawning = true;
-    this._ellipseArc = 360.0;
-    this._ellipseOffset = 0;
-    this._effectLayer = 0;
-    this._doesNotTimeout = false;
+/*
+    var c = new CopyHelper(other,this);
 
-    this._particleManager = null;
+    c.copy("_class",TypePoint);
+    c.copy("_currentEffectFrame",0);
 
-    this._frames = 32;
-    this._animWidth = 128;
-    this._animHeight = 128;
-    this._looped = false;
-    this._animX = 0;
-    this._animY = 0;
-    this._seed = 0;
-    this._zoom = 1.0;
-    this._frameOffset = 0;
+    //  console.log(this._lockAspect);
+    //  console.log(this["_lockAspect"]);
 
-    this._currentLife = 0;
-    this._currentAmount = 0;
-    this._currentSizeX = 0;
-    this._currentSizeY = 0;
-    this._currentVelocity = 0;
-    this._currentSpin = 0;
-    this._currentWeight = 0;
-    this._currentWidth = 0;
-    this._currentHeight = 0;
-    this._currentAlpha = 0;
-    this._currentEmissionAngle = 0;
-    this._currentEmissionRange = 0;
-    this._currentStretch = 0;
-    this._currentGlobalZ = 0;
+    // or mixin?
+*/
 
-    this._overrideSize = false;
-    this._overrideEmissionAngle = false;
-    this._overrideEmissionRange = false;
-    this._overrideAngle = false;
-    this._overrideLife = false;
-    this._overrideAmount = false;
-    this._overrideVelocity = false;
-    this._overrideSpin = false;
-    this._overrideSizeX = false;
-    this._overrideSizeY = false;
-    this._overrideWeight = false;
-    this._overrideAlpha = false;
-    this._overrideStretch = false;
-    this._overrideGlobalZ = false;
+    Effect.$super.call(this,other);        // Call parent's constructor
 
-    this._bypassWeight = false;
+    if(other === undefined)
+    {
+      this._class = TypePoint;
+      this._currentEffectFrame = 0;
+      this._handleCenter = false;
+      this._source = null;
+      this._lockAspect = true;
+      this._particlesCreated = false;
+      this._suspendTime = 0;
+      this._gx = 0;
+      this._gy = 0;
+      this._mgx = 0;
+      this._mgy = 0;
+      this._emitAtPoints = false;
+      this._emissionType = EmInwards;
+      this._effectLength = 0;
+      this._parentEmitter = null;
+      this._spawnAge = 0;
+      this._index = 0;
+      this._particleCount = 0;
+      this._idleTime = 0;
+      this._traverseEdge = false;
+      this._endBehavior = EndKill;
+      this._distanceSetByLife = false;
+      this._reverseSpawn = false;
+      this._spawnDirection = 1;
+      this._dying = false;
+      this._allowSpawning = true;
+      this._ellipseArc = 360.0;
+      this._ellipseOffset = 0;
+      this._effectLayer = 0;
+      this._doesNotTimeout = false;
 
-    this._arrayOwner = true;
+      this._particleManager = null;
 
-    this._inUse = [];
-    for(var i=0;i<10;i++)
-      this._inUse[i] = [];
+      this._frames = 32;
+      this._animWidth = 128;
+      this._animHeight = 128;
+      this._looped = false;
+      this._animX = 0;
+      this._animY = 0;
+      this._seed = 0;
+      this._zoom = 1.0;
+      this._frameOffset = 0;
 
-    this._cAmount = new EmitterArray(EffectsLibrary.globalPercentMin, EffectsLibrary.globalPercentMax);
-    this._cLife = new EmitterArray(EffectsLibrary.globalPercentMin, EffectsLibrary.globalPercentMax);
-    this._cSizeX = new EmitterArray(EffectsLibrary.globalPercentMin, EffectsLibrary.globalPercentMax);
-    this._cSizeY = new EmitterArray(EffectsLibrary.globalPercentMin, EffectsLibrary.globalPercentMax);
-    this._cVelocity = new EmitterArray(EffectsLibrary.globalPercentMin, EffectsLibrary.globalPercentMax);
-    this._cWeight = new EmitterArray(EffectsLibrary.globalPercentMin, EffectsLibrary.globalPercentMax);
-    this._cSpin = new EmitterArray(EffectsLibrary.globalPercentMin, EffectsLibrary.globalPercentMax);
-    this._cAlpha = new EmitterArray(0, 1.0);
-    this._cEmissionAngle = new EmitterArray(EffectsLibrary.angleMin, EffectsLibrary.angleMax);
-    this._cEmissionRange = new EmitterArray(EffectsLibrary.emissionRangeMin, EffectsLibrary.emissionRangeMax);
-    this._cWidth = new EmitterArray(EffectsLibrary.dimensionsMin, EffectsLibrary.dimensionsMax);
-    this._cHeight = new EmitterArray(EffectsLibrary.dimensionsMin, EffectsLibrary.dimensionsMax);
-    this._cEffectAngle = new EmitterArray(EffectsLibrary.angleMin, EffectsLibrary.angleMax);
-    this._cStretch = new EmitterArray(EffectsLibrary.globalPercentMin, EffectsLibrary.globalPercentMax);
-    this._cGlobalZ = new EmitterArray(EffectsLibrary.globalPercentMin, EffectsLibrary.globalPercentMax);
+      this._currentLife = 0;
+      this._currentAmount = 0;
+      this._currentSizeX = 0;
+      this._currentSizeY = 0;
+      this._currentVelocity = 0;
+      this._currentSpin = 0;
+      this._currentWeight = 0;
+      this._currentWidth = 0;
+      this._currentHeight = 0;
+      this._currentAlpha = 0;
+      this._currentEmissionAngle = 0;
+      this._currentEmissionRange = 0;
+      this._currentStretch = 0;
+      this._currentGlobalZ = 0;
 
-    Effect.$super.call(this);        // Call parent's constructor
+      this._overrideSize = false;
+      this._overrideEmissionAngle = false;
+      this._overrideEmissionRange = false;
+      this._overrideAngle = false;
+      this._overrideLife = false;
+      this._overrideAmount = false;
+      this._overrideVelocity = false;
+      this._overrideSpin = false;
+      this._overrideSizeX = false;
+      this._overrideSizeY = false;
+      this._overrideWeight = false;
+      this._overrideAlpha = false;
+      this._overrideStretch = false;
+      this._overrideGlobalZ = false;
+
+      this._bypassWeight = false;
+
+      this._arrayOwner = true;
+
+      this._inUse = [];
+      for(var i=0;i<10;i++)
+        this._inUse[i] = [];
+
+      this._cAmount = new EmitterArray(EffectsLibrary.globalPercentMin, EffectsLibrary.globalPercentMax);
+      this._cLife = new EmitterArray(EffectsLibrary.globalPercentMin, EffectsLibrary.globalPercentMax);
+      this._cSizeX = new EmitterArray(EffectsLibrary.globalPercentMin, EffectsLibrary.globalPercentMax);
+      this._cSizeY = new EmitterArray(EffectsLibrary.globalPercentMin, EffectsLibrary.globalPercentMax);
+      this._cVelocity = new EmitterArray(EffectsLibrary.globalPercentMin, EffectsLibrary.globalPercentMax);
+      this._cWeight = new EmitterArray(EffectsLibrary.globalPercentMin, EffectsLibrary.globalPercentMax);
+      this._cSpin = new EmitterArray(EffectsLibrary.globalPercentMin, EffectsLibrary.globalPercentMax);
+      this._cAlpha = new EmitterArray(0, 1.0);
+      this._cEmissionAngle = new EmitterArray(EffectsLibrary.angleMin, EffectsLibrary.angleMax);
+      this._cEmissionRange = new EmitterArray(EffectsLibrary.emissionRangeMin, EffectsLibrary.emissionRangeMax);
+      this._cWidth = new EmitterArray(EffectsLibrary.dimensionsMin, EffectsLibrary.dimensionsMax);
+      this._cHeight = new EmitterArray(EffectsLibrary.dimensionsMin, EffectsLibrary.dimensionsMax);
+      this._cEffectAngle = new EmitterArray(EffectsLibrary.angleMin, EffectsLibrary.angleMax);
+      this._cStretch = new EmitterArray(EffectsLibrary.globalPercentMin, EffectsLibrary.globalPercentMax);
+      this._cGlobalZ = new EmitterArray(EffectsLibrary.globalPercentMin, EffectsLibrary.globalPercentMax);
+    }
+    else
+    {
+      this._class = other._class;
+      this._currentEffectFrame = other._currentEffectFrame;
+      this._handleCenter = other._handleCenter;
+      this._source = other._source;
+      this._lockAspect = other._lockAspect;
+      this._particlesCreated = other._particlesCreated;
+      this._suspendTime = other._suspendTime;
+      this._gx = other._gx;
+      this._gy = other._gy;
+      this._mgx = other._mgx;
+      this._mgy = other._mgy;
+      this._emitAtPoints = other._emitAtPoints;
+      this._emissionType = other._emissionType;
+      this._effectLength = other._effectLength;
+      this._parentEmitter = other._parentEmitter;
+      this._spawnAge = other._spawnAge;
+      this._index = other._index;
+      this._particleCount = other._particleCount;
+      this._idleTime = other._idleTime;
+      this._traverseEdge = other._traverseEdge;
+      this._endBehavior = other._endBehavior;
+      this._distanceSetByLife = other._distanceSetByLife;
+      this._reverseSpawn = other._reverseSpawn;
+      this._spawnDirection = other._spawnDirection;
+      this._dying = other._dying;
+      this._allowSpawning = other._allowSpawning;
+      this._ellipseArc = other._ellipseArc;
+      this._ellipseOffset = other._ellipseOffset;
+      this._effectLayer = other._effectLayer;
+      this._doesNotTimeout = other._doesNotTimeout;
+
+      this._particleManager = particleManager;
+
+      this._frames = other._frames;
+      this._animWidth = other._animWidth;
+      this._animHeight = other._animHeight;
+      this._looped = other._looped;
+      this._animX = other._animX;
+      this._animY = other._animY;
+      this._seed = other._seed;
+      this._zoom = other._zoom;
+      this._frameOffset = other._frameOffset;
+
+      this._currentLife = other._currentLife;
+      this._currentAmount = other._currentAmount;
+      this._currentSizeX = other._currentSizeX;
+      this._currentSizeY = other._currentSizeY;
+      this._currentVelocity = other._currentVelocity;
+      this._currentSpin = other._currentSpin;
+      this._currentWeight = other._currentWeight;
+      this._currentWidth = other._currentWidth;
+      this._currentHeight = other._currentHeight;
+      this._currentAlpha = other._currentAlpha;
+      this._currentEmissionAngle = other._currentEmissionAngle;
+      this._currentEmissionRange = other._currentEmissionRange;
+      this._currentStretch = other._currentStretch;
+      this._currentGlobalZ = other._currentGlobalZ;
+
+      this._overrideSize = other._overrideSize;
+      this._overrideEmissionAngle = other._overrideEmissionAngle;
+      this._overrideEmissionRange = other._overrideEmissionRange;
+      this._overrideAngle = other._overrideAngle;
+      this._overrideLife = other._overrideLife;
+      this._overrideAmount = other._overrideAmount;
+      this._overrideVelocity = other._overrideVelocity;
+      this._overrideSpin = other._overrideSpin;
+      this._overrideSizeX = other._overrideSizeX;
+      this._overrideSizeY = other._overrideSizeY;
+      this._overrideWeight = other._overrideWeight;
+      this._overrideAlpha = other._overrideAlpha;
+      this._overrideStretch = other._overrideStretch;
+      this._overrideGlobalZ = other._overrideGlobalZ;
+
+      this._bypassWeight = other._bypassWeight;
+
+      this._arrayOwner = true;
+
+      this._inUse = [];
+      for(var i=0;i<10;i++)
+        this._inUse[i] = [];
+
+      this._cAmount = other._cAmount;
+      this._cLife = other._cLife;
+      this._cSizeX = other._cSizeX;
+      this._cSizeY = other._cSizeY;
+      this._cVelocity = other._cVelocity;
+      this._cWeight = other._cWeight;
+      this._cSpin = other._cSpin;
+      this._cAlpha = other._cAlpha;
+      this._cEmissionAngle = other._cEmissionAngle;
+      this._cEmissionRange = other._cEmissionRange;
+      this._cWidth = other._cWidth;
+      this._cHeight = other._cHeight;
+      this._cEffectAngle = other._cEffectAngle;
+      this._cStretch = other._cStretch;
+      this._cGlobalZ = other._cGlobalZ;
+
+      this.SetEllipseArc(other._ellipseArc);
+
+      this._dob = particleManager.GetCurrentTime();
+      this.SetOKtoRender(false);
+
+      for (var i=0;i<other._children.length;i++)
+      {
+        var e = new Emitter(other._children[i], particleManager);
+        e.SetParentEffect(this);
+        e.SetParent(this);
+      }
+    }
+
+
   },
 
   HideAll:function()
@@ -152,6 +281,12 @@ var Effect = Class(Entity,{
   SetParticleManager:function( particleManager )
   {
       this._particleManager = particleManager;
+
+      // todo: is this required?
+      // for (var i=0;i<this._children.length;i++)
+      // {
+      //     this._children[i].SetParticleManagerOnEffects(particleManager);
+      // }
   },
 
   Update:function()
@@ -467,7 +602,7 @@ var Effect = Class(Entity,{
   SetEllipseArc:function( degrees )
   {
       this._ellipseArc = degrees;
-      this._ellipseOffset = 90 - (int)(degrees / 2);
+      this._ellipseOffset = 90 - (degrees / 2);
   },
 
   SetZ:function( z )
@@ -698,26 +833,26 @@ var Effect = Class(Entity,{
   LoadFromXML:function(xml)
   {
     var x = new XMLHelper(xml);
-    this._class  = x.GetAttr("TYPE");
-    this._emitAtPoints = x.GetAttr("EMITATPOINTS");
-    this._mgx = x.GetAttr("MAXGX");
-    this._mgy = x.GetAttr("MAXGY");
+    this._class  = x.GetAttrAsInt("TYPE");
+    this._emitAtPoints = x.GetAttrAsBool("EMITATPOINTS");
+    this._mgx = x.GetAttrAsInt("MAXGX");
+    this._mgy = x.GetAttrAsInt("MAXGY");
 
-    this._emissionType = x.GetAttr("EMISSION_TYPE");
-    this._effectLength = x.GetAttr("EFFECT_LENGTH");
+    this._emissionType = x.GetAttrAsInt("EMISSION_TYPE");
+    this._effectLength = x.GetAttrAsInt("EFFECT_LENGTH");
     this._ellipseArc = x.GetAttr("ELLIPSE_ARC");
 
-    this._handleX = x.GetAttr("HANDLE_X");
-    this._handleY = x.GetAttr("HANDLE_Y");
+    this._handleX = x.GetAttrAsInt("HANDLE_X");
+    this._handleY = x.GetAttrAsInt("HANDLE_Y");
 
-    this._lockAspect = x.GetAttr("UNIFORM");
-    this._handleCenter = x.GetAttr("HANDLE_CENTER");
-    this._traverseEdge = x.GetAttr("TRAVERSE_EDGE");
+    this._lockAspect = x.GetAttrAsBool("UNIFORM");
+    this._handleCenter = x.GetAttrAsBool("HANDLE_CENTER");
+    this._traverseEdge = x.GetAttrAsBool("TRAVERSE_EDGE");
 
     this._name = x.GetAttr("NAME");
-    this._endBehavior = x.GetAttr("END_BEHAVIOUR");
-    this._distanceSetByLife = x.GetAttr("DISTANCE_SET_BY_LIFE");
-    this._reverseSpawn = x.GetAttr("REVERSE_SPAWN_DIRECTION");
+    this._endBehavior = x.GetAttrAsInt("END_BEHAVIOUR");
+    this._distanceSetByLife = x.GetAttrAsBool("DISTANCE_SET_BY_LIFE");
+    this._reverseSpawn = x.GetAttrAsBool("REVERSE_SPAWN_DIRECTION");
 
     // Build path
     this._path = this._name;
@@ -735,15 +870,15 @@ var Effect = Class(Entity,{
     if(animProps)
     {
       var a = new XMLHelper(animProps);
-      this._frames = a.GetAttr("FRAMES");
-      this._animWidth = a.GetAttr("WIDTH");
-      this._animHeight = a.GetAttr("HEIGHT");
-      this._animX = a.GetAttr("X");
-      this._animY = a.GetAttr("Y");
-      this._seed = a.GetAttr("SEED");
-      this._looped = a.GetAttr("LOOPED");
+      this._frames = a.GetAttrAsInt("FRAMES");
+      this._animWidth = a.GetAttrAsInt("WIDTH");
+      this._animHeight = a.GetAttrAsInt("HEIGHT");
+      this._animX = a.GetAttrAsInt("X");
+      this._animY = a.GetAttrAsInt("Y");
+      this._seed = a.GetAttrAsInt("SEED");
+      this._looped = a.GetAttrAsBool("LOOPED");
       this._zoom = a.GetAttr("ZOOM");
-      this._frameOffset = a.GetAttr("FRAME_OFFSET");
+      this._frameOffset = a.GetAttrAsInt("FRAME_OFFSET");
     }
 
 /*
@@ -982,12 +1117,12 @@ var Effect = Class(Entity,{
 
   SetParticlesCreated:function( value )
     {
-        _particlesCreated = value;
+        this._particlesCreated = value;
     },
 
     GetCurrentSpin:function()
     {
-        return _currentSpin;
+        return this._currentSpin;
     },
 
     GetLifeLastFrame:function()
@@ -995,6 +1130,19 @@ var Effect = Class(Entity,{
         return this._cLife.GetLastFrame();
     },
 
+    SetEffectLength:function( length )
+    {
+        this._effectLength = length;
+    },
 
+    SetParentEmitter:function( emitter )
+    {
+        this._parentEmitter = emitter;
+    },
+
+    GetHandleCenter:function()
+    {
+        return this._handleCenter;
+    },
 
 });

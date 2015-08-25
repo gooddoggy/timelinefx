@@ -49,7 +49,7 @@ function preload() {
     var filename = path + stripFilePath(images[i].GetFilename());
 
     //  console.log(filename);
-    images[i].m_images = loadImage(filename);
+    images[i].m_image = loadImage(filename);
   }
 
   // PASS xml data to particle manager
@@ -59,8 +59,8 @@ function preload() {
 
 function setup() {
   // put setup code here
-  var w = 200;
-  var h = 200;
+  var w = 250;
+  var h = 250;
   createCanvas(w,h);
 
   g_particleManager.SetScreenSize(w,h);
@@ -68,9 +68,11 @@ function setup() {
 
   var e = EffectsLibrary.GetEffect("Stylised/Stylised 4");
 
-  g_particleManager.AddEffect(e);
+//  var eCopy = e.clone();
 
   e.SetParticleManager(g_particleManager);
+
+  g_particleManager.AddEffect(e);
 
   //var copy = new TLFX::Effect(*eff, gPM);
 
@@ -83,6 +85,16 @@ function setup() {
 //  imageMode(CENTER);
 }
 
+// fix up bool/ints when parsing xml
+function DrawSprite(sprite, px, py, tv, x, y, rotation, scaleX, scaleY, r, g, b, a, blend)
+{
+    translate(px,py);
+    image(sprite.m_image,0,0);
+
+    console.log(sprite);
+//  console.log(x);
+//  console.log(y);
+}
 
 var g_rotation = 0;
 function draw() {
