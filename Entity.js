@@ -4,124 +4,127 @@ var Blend =
   BMLightBlend:1
 };
 
-var g_entityFields =
+var g_defaultEntity =
 {
   _x : 0,
   _y : 0,
+
+  _oldX : 0,
+  _oldY : 0,
+  _wx : 0,
+  _wy : 0,
+  _oldWX : 0,
+  _oldWY : 0,
+  _z : 1.0,
+  _oldZ : 1.0,
+  _relative : true,
+
+  _r : 0,
+  _g : 0,
+  _b : 0,
+  _red : 255,
+  _green : 255,
+  _blue : 255,
+  _oldRed : 255,
+  _oldGreen : 255,
+  _oldBlue : 255,
+
+  _width : 0,
+  _height : 0,
+  _weight : 0,
+  _gravity : 0,
+  _baseWeight : 0,
+  _oldWeight : 0,
+  _scaleX : 1.0,
+  _scaleY : 1.0,
+  _sizeX : 1.0,
+  _sizeY : 1.0,
+  _oldScaleX : 1.0,
+  _oldScaleY : 1.0,
+
+  _speed : 0,
+  _baseSpeed : 0,
+  _oldSpeed : 0,
+  _updateSpeed : true,
+
+  _direction : 0,
+  _directionLocked : false,
+  _angle : 0,
+  _oldAngle : 0,
+  _relativeAngle : 0,
+  _oldRelativeAngle : 0,
+
+  _avatar : null,
+  _frameOffset : 0,
+  _framerate : 1.0,
+  _currentFrame : 0,
+  _oldCurrentFrame : 0,
+  _animating : false,
+  _animateOnce : false,
+  _animAction : 0,
+  _handleX : 0,
+  _handleY : 0,
+  _autoCenter : true,
+  _okToRender : true,
+
+  _dob : 0,
+  _age : 0,
+  _rptAgeA : 0,
+  _rptAgeC : 0,
+  _aCycles : 0,
+  _cCycles : 0,
+  _oldAge : 0,
+  _dead : 0,
+  _destroyed : false,
+  _lifeTime : 0,
+  _timediff : 0,
+
+  _AABB_Calculate : true,
+  _collisionXMin : 0,
+  _collisionYMin : 0,
+  _collisionXMax : 0,
+  _collisionYMax : 0,
+  _AABB_XMin : 0,
+  _AABB_YMin : 0,
+  _AABB_XMax : 0,
+  _AABB_YMax : 0,
+  _AABB_MaxWidth : 0,
+  _AABB_MaxHeight : 0,
+  _AABB_MinWidth : 0,
+  _AABB_MinHeight : 0,
+  _radiusCalculate : true,
+  _imageRadius : 0,
+  _entityRadius : 0,
+  _imageDiameter : 0,
+
+  _parent : null,
+  _rootParent : null,
+
+  _childrenOwner : true,
+
+  _blendMode : Blend.BMAlphaBlend,
+
+  _alpha : 1.0,
+  _oldAlpha : 0,
+
+  _runChildren : false,
+  _pixelsPerSecond : 0
 };
 
 var Entity = Class({
-  $const: {
-
-    MIN_AGE: 1,
-    MAX_AGE: 150
-  },
 
   constructor: function(other) {
 
-    this._x = 0;
-    this._y = 0;
-
-    this._oldX = 0;
-    this._oldY = 0;
-    this._wx = 0;
-    this._wy = 0;
-    this._oldWX = 0;
-    this._oldWY = 0;
-    this._z = 1.0;
-    this._oldZ = 1.0;
-    this._relative = true;
-
-    this._r = 0;
-    this._g = 0;
-    this._b = 0;
-    this._red = 255;
-    this._green = 255;
-    this._blue = 255;
-    this._oldRed = 255;
-    this._oldGreen = 255;
-    this._oldBlue = 255;
-
-    this._width = 0;
-    this._height = 0;
-    this._weight = 0;
-    this._gravity = 0;
-    this._baseWeight = 0;
-    this._oldWeight = 0;
-    this._scaleX = 1.0;
-    this._scaleY = 1.0;
-    this._sizeX = 1.0;
-    this._sizeY = 1.0;
-    this._oldScaleX = 1.0;
-    this._oldScaleY = 1.0;
-
-    this._speed = 0;
-    this._baseSpeed = 0;
-    this._oldSpeed = 0;
-    this._updateSpeed = true;
-
-    this._direction = 0;
-    this._directionLocked = false;
-    this._angle = 0;
-    this._oldAngle = 0;
-    this._relativeAngle = 0;
-    this._oldRelativeAngle = 0;
-
-    this._avatar = null;
-    this._frameOffset = 0;
-    this._framerate = 1.0;
-    this._currentFrame = 0;
-    this._oldCurrentFrame = 0;
-    this._animating = false;
-    this._animateOnce = false;
-    this._animAction = 0;
-    this._handleX = 0;
-    this._handleY = 0;
-    this._autoCenter = true;
-    this._okToRender = true;
-
-    this._dob = 0;
-    this._age = 0;
-    this._rptAgeA = 0;
-    this._rptAgeC = 0;
-    this._aCycles = 0;
-    this._cCycles = 0;
-    this._oldAge = 0;
-    this._dead = 0;
-    this._destroyed = false;
-    this._lifeTime = 0;
-    this._timediff = 0;
-
-    this._AABB_Calculate = true;
-    this._collisionXMin = 0;
-    this._collisionYMin = 0;
-    this._collisionXMax = 0;
-    this._collisionYMax = 0;
-    this._AABB_XMin = 0;
-    this._AABB_YMin = 0;
-    this._AABB_XMax = 0;
-    this._AABB_YMax = 0;
-    this._AABB_MaxWidth = 0;
-    this._AABB_MaxHeight = 0;
-    this._AABB_MinWidth = 0;
-    this._AABB_MinHeight = 0;
-    this._radiusCalculate = true;
-    this._imageRadius = 0;
-    this._entityRadius = 0;
-    this._imageDiameter = 0;
-
-    this._parent = null;
-    this._rootParent = null;
-
-    this._childrenOwner = true;
-
-    this._blendMode = Blend.BMAlphaBlend;
-
-    this._alpha = 1.0;
-    this._oldAlpha = 0;
-
-    this._runChildren = false;
-    this._pixelsPerSecond = 0;
+    if(other)
+    {
+      for (var key in g_defaultEntity)
+        this[key] = other[key];      
+    }
+    else
+    {
+      for (var key in g_defaultEntity)
+        this[key] = g_defaultEntity[key];
+    }
 
     this._matrix = new Matrix2();
     this._speedVec = new Vector2();

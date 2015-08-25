@@ -132,7 +132,7 @@ var Particle = Class(Entity,{
   },
 
   SetGroupParticles:function( value ){ this._groupParticles = value; },
-  GetGroupParticles:function(){ return this._groupParticles; },
+  IsGroupParticles:function(){ return this._groupParticles; },
 
   SetLayer:function( layer ){ this._layer = layer; },
   GetLayer:function(){ return this._layer; },

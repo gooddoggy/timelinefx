@@ -14,6 +14,83 @@ EndLoopAround = 1;
 EndLetFree = 2;
 
 
+var g_defaultEffect =
+{
+  _class : TypePoint,
+  _currentEffectFrame : 0,
+  _handleCenter : false,
+  _source : null,
+  _lockAspect : true,
+  _particlesCreated : false,
+  _suspendTime : 0,
+  _gx : 0,
+  _gy : 0,
+  _mgx : 0,
+  _mgy : 0,
+  _emitAtPoints : false,
+  _emissionType : EmInwards,
+  _effectLength : 0,
+  _parentEmitter : null,
+  _spawnAge : 0,
+  _index : 0,
+  _particleCount : 0,
+  _idleTime : 0,
+  _traverseEdge : false,
+  _endBehavior : EndKill,
+  _distanceSetByLife : false,
+  _reverseSpawn : false,
+  _spawnDirection : 1,
+  _dying : false,
+  _allowSpawning : true,
+  _ellipseArc : 360.0,
+  _ellipseOffset : 0,
+  _effectLayer : 0,
+  _doesNotTimeout : false,
+
+  _particleManager : null,
+
+  _frames : 32,
+  _animWidth : 128,
+  _animHeight : 128,
+  _looped : false,
+  _animX : 0,
+  _animY : 0,
+  _seed : 0,
+  _zoom : 1.0,
+  _frameOffset : 0,
+
+  _currentLife : 0,
+  _currentAmount : 0,
+  _currentSizeX : 0,
+  _currentSizeY : 0,
+  _currentVelocity : 0,
+  _currentSpin : 0,
+  _currentWeight : 0,
+  _currentWidth : 0,
+  _currentHeight : 0,
+  _currentAlpha : 0,
+  _currentEmissionAngle : 0,
+  _currentEmissionRange : 0,
+  _currentStretch : 0,
+  _currentGlobalZ : 0,
+
+  _overrideSize : false,
+  _overrideEmissionAngle : false,
+  _overrideEmissionRange : false,
+  _overrideAngle : false,
+  _overrideLife : false,
+  _overrideAmount : false,
+  _overrideVelocity : false,
+  _overrideSpin : false,
+  _overrideSizeX : false,
+  _overrideSizeY : false,
+  _overrideWeight : false,
+  _overrideAlpha : false,
+  _overrideStretch : false,
+  _overrideGlobalZ : false,
+
+  _bypassWeight : false
+};
 
 var Effect = Class(Entity,{
   constructor: function(other, particleManager) {
@@ -34,80 +111,8 @@ var Effect = Class(Entity,{
 
     if(other === undefined)
     {
-      this._class = TypePoint;
-      this._currentEffectFrame = 0;
-      this._handleCenter = false;
-      this._source = null;
-      this._lockAspect = true;
-      this._particlesCreated = false;
-      this._suspendTime = 0;
-      this._gx = 0;
-      this._gy = 0;
-      this._mgx = 0;
-      this._mgy = 0;
-      this._emitAtPoints = false;
-      this._emissionType = EmInwards;
-      this._effectLength = 0;
-      this._parentEmitter = null;
-      this._spawnAge = 0;
-      this._index = 0;
-      this._particleCount = 0;
-      this._idleTime = 0;
-      this._traverseEdge = false;
-      this._endBehavior = EndKill;
-      this._distanceSetByLife = false;
-      this._reverseSpawn = false;
-      this._spawnDirection = 1;
-      this._dying = false;
-      this._allowSpawning = true;
-      this._ellipseArc = 360.0;
-      this._ellipseOffset = 0;
-      this._effectLayer = 0;
-      this._doesNotTimeout = false;
-
-      this._particleManager = null;
-
-      this._frames = 32;
-      this._animWidth = 128;
-      this._animHeight = 128;
-      this._looped = false;
-      this._animX = 0;
-      this._animY = 0;
-      this._seed = 0;
-      this._zoom = 1.0;
-      this._frameOffset = 0;
-
-      this._currentLife = 0;
-      this._currentAmount = 0;
-      this._currentSizeX = 0;
-      this._currentSizeY = 0;
-      this._currentVelocity = 0;
-      this._currentSpin = 0;
-      this._currentWeight = 0;
-      this._currentWidth = 0;
-      this._currentHeight = 0;
-      this._currentAlpha = 0;
-      this._currentEmissionAngle = 0;
-      this._currentEmissionRange = 0;
-      this._currentStretch = 0;
-      this._currentGlobalZ = 0;
-
-      this._overrideSize = false;
-      this._overrideEmissionAngle = false;
-      this._overrideEmissionRange = false;
-      this._overrideAngle = false;
-      this._overrideLife = false;
-      this._overrideAmount = false;
-      this._overrideVelocity = false;
-      this._overrideSpin = false;
-      this._overrideSizeX = false;
-      this._overrideSizeY = false;
-      this._overrideWeight = false;
-      this._overrideAlpha = false;
-      this._overrideStretch = false;
-      this._overrideGlobalZ = false;
-
-      this._bypassWeight = false;
+      for (var key in g_defaultEffect)
+        this[key] = g_defaultEffect[key];
 
       this._arrayOwner = true;
 
@@ -133,82 +138,11 @@ var Effect = Class(Entity,{
     }
     else
     {
-      this._class = other._class;
-      this._currentEffectFrame = other._currentEffectFrame;
-      this._handleCenter = other._handleCenter;
-      this._source = other._source;
-      this._lockAspect = other._lockAspect;
-      this._particlesCreated = other._particlesCreated;
-      this._suspendTime = other._suspendTime;
-      this._gx = other._gx;
-      this._gy = other._gy;
-      this._mgx = other._mgx;
-      this._mgy = other._mgy;
-      this._emitAtPoints = other._emitAtPoints;
-      this._emissionType = other._emissionType;
-      this._effectLength = other._effectLength;
-      this._parentEmitter = other._parentEmitter;
-      this._spawnAge = other._spawnAge;
-      this._index = other._index;
-      this._particleCount = other._particleCount;
-      this._idleTime = other._idleTime;
-      this._traverseEdge = other._traverseEdge;
-      this._endBehavior = other._endBehavior;
-      this._distanceSetByLife = other._distanceSetByLife;
-      this._reverseSpawn = other._reverseSpawn;
-      this._spawnDirection = other._spawnDirection;
-      this._dying = other._dying;
-      this._allowSpawning = other._allowSpawning;
-      this._ellipseArc = other._ellipseArc;
-      this._ellipseOffset = other._ellipseOffset;
-      this._effectLayer = other._effectLayer;
-      this._doesNotTimeout = other._doesNotTimeout;
+      for (var key in g_defaultEffect)
+        this[key] = other[key];
 
       this._particleManager = particleManager;
-
-      this._frames = other._frames;
-      this._animWidth = other._animWidth;
-      this._animHeight = other._animHeight;
-      this._looped = other._looped;
-      this._animX = other._animX;
-      this._animY = other._animY;
-      this._seed = other._seed;
-      this._zoom = other._zoom;
-      this._frameOffset = other._frameOffset;
-
-      this._currentLife = other._currentLife;
-      this._currentAmount = other._currentAmount;
-      this._currentSizeX = other._currentSizeX;
-      this._currentSizeY = other._currentSizeY;
-      this._currentVelocity = other._currentVelocity;
-      this._currentSpin = other._currentSpin;
-      this._currentWeight = other._currentWeight;
-      this._currentWidth = other._currentWidth;
-      this._currentHeight = other._currentHeight;
-      this._currentAlpha = other._currentAlpha;
-      this._currentEmissionAngle = other._currentEmissionAngle;
-      this._currentEmissionRange = other._currentEmissionRange;
-      this._currentStretch = other._currentStretch;
-      this._currentGlobalZ = other._currentGlobalZ;
-
-      this._overrideSize = other._overrideSize;
-      this._overrideEmissionAngle = other._overrideEmissionAngle;
-      this._overrideEmissionRange = other._overrideEmissionRange;
-      this._overrideAngle = other._overrideAngle;
-      this._overrideLife = other._overrideLife;
-      this._overrideAmount = other._overrideAmount;
-      this._overrideVelocity = other._overrideVelocity;
-      this._overrideSpin = other._overrideSpin;
-      this._overrideSizeX = other._overrideSizeX;
-      this._overrideSizeY = other._overrideSizeY;
-      this._overrideWeight = other._overrideWeight;
-      this._overrideAlpha = other._overrideAlpha;
-      this._overrideStretch = other._overrideStretch;
-      this._overrideGlobalZ = other._overrideGlobalZ;
-
-      this._bypassWeight = other._bypassWeight;
-
-      this._arrayOwner = true;
+      this._arrayOwner = false;
 
       this._inUse = [];
       for(var i=0;i<10;i++)
@@ -889,6 +823,7 @@ var Effect = Class(Entity,{
       }
     );
 */
+    // todo: pass in EmitterArray instend of bound function (and remove boilerplate functions)
     this.ReadAttribute( xml, this.AddAmount.bind(this), "AMOUNT" );
     this.ReadAttribute( xml, this.AddLife.bind(this), "LIFE" );
     this.ReadAttribute( xml, this.AddSizeX.bind(this), "SIZEX" );
