@@ -133,7 +133,9 @@ var EffectsLibrary = Class(
       {
         var e = new Effect();
         e.LoadFromXML(effects[i]);
-        e.CompileAll();
+
+  // slow.. compile when creating?
+  //      e.CompileAll();
 
         this.AddEffect(e);
       }

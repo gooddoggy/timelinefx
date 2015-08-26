@@ -118,7 +118,7 @@ var Entity = Class({
     if(other)
     {
       for (var key in g_defaultEntity)
-        this[key] = other[key];      
+        this[key] = other[key];
     }
     else
     {
@@ -823,5 +823,20 @@ var Entity = Class({
     {
         this._wy = wy;
     },
+
+   SetAngle:function( degrees )
+   {
+       this._angle = degrees;
+   },
+
+  SetHeight:function( height )
+  {
+      this._height = height;
+  },
+
+  GetHeight:function()
+  {
+      return this._height;
+  },
 
 });

@@ -27,7 +27,7 @@ var EmitterArray = Class({
 
   SetCompiled:function( frame, value )
   {
-     if (frame >= 0 && frame < this._changes.length)
+  //   if (frame >= 0 && frame < this._changes.length)
          this._changes[frame] = value;
   },
 

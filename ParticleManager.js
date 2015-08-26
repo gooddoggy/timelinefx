@@ -388,7 +388,7 @@ var ParticleManager = Class({
 
            if (this._angle !== 0)
            {
-              // Vector2 rotVec = _matrix.TransformVector(Vector2(this._px, this._py));
+              var rotVec = this._matrix.TransformVector(new Vector2(this._px, this._py));
                px = (rotVec.x * this._camtz) + this._centerX + (this._camtz * this._camtx);
                py = (rotVec.y * this._camtz) + this._centerY + (this._camtz * this._camty);
            }
@@ -470,14 +470,12 @@ var ParticleManager = Class({
                        scaleY = ty * this._camtz;
                    }
 
-                   var r, g, b;
-                   var a;
                    //SetAlpha(p.GetAlpha());
                    //SetColor(p.GetRed(), p.GetGreen(), p.GetBlue());
-                   a = p.GetEntityAlpha();
-                   r = p.GetRed();
-                   g = p.GetGreen();
-                   b = p.GetBlue();
+                   var a = p.GetEntityAlpha();
+                   var r = p.GetRed();
+                   var g = p.GetGreen();
+                   var b = p.GetBlue();
 
                    if (p.IsAnimating())
                    {
@@ -497,6 +495,7 @@ var ParticleManager = Class({
                    {
                        tv = p.GetCurrentFrame();
                    }
+                   console.log(p);
                    DrawSprite(sprite, px, py, tv, x, y, rotation, scaleX, scaleY, r, g, b, a, blend === Blend.BMLightBlend);
                    // ++rendercount
                }

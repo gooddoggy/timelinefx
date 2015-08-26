@@ -250,11 +250,11 @@ var Effect = Class(Entity,{
               break;
           case TypeArea:
           case TypeEllipse:
-              this._currentWidth = GetWidth(this._currentEffectFrame);
-              this._currentHeight = GetHeight(this._currentEffectFrame);
+              this._currentWidth = this.GetWidth(this._currentEffectFrame);
+              this._currentHeight = this.GetHeight(this._currentEffectFrame);
               break;
           case TypeLine:
-              this._currentWidth = GetWidth(this._currentEffectFrame);
+              this._currentWidth = this.GetWidth(this._currentEffectFrame);
               this._currentHeight = 0;
               break;
           }
@@ -774,7 +774,7 @@ var Effect = Class(Entity,{
 
     this._emissionType = x.GetAttrAsInt("EMISSION_TYPE");
     this._effectLength = x.GetAttrAsInt("EFFECT_LENGTH");
-    this._ellipseArc = x.GetAttr("ELLIPSE_ARC");
+    this._ellipseArc = x.GetAttrAsFloat("ELLIPSE_ARC");
 
     this._handleX = x.GetAttrAsInt("HANDLE_X");
     this._handleY = x.GetAttrAsInt("HANDLE_Y");
@@ -811,7 +811,7 @@ var Effect = Class(Entity,{
       this._animY = a.GetAttrAsInt("Y");
       this._seed = a.GetAttrAsInt("SEED");
       this._looped = a.GetAttrAsBool("LOOPED");
-      this._zoom = a.GetAttr("ZOOM");
+      this._zoom = a.GetAttrAsFloat("ZOOM");
       this._frameOffset = a.GetAttrAsInt("FRAME_OFFSET");
     }
 
@@ -882,11 +882,12 @@ var Effect = Class(Entity,{
 
   ReadAttribute:function(xml,fn,tag)
   {
-    ForEachInXMLNodeList(xml.getElementsByTagName(tag), function(n){
-        var attr = fn(GetNodeAttrValue(n,"FRAME"), GetNodeAttrValue(n,"VALUE"));
-        attr.LoadFromXML(n.getElementsByTagName("CURVE")[0]);
-      }
-    );
+    var n = xml.getElementsByTagName(tag)[0];
+    if(n)
+    {
+      var attr = fn(parseFloat(GetNodeAttrValue(n,"FRAME")), parseFloat(GetNodeAttrValue(n,"VALUE")));
+      attr.LoadFromXML(n.getElementsByTagName("CURVE")[0]);
+    }
   },
 
   AddAmount:function( f, v )
@@ -1078,6 +1079,21 @@ var Effect = Class(Entity,{
     GetHandleCenter:function()
     {
         return this._handleCenter;
+    },
+
+    GetEmitAtPoints:function()
+    {
+        return this._emitAtPoints;
+    },
+
+    GetCurrentWidth:function()
+    {
+        return this._currentWidth;
+    },
+
+    GetCurrentHeight:function()
+    {
+        return this._currentHeight;
     },
 
 });

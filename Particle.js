@@ -186,7 +186,6 @@ var Particle = Class(Entity,{
  {
      this._scaleVariationX = scaleVarX;
  },
-
  GetScaleVariationX:function()
  {
      return this._scaleVariationX;

@@ -194,7 +194,7 @@ var Emitter = Class(Entity,{
      this.SetName              (x.GetAttr("NAME"));
      this.SetAnimate           (x.GetAttrAsBool("ANIMATE"));
      this.SetOnce              (x.GetAttrAsBool("ANIMATE_ONCE"));
-     this.SetCurrentFrame      (x.GetAttr("FRAME"));
+     this.SetCurrentFrame      (x.GetAttrAsFloat("FRAME"));
      this.SetRandomStartFrame  (x.GetAttrAsBool("RANDOM_START_FRAME"));
      this.SetAnimationDirection(x.GetAttrAsInt("ANIMATION_DIRECTION"));
      this.SetUniform           (x.GetAttrAsBool("UNIFORM"));
@@ -223,15 +223,15 @@ var Emitter = Class(Entity,{
     var imgNode = xml.getElementsByTagName("SHAPE_INDEX")[0];
     this.SetImage(AsInt(imgNode.innerHTML));
 
-    this.SetAngleType(    x.GetChildAttrAsInt("ANGLE_TYPE","VALUE") );
-    this.SetAngleOffset(  x.GetChildAttrAsInt("ANGLE_OFFSET","VALUE"));
-    this.SetLockAngle(        x.GetChildAttrAsBool("LOCKED_ANGLE","VALUE"));
-    this.SetAngleRelative(    x.GetChildAttrAsBool("ANGLE_RELATIVE","VALUE"));
-    this.SetUseEffectEmission(x.GetChildAttrAsBool("USE_EFFECT_EMISSION","VALUE"));
-    this.SetColorRepeat(      x.GetChildAttrAsInt("COLOR_REPEAT","VALUE"));
-    this.SetAlphaRepeat(      x.GetChildAttrAsInt("ALPHA_REPEAT","VALUE"));
-    this.SetOneShot(          x.GetChildAttrAsBool("ONE_SHOT","VALUE"));
-    this.SetHandleCenter(     x.GetChildAttrAsBool("HANDLE_CENTERED","VALUE"));
+    if(x.HasChildAttr("ANGLE_TYPE"))    this.SetAngleType(    x.GetChildAttrAsInt("ANGLE_TYPE","VALUE") );
+    if(x.HasChildAttr("ANGLE_OFFSET"))    this.SetAngleOffset(  x.GetChildAttrAsInt("ANGLE_OFFSET","VALUE"));
+    if(x.HasChildAttr("LOCKED_ANGLE"))    this.SetLockAngle(        x.GetChildAttrAsBool("LOCKED_ANGLE","VALUE"));
+    if(x.HasChildAttr("ANGLE_RELATIVE"))    this.SetAngleRelative(    x.GetChildAttrAsBool("ANGLE_RELATIVE","VALUE"));
+    if(x.HasChildAttr("USE_EFFECT_EMISSION"))    this.SetUseEffectEmission(x.GetChildAttrAsBool("USE_EFFECT_EMISSION","VALUE"));
+    if(x.HasChildAttr("COLOR_REPEAT"))    this.SetColorRepeat(      x.GetChildAttrAsInt("COLOR_REPEAT","VALUE"));
+    if(x.HasChildAttr("ALPHA_REPEAT"))    this.SetAlphaRepeat(      x.GetChildAttrAsInt("ALPHA_REPEAT","VALUE"));
+    if(x.HasChildAttr("ONE_SHOT"))    this.SetOneShot(          x.GetChildAttrAsBool("ONE_SHOT","VALUE"));
+    if(x.HasChildAttr("HANDLE_CENTERED"))    this.SetHandleCenter(     x.GetChildAttrAsBool("HANDLE_CENTERED","VALUE"));
 
     this.ReadAttribute( xml, this.AddLife.bind(this), "LIFE" );
     this.ReadAttribute( xml, this.AddAmount.bind(this), "AMOUNT" );
@@ -307,7 +307,7 @@ var Emitter = Class(Entity,{
   ReadAttribute:function(xml,fn,tag)
   {
     ForEachInXMLNodeList(xml.getElementsByTagName(tag), function(n){
-        var attr = fn(GetNodeAttrValue(n,"FRAME"), GetNodeAttrValue(n,"VALUE"));
+        var attr = fn(parseFloat(GetNodeAttrValue(n,"FRAME")), parseFloat(GetNodeAttrValue(n,"VALUE")));
         attr.LoadFromXML(n.getElementsByTagName("CURVE")[0]);
       }
     );
@@ -874,6 +874,10 @@ var Emitter = Class(Entity,{
      var curFrame = parentEffect.GetCurrentEffectFrame();
      var pm = parentEffect.GetParticleManager();
 
+     var a1 = this.GetEmitterAmount(curFrame);
+      var a2 =  Random(this.GetEmitterAmountVariation(curFrame));
+      var a3 = parentEffect.GetCurrentAmount();
+      var a4 = pm.GetGlobalAmountScale();
      qty = ((this.GetEmitterAmount(curFrame) + Random(this.GetEmitterAmountVariation(curFrame))) * parentEffect.GetCurrentAmount() * pm.GetGlobalAmountScale()) / EffectsLibrary.GetUpdateFrequency();
 
      if (!this._singleParticle)
@@ -1532,6 +1536,7 @@ var Emitter = Class(Entity,{
      {
          e._rptAgeA += EffectsLibrary.GetCurrentUpdateTime() * this._alphaRepeat;
          e._alpha = this.GetEmitterAlpha(e._rptAgeA, e._lifeTime) * parentEffect.GetCurrentAlpha();
+         console.log("e._alpha:" + e._alpha);
          if (e._rptAgeA > e._lifeTime && e._aCycles < this._alphaRepeat)
          {
              e._rptAgeA -= e._lifeTime;
@@ -1925,7 +1930,7 @@ var Emitter = Class(Entity,{
      var longestLife = ( this._cLifeVariation.GetMaxValue() + this._cLife.GetMaxValue() ) * this._parentEffect.GetLifeMaxValue();
 
      // No idea what units we're supposed to be using here
-     return this._parentEffect.GetLifeMaxValue() / 1000;
+     return this._parentEffect.GetLifeMaxValue();
 
     //console.log( this._cLifeVariation.GetMaxValue());
     //console.log(this._cLife.GetMaxValue());
@@ -2027,67 +2032,67 @@ var Emitter = Class(Entity,{
 
  GetEmitterAlpha:function( age, lifetime )
  {
-     return this._cAlpha.GetOT(age, lifetime);
+     return this._cAlpha.GetOT(age, GetDefaultArg(lifetime,0));
  },
 
  GetEmitterR:function( age, lifetime )
  {
-     return this._cR.GetOT(age, lifetime);
+     return this._cR.GetOT(age, GetDefaultArg(lifetime,0));
  },
 
  GetEmitterG:function( age, lifetime )
  {
-     return this._cG.GetOT(age, lifetime);
+     return this._cG.GetOT(age, GetDefaultArg(lifetime,0));
  },
 
  GetEmitterB:function( age, lifetime )
  {
-     return this._cB.GetOT(age, lifetime);
+     return this._cB.GetOT(age, GetDefaultArg(lifetime,0));
  },
 
  GetEmitterScaleX:function( age, lifetime )
  {
-     return this._cScaleX.GetOT(age, lifetime);
+     return this._cScaleX.GetOT(age, GetDefaultArg(lifetime,0));
  },
 
  GetEmitterScaleY:function( age, lifetime )
  {
-     return this._cScaleY.GetOT(age, lifetime);
+     return this._cScaleY.GetOT(age, GetDefaultArg(lifetime,0));
  },
 
  GetEmitterSpin:function( age, lifetime )
  {
-     return this._cSpin.GetOT(age, lifetime);
+     return this._cSpin.GetOT(age, GetDefaultArg(lifetime,0));
  },
 
  GetEmitterVelocity:function( age, lifetime )
  {
-     return this._cVelocity.GetOT(age, lifetime);
+     return this._cVelocity.GetOT(age, GetDefaultArg(lifetime,0));
  },
 
  GetEmitterWeight:function( age, lifetime )
  {
-     return this._cWeight.GetOT(age, lifetime);
+     return this._cWeight.GetOT(age, GetDefaultArg(lifetime,0));
  },
 
  GetEmitterDirection:function( age, lifetime )
  {
-     return this._cDirection.GetOT(age, lifetime);
+     return this._cDirection.GetOT(age, GetDefaultArg(lifetime,0));
  },
 
  GetEmitterDirectionVariationOT:function( age, lifetime )
  {
-     return this._cDirectionVariationOT.GetOT(age, lifetime);
+     return this._cDirectionVariationOT.GetOT(age, GetDefaultArg(lifetime,0));
  },
 
  GetEmitterFramerate:function( age, lifetime )
  {
-     return this._cFramerate.GetOT(age, lifetime);
+     return this._cFramerate.GetOT(age, GetDefaultArg(lifetime,0));
  },
 
  GetEmitterStretch:function( age, lifetime )
  {
-     return this._cStretch.GetOT(age, lifetime);
+     return this._cStretch.GetOT(age, GetDefaultArg(lifetime,0));
  },
 
  GetEmitterGlobalVelocity:function( frame )

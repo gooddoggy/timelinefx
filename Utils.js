@@ -48,6 +48,10 @@ var XMLHelper = Class({
   {
     return parseInt(this.GetAttr(attrName));
   },
+  GetAttrAsFloat:function(attrName)
+  {
+    return parseFloat(this.GetAttr(attrName));
+  },
   GetAttrAsBool:function(attrName)
   {
     return this.GetAttrAsInt(attrName) > 0;
@@ -59,6 +63,11 @@ var XMLHelper = Class({
     if(childNode)
       return GetXMLAttrSafe(childNode,attrName,null);
     return null;
+  },
+
+  HasChildAttr:function(attrName)
+  {
+    return this.GetChildAttr(attrName) !== null;
   },
 
   GetChildAttrAsInt:function(attrName)

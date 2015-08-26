@@ -59,20 +59,33 @@ function preload() {
 
 function setup() {
   // put setup code here
-  var w = 250;
-  var h = 250;
+  var w = 450;
+  var h = 450;
   createCanvas(w,h);
 
   g_particleManager.SetScreenSize(w,h);
   g_particleManager.SetOrigin(0, 0);
 
-  var e = EffectsLibrary.GetEffect("Stylised/Stylised 4");
+  //var e = EffectsLibrary.GetEffect("Stylised/Stylised 4");
+
+
+
+  var e = EffectsLibrary.GetEffect("Fireballs/FireBall1");
+
+  e.CompileAll();
+
+//  var e = EffectsLibrary.GetEffect("Stylised/Stylised 4");
+  console.log("cloning");
+  var eCopy = new Effect(e,g_particleManager);
+
+
+  g_particleManager.AddEffect(eCopy);
 
 //  var eCopy = e.clone();
 
-  e.SetParticleManager(g_particleManager);
+  //e.SetParticleManager(g_particleManager);
 
-  g_particleManager.AddEffect(e);
+//  g_particleManager.AddEffect(e);
 
   //var copy = new TLFX::Effect(*eff, gPM);
 
@@ -92,6 +105,7 @@ function DrawSprite(sprite, px, py, tv, x, y, rotation, scaleX, scaleY, r, g, b,
     image(sprite.m_image,0,0);
 
     console.log(sprite);
+    console.log(r);
 //  console.log(x);
 //  console.log(y);
 }
@@ -100,6 +114,7 @@ var g_rotation = 0;
 function draw() {
 
   background(0);
+  console.log("Update-------->");
   g_particleManager.Update();
   g_particleManager.DrawParticles();
 
