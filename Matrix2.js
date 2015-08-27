@@ -33,21 +33,21 @@ var Matrix2 = Class({
     this.ba = abt;
   },
 
-  Transform:function( m )
+  TransformSelf:function( m )
   {
-      var r = new Matrix2();
-      r.aa = this.aa * m.aa + this.ab * m.ba;
-      r.ab = this.aa * m.ab + this.ab * m.bb;
-      r.ba = this.ba * m.aa + this.bb * m.ba;
-      r.bb = this.ba * m.ab + this.bb * m.bb;
-      return r;
+      var r_aa = this.aa * m.aa + this.ab * m.ba;
+      var r_ab = this.aa * m.ab + this.ab * m.bb;
+      var r_ba = this.ba * m.aa + this.bb * m.ba;
+      var r_bb = this.ba * m.ab + this.bb * m.bb;
+
+      this.Set(r_aa,r_ab,r_ba,r_bb);
   },
 
-  TransformVector:function( v )
+  TransformVector:function( x, y )
   {
       var tv = new Vector2();
-      tv.x = v.x * this.aa + v.y * this.ba;
-      tv.y = v.x * this.ab + v.y * this.bb;
+      tv.x = x * this.aa + y * this.ba;
+      tv.y = x * this.ab + y * this.bb;
       return tv;
   },
 

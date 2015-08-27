@@ -237,8 +237,8 @@ var Entity = Class({
        if (this._parent && this._relative)
        {
            this._z = this._parent._z;
-           this._matrix = this._matrix.Transform(this._parent._matrix);
-           var rotVec = this._parent._matrix.TransformVector(new Vector2(this._x, this._y));
+           this._matrix.TransformSelf(this._parent._matrix);
+           var rotVec = this._parent._matrix.TransformVector(this._x, this._y);
            if (this._z !== 1.0)
            {
                this._wx = this._parent._wx + rotVec.x * this._z;
@@ -311,8 +311,8 @@ var Entity = Class({
         if (this._parent && this._relative)
         {
             this._z = this._parent._z;
-            this._matrix = this._matrix.Transform(this._parent._matrix);
-            var rotVec = this._parent._matrix.TransformVector(new Vector2(this._x, this._y));
+            this._matrix.TransformSelf(this._parent._matrix);
+            var rotVec = this._parent._matrix.TransformVector(this._x, this._y);
             if (this._z !== 1.0)
             {
                 this._wx = this._parent._wx + rotVec.x * this._z;

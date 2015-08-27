@@ -799,8 +799,8 @@ var Emitter = Class(Entity,{
      if (this._parent && this._relative)
      {
          this.SetZ(this._parent.GetZ());
-         this._matrix = this._matrix.Transform(this._parent.GetMatrix());
-         var rotvec = this._parent.GetMatrix().TransformVector(new Vector2(this._x, this._y));
+         this._matrix.TransformSelf(this._parent.GetMatrix());
+         var rotvec = this._parent.GetMatrix().TransformVector(this._x, this._y);
 
          this._wx = this._parent.GetWX() + rotvec.x * this._z;
          this._wy = this._parent.GetWY() + rotvec.y * this._z;
@@ -977,34 +977,20 @@ var Emitter = Class(Entity,{
                              // @dan already set? tween = c / intCounter;
                              e.SetX(Lerp(this._oldWX, this._wx, tween));
                              e.SetY(Lerp(this._oldWY, this._wy, tween));
-                             if (this._z != 1)
-                             {
-                                 e.SetWX(e.GetX() - parentEffect.GetHandleX() * this._z);
-                                 e.SetWY(e.GetY() - parentEffect.GetHandleY() * this._z);
-                             }
-                             else
-                             {
-                                 e.SetWX(e.GetX() - parentEffect.GetHandleX());
-                                 e.SetWY(e.GetY() - parentEffect.GetHandleY());
-                             }
+                             e.SetWX(e.GetX() - parentEffect.GetHandleX() * this._z);
+                             e.SetWY(e.GetY() - parentEffect.GetHandleY() * this._z);
                          }
                          else
                          {
                              e.SetX((0 - parentEffect.GetHandleX()));
                              e.SetY((0 - parentEffect.GetHandleY()));
-                             var rotvec = this._parent.GetMatrix().TransformVector(new Vector2(e.GetX(), e.GetY()));
+                             var rotvec = this._parent.GetMatrix().TransformVector(e.GetX(), e.GetY());
                              e.SetX(Lerp(this._oldWX, this._wx, tween) + rotvec.x);
                              e.SetY(Lerp(this._oldWY, this._wy, tween) + rotvec.y);
-                             if (this._z != 1)
-                             {
-                                 e.SetWX(e.GetX() * this._z);
-                                 e.SetWY(e.GetY() * this._z);
-                             }
-                             else
-                             {
-                                 e.SetWX(e.GetX());
-                                 e.SetWY(e.GetY());
-                             }
+
+                             e.SetWX(e.GetX() * this._z);
+                             e.SetWY(e.GetY() * this._z);
+
                          }
                      }
                      break;
@@ -1063,17 +1049,11 @@ var Emitter = Class(Entity,{
                      if (!e.IsRelative())
                      {
                         var parent = this._parent;
-                         var rotvec = parent.GetMatrix().TransformVector(new Vector2(e.GetX(), e.GetY()));
-                         if (this._z != 1)
-                         {
-                             e.SetX(parent.GetWX() + rotvec.x * this._z);
-                             e.SetY(parent.GetWY() + rotvec.y * this._z);
-                         }
-                         else
-                         {
-                             e.SetX(parent.GetWX() + rotvec.x);
-                             e.SetY(parent.GetWY() + rotvec.y);
-                         }
+                         var rotvec = parent.GetMatrix().TransformVector(e.GetX(), e.GetY());
+
+                         e.SetX(parent.GetWX() + rotvec.x * this._z);
+                         e.SetY(parent.GetWY() + rotvec.y * this._z);
+
                      }
 
                      break;
@@ -1110,17 +1090,11 @@ var Emitter = Class(Entity,{
 
                          if (!e.IsRelative())
                          {
-                             var rotvec = this._parent.GetMatrix().TransformVector(new Vector2(e.GetX(), e.GetY()));
-                             if (this._z != 1)
-                             {
-                                 e.SetX(this._parent.GetWX() + rotvec.x * this._z);
-                                 e.SetY(this._parent.GetWY() + rotvec.y * this._z);
-                             }
-                             else
-                             {
-                                 e.SetX(this._parent.GetWX() + rotvec.x);
-                                 e.SetY(this._parent.GetWY() + rotvec.y);
-                             }
+                             var rotvec = this._parent.GetMatrix().TransformVector(e.GetX(), e.GetY());
+
+                             e.SetX(this._parent.GetWX() + rotvec.x * this._z);
+                             e.SetY(this._parent.GetWY() + rotvec.y * this._z);
+
                          }
                      }
                      break;
@@ -1206,17 +1180,10 @@ var Emitter = Class(Entity,{
                      // rotate
                      if (!e.IsRelative())
                      {
-                         var rotvec = this._parent.GetMatrix().TransformVector(new Vector2(e.GetX(), e.GetY()));
-                         if (this._z != 1)
-                         {
-                             e.SetX(this._parent.GetWX() + rotvec.x * this._z);
-                             e.SetY(this._parent.GetWY() + rotvec.y * this._z);
-                         }
-                         else
-                         {
-                             e.SetX(this._parent.GetWX() + rotvec.x);
-                             e.SetY(this._parent.GetWY() + rotvec.y);
-                         }
+                         var rotvec = this._parent.GetMatrix().TransformVector(e.GetX(), e.GetY());
+
+                         e.SetX(this._parent.GetWX() + rotvec.x * this._z);
+                         e.SetY(this._parent.GetWY() + rotvec.y * this._z);
                      }
                      break;
                  }
@@ -1495,7 +1462,7 @@ var Emitter = Class(Entity,{
                  if (!this._relative)
                  {  // @todo dan Set(cos(this._angle  ??
                      e._matrix.Set(cos(e._angle / 180.0* M_PI), sin(e._angle / 180.0* M_PI), -sin(e._angle / 180.0* M_PI), cos(e._angle / 180.0* M_PI));
-                     e._matrix = e._matrix.Transform(this._parent.GetMatrix());
+                     e._matrix.TransformSelf(this._parent.GetMatrix());
                  }
                  e._relativeAngle = this._parent.GetRelativeAngle() + e._angle;
                  e.UpdateEntityRadius();
@@ -1530,6 +1497,9 @@ var Emitter = Class(Entity,{
      else
      {
          e._alpha = this.GetEmitterAlpha(e._age, e._lifeTime) * parentEffect.GetCurrentAlpha();
+         //console.log("e._alpha:" + e._alpha);
+        // console.log("1:" + this.GetEmitterAlpha(e._age, e._lifeTime));
+        // console.log("2:" + parentEffect.GetCurrentAlpha());
      }
 
      // angle changes
@@ -2099,14 +2069,5 @@ var Emitter = Class(Entity,{
      this._path = path;
  },
 
-/*
- SetParticleManagerOnEffects:function( particleManager )
- {
-     for (var i=0;i<this._effects.length;i++)
-     {
-         this._effects[i].SetParticleManager(particleManager);
-     }
- },
-*/
 
 });

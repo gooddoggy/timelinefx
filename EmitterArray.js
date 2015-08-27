@@ -16,6 +16,7 @@ var EmitterArray = Class({
 
   GetCompiled:function( frame )
   {
+     frame = Math.round(frame);
      var lastFrame = this.GetLastFrame();
      if (frame <= lastFrame)
      {

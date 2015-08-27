@@ -402,30 +402,16 @@ var ParticleManager = Class({
            {
                if (p.GetAvatar())
                {
-                   var sprite;
+                   var sprite = p.GetAvatar();
                    var x, y;
 
                    if (p.GetEmitter().IsHandleCenter())
                    {
-                       if (p.GetAvatar().GetFramesCount() == 1)
-                       {
-                           //MidHandleImage(p.GetAvatar()->GetImage());
-                           sprite = p.GetAvatar();
-                           x = sprite.GetWidth() / 2.0;
-                           y = sprite.GetHeight() / 2.0;
-                       }
-                       else
-                       {
-                           //SetImageHandle(p.GetAvatar()->GetImage(), p.GetAvatar()->GetWidth() / 2.f, p.GetAvatar()->GetHeight() / 2.f);
-                           sprite = p.GetAvatar();
-                           x = sprite.GetWidth() / 2.0;
-                           y = sprite.GetHeight() / 2.0;
-                       }
+                       x = sprite.GetWidth() / 2.0;
+                       y = sprite.GetHeight() / 2.0;
                    }
                    else
                    {
-                       //SetImageHandle(p.GetAvatar()->GetImage(), p.GetHandleX(), p.GetHandleY());
-                       sprite = p.GetAvatar();
                        x = p.GetHandleX();
                        y = p.GetHandleY();
                    }
@@ -436,42 +422,23 @@ var ParticleManager = Class({
                    var rotation;
 
                    var tv = Lerp(p.GetOldAngle(), p.GetAngle(), this._currentTween);
-                   var tx;
+                   var tx = 0;
                    if (p.GetEmitter().IsAngleRelative())
                    {
                        if (fabsf(p.GetOldRelativeAngle() - p.GetRelativeAngle()) > 180)
                            tx = Lerp(p.GetOldRelativeAngle() - 360, p.GetRelativeAngle(), _currentTween);
                        else
                            tx = Lerp(p.GetOldRelativeAngle(), p.GetRelativeAngle(), _currentTween);
-                       //SetRotation(tv + tx + _angleTweened);
-                       rotation = tv + tx + _angleTweened;
                    }
-                   else
-                   {
-                       //SetRotation(tv + _angleTweened);
-                       rotation = tv + this._angleTweened;
-                   }
-
-                   var scaleX, scaleY;
+                   rotation = tv + tx + this._angleTweened;
 
                    tx = Lerp(p.GetOldScaleX(), p.GetScaleX(), this._currentTween);
                    var ty = Lerp(p.GetOldScaleY(), p.GetScaleY(), this._currentTween);
                    var tz = Lerp(p.GetOldZ(), p.GetZ(), this._currentTween);
-                   if (tz !== 1.0)
-                   {
-                       //SetScale(tx * tz * _camtz, ty * tz * _camtz);
-                       scaleX = tx * tz * this._camtz;
-                       scaleY = ty * tz * this._camtz;
-                   }
-                   else
-                   {
-                       //SetScale(tx * _camtz, ty * _camtz);
-                       scaleX = tx * this._camtz;
-                       scaleY = ty * this._camtz;
-                   }
 
-                   //SetAlpha(p.GetAlpha());
-                   //SetColor(p.GetRed(), p.GetGreen(), p.GetBlue());
+                   var scaleX = tx * tz * this._camtz;
+                   var scaleY = ty * tz * this._camtz;
+
                    var a = p.GetEntityAlpha();
                    var r = p.GetRed();
                    var g = p.GetGreen();

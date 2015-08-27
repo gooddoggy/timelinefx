@@ -56,12 +56,12 @@ function preload() {
 //  EffectsLibrary.ClearAll();
 }
 
-
 function setup() {
   // put setup code here
   var w = 600;
   var h = 550;
   createCanvas(w,h);
+  //blendMode(SOFT_LIGHT);
 
   g_particleManager.SetScreenSize(w,h);
   g_particleManager.SetOrigin(0, 0);
@@ -105,22 +105,40 @@ function DrawSprite(sprite, px, py, tv, x, y, rotation, scaleX, scaleY, r, g, b,
 
     translate(px,py);
     image(sprite.m_image,0,0);
+    translate(-px,-py);
 
-  //  console.log(sprite);
+    //console.log(a);
     g_drawSpriteCalls++;
 //  console.log(x);
 //  console.log(y);
 }
 
 var g_rotation = 0;
+var g_frameCnt = 0;
+
+var g_startTime = 0;
+var g_sampleCount = 30;
+
 function draw() {
 
-  background(0);
+  background(255);
+  //blendMode(BLEND);
+
   g_drawSpriteCalls = 0;
-  console.log("Update-------->");
+//  console.log("Update-------->");
   g_particleManager.Update();
   g_particleManager.DrawParticles();
-  //console.log("g_drawSpriteCalls = " + g_drawSpriteCalls);
+//  console.log("g_drawSpriteCalls = " + g_drawSpriteCalls);
+
+  if(g_frameCnt === 0)
+    g_startTime = millis();
+  g_frameCnt++;
+  if(g_frameCnt === g_sampleCount)
+  {
+    var duration = (millis() - g_startTime);
+    console.log("Total (ms):" + duration);
+    console.log("Per frame (ms):" + (duration / g_sampleCount));
+  }
   // put drawing code here
   //ellipse(50, 50, 80, 80);
 
