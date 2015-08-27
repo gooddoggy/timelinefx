@@ -59,8 +59,8 @@ function preload() {
 
 function setup() {
   // put setup code here
-  var w = 450;
-  var h = 450;
+  var w = 600;
+  var h = 550;
   createCanvas(w,h);
 
   g_particleManager.SetScreenSize(w,h);
@@ -98,14 +98,16 @@ function setup() {
 //  imageMode(CENTER);
 }
 
-// fix up bool/ints when parsing xml
+var g_drawSpriteCalls = 0;
 function DrawSprite(sprite, px, py, tv, x, y, rotation, scaleX, scaleY, r, g, b, a, blend)
 {
+    tint(r,g,b);
+
     translate(px,py);
     image(sprite.m_image,0,0);
 
-    console.log(sprite);
-    console.log(r);
+  //  console.log(sprite);
+    g_drawSpriteCalls++;
 //  console.log(x);
 //  console.log(y);
 }
@@ -114,10 +116,11 @@ var g_rotation = 0;
 function draw() {
 
   background(0);
+  g_drawSpriteCalls = 0;
   console.log("Update-------->");
   g_particleManager.Update();
   g_particleManager.DrawParticles();
-
+  //console.log("g_drawSpriteCalls = " + g_drawSpriteCalls);
   // put drawing code here
   //ellipse(50, 50, 80, 80);
 

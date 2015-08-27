@@ -495,7 +495,7 @@ var ParticleManager = Class({
                    {
                        tv = p.GetCurrentFrame();
                    }
-                   console.log(p);
+                  // console.log(p);
                    DrawSprite(sprite, px, py, tv, x, y, rotation, scaleX, scaleY, r, g, b, a, blend === Blend.BMLightBlend);
                    // ++rendercount
                }

@@ -264,26 +264,10 @@ var Emitter = Class(Entity,{
     this.ReadAttribute( xml, this.AddFramerate.bind(this), "FRAMERATE_OVERTIME" );
     this.ReadAttribute( xml, this.AddStretch.bind(this), "STRETCH_OVERTIME" );
 
+    this.ReadAttribute( xml, this.AddR.bind(this), "RED_OVERTIME" );
+    this.ReadAttribute( xml, this.AddG.bind(this), "GREEN_OVERTIME" );
+    this.ReadAttribute( xml, this.AddB.bind(this), "BLUE_OVERTIME" );
 
-/*
-            for (attrnode = node.child("RED_OVERTIME"); attrnode; attrnode = attrnode.next_sibling("RED_OVERTIME"))
-            {
-                attr = e->AddR(attrnode.attribute("FRAME").as_float(), attrnode.attribute("VALUE").as_float());
-                //LoadAttributeNode(attrnode, attr);
-            }
-
-            for (attrnode = node.child("GREEN_OVERTIME"); attrnode; attrnode = attrnode.next_sibling("GREEN_OVERTIME"))
-            {
-                attr = e->AddG(attrnode.attribute("FRAME").as_float(), attrnode.attribute("VALUE").as_float());
-                //LoadAttributeNode(attrnode, attr);
-            }
-
-            for (attrnode = node.child("BLUE_OVERTIME"); attrnode; attrnode = attrnode.next_sibling("BLUE_OVERTIME"))
-            {
-                attr = e->AddB(attrnode.attribute("FRAME").as_float(), attrnode.attribute("VALUE").as_float());
-                //LoadAttributeNode(attrnode, attr);
-            }
-*/
     this.ReadAttribute( xml, this.AddGlobalVelocity.bind(this), "GLOBAL_VELOCITY" );
     this.ReadAttribute( xml, this.AddEmissionAngle.bind(this), "EMISSION_ANGLE" );
     this.ReadAttribute( xml, this.AddEmissionRange.bind(this), "EMISSION_RANGE" );
