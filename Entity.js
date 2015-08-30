@@ -231,8 +231,10 @@ var Entity = Class({
 
        // set the matrix if it is relative to the parent
        if (this._relative)
-           this._matrix.Set(cos(this._angle / 180 * M_PI), sin(this._angle / 180.0 * M_PI), -sin(this._angle / 180.0 * M_PI), cos(this._angle / 180.0 * M_PI));
-
+       {
+         var radians = this._angle / 180 * M_PI;
+           this._matrix.Set(Math.cos(radians), Math.sin(radians), -Math.sin(radians), Math.cos(radians));
+       }
        // calculate where the entity is in the world
        if (this._parent && this._relative)
        {
@@ -306,7 +308,8 @@ var Entity = Class({
 
     MiniUpdate:function()
     {
-        this._matrix.Set(cos(this._angle / 180 * M_PI), sin(this._angle / 180.0 * M_PI), -sin(this._angle / 180.0 * M_PI), cos(this._angle / 180.0 * M_PI));
+        var radians = this._angle / 180.0* M_PI;
+        this._matrix.Set(Math.cos(radians), Math.sin(radians), -Math.sin(radians), Math.cos(radians));
 
         if (this._parent && this._relative)
         {

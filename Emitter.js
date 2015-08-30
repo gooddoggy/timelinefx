@@ -794,7 +794,8 @@ var Emitter = Class(Entity,{
  {
      this.Capture();
 
-     this._matrix.Set(cos(this._angle / 180.0* M_PI), sin(this._angle / 180.0* M_PI), -sin(this._angle / 180.0* M_PI), cos(this._angle / 180.0* M_PI));
+     var radians = this._angle / 180.0* M_PI;
+     this._matrix.Set(Math.cos(radians), Math.sin(radians), -Math.sin(radians), Math.cos(radians));
 
      if (this._parent && this._relative)
      {
@@ -1198,7 +1199,7 @@ var Emitter = Class(Entity,{
                  e.SetAutocenter(this._handleCenter);
 
                  // set lifetime properties
-                 e.SetLifeTime((int)(this._currentLife + RandomBetween(-this._currentLifeVariation, this._currentLifeVariation) * parentEffect.GetCurrentLife()));
+                 e.SetLifeTime((this._currentLife + RandomBetween(-this._currentLifeVariation, this._currentLifeVariation) * parentEffect.GetCurrentLife()));
 
                  // speed
                  e.SetSpeedVecX(0);
@@ -1883,8 +1884,9 @@ var Emitter = Class(Entity,{
  {
      var longestLife = ( this._cLifeVariation.GetMaxValue() + this._cLife.GetMaxValue() ) * this._parentEffect.GetLifeMaxValue();
 
+     return longestLife;
      // No idea what units we're supposed to be using here
-     return this._parentEffect.GetLifeMaxValue();
+    // return this._parentEffect.GetLifeMaxValue();
 
     //console.log( this._cLifeVariation.GetMaxValue());
     //console.log(this._cLife.GetMaxValue());

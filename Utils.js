@@ -136,5 +136,5 @@ function RandomBetween(low,high)
       if (GetDefaultArg(fast,false))
           return w * w + h * h;
       else
-          return sqrt(w * w + h * h);
+          return Math.sqrt(w * w + h * h);
   }

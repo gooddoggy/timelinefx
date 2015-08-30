@@ -463,6 +463,10 @@ var ParticleManager = Class({
                        tv = p.GetCurrentFrame();
                    }
                   // console.log(p);
+
+                  // tidy with above
+                  tv = Math.round(tv) % p.GetAvatar().GetFramesCount();
+
                    DrawSprite(sprite, px, py, tv, x, y, rotation, scaleX, scaleY, r, g, b, a, blend === Blend.BMLightBlend);
                    // ++rendercount
                }

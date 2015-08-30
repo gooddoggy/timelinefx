@@ -1,12 +1,14 @@
 
 var AnimImage = Class({
  constructor: function() {
+   // width/height are *frame* width/height
     this._width = 0;
     this._height = 0;
     this._maxRadius = 0;
     this._index = 0;
     this._frames = 1;
     this._imageSourceName = "";
+    this._sqrtFrames = 1;
   },
 
   LoadFromXML:function(xml)
@@ -17,6 +19,9 @@ var AnimImage = Class({
     this._height = attr.getNamedItem("HEIGHT").nodeValue;
     this._frames = attr.getNamedItem("FRAMES").nodeValue;
     this._index = attr.getNamedItem("INDEX").nodeValue;
+    this._sqrtFrames = Math.sqrt(this._frames);
+
+  //  console.log(this);
   },
 
   SetMaxRadius:function( radius )
@@ -49,11 +54,6 @@ var AnimImage = Class({
       return this._height;
   },
 
-  SetFramesCount:function( frames )
-  {
-      this._frames = frames;
-  },
-
   GetFramesCount:function()
   {
       return this._frames;
@@ -67,6 +67,16 @@ var AnimImage = Class({
   GetIndex:function()
   {
       return this._index;
+  },
+
+  GetFrameX:function(frameIndex)
+  {
+    return this._width * (frameIndex % this._sqrtFrames);
+  },
+
+  GetFrameY:function(frameIndex)
+  {
+    return this._height * Math.floor(frameIndex / this._sqrtFrames);
   },
 
   SetFilename:function( filename )
