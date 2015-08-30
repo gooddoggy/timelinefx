@@ -1086,8 +1086,8 @@ var Emitter = Class(Entity,{
                          {
                              th = Random(parentEffect.GetEllipseArc()) + parentEffect.GetEllipseOffset();
                          }
-                         e.SetX( cos(th / 180.0* M_PI) * tx - parentEffect.GetHandleX() + tx);
-                         e.SetY(-sin(th / 180.0* M_PI) * ty - parentEffect.GetHandleY() + ty);
+                         e.SetX( Math.cos(th / 180.0* M_PI) * tx - parentEffect.GetHandleX() + tx);
+                         e.SetY(-Math.sin(th / 180.0* M_PI) * ty - parentEffect.GetHandleY() + ty);
 
                          if (!e.IsRelative())
                          {
@@ -1309,32 +1309,32 @@ var Emitter = Class(Entity,{
                              {
                              case EmInwards:
                                  if (e.IsRelative())
-                                     e.SetEmissionAngle(e.GetEmissionAngle() + Vector2.GetDirection(e.GetX(), e.GetY(), 0, 0));
+                                     e.SetEmissionAngle(e.GetEmissionAngle() + GetDirection(e.GetX(), e.GetY(), 0, 0));
                                  else
-                                     e.SetEmissionAngle(e.GetEmissionAngle() + Vector2.GetDirection(e.GetWX(), e.GetWY(), e.GetParent().GetWX(), e.GetParent().GetWY()));
+                                     e.SetEmissionAngle(e.GetEmissionAngle() + GetDirection(e.GetWX(), e.GetWY(), e.GetParent().GetWX(), e.GetParent().GetWY()));
                                  break;
 
                              case EmOutwards:
                                  if (e.IsRelative())
-                                     e.SetEmissionAngle(e.GetEmissionAngle() + Vector2.GetDirection(0, 0, e.GetX(), e.GetY()));
+                                     e.SetEmissionAngle(e.GetEmissionAngle() + GetDirection(0, 0, e.GetX(), e.GetY()));
                                  else
-                                     e.SetEmissionAngle(e.GetEmissionAngle() + Vector2.GetDirection(e.GetParent().GetWX(), e.GetParent().GetWY(), e.GetWX(), e.GetWY()));
+                                     e.SetEmissionAngle(e.GetEmissionAngle() + GetDirection(e.GetParent().GetWX(), e.GetParent().GetWY(), e.GetWX(), e.GetWY()));
                                  break;
 
                              case EmInAndOut:
                                  if (this._dirAlternater)
                                  {
                                      if (e.IsRelative())
-                                         e.SetEmissionAngle(e.GetEmissionAngle() + Vector2.GetDirection(0, 0, e.GetX(), e.GetY()));
+                                         e.SetEmissionAngle(e.GetEmissionAngle() + GetDirection(0, 0, e.GetX(), e.GetY()));
                                      else
-                                         e.SetEmissionAngle(e.GetEmissionAngle() + Vector2.GetDirection(e.GetParent().GetWX(), e.GetParent().GetWY(), e.GetWX(), e.GetWY()));
+                                         e.SetEmissionAngle(e.GetEmissionAngle() + GetDirection(e.GetParent().GetWX(), e.GetParent().GetWY(), e.GetWX(), e.GetWY()));
                                  }
                                  else
                                  {
                                      if (e.IsRelative())
-                                         e.SetEmissionAngle(e.GetEmissionAngle() + Vector2.GetDirection(e.GetX(), e.GetY(), 0, 0));
+                                         e.SetEmissionAngle(e.GetEmissionAngle() + GetDirection(e.GetX(), e.GetY(), 0, 0));
                                      else
-                                         e.SetEmissionAngle(e.GetEmissionAngle() + Vector2.GetDirection(e.GetWX(), e.GetWY(), e.GetParent().GetWX(), e.GetParent().GetWY()));
+                                         e.SetEmissionAngle(e.GetEmissionAngle() + GetDirection(e.GetWX(), e.GetWY(), e.GetParent().GetWX(), e.GetParent().GetWY()));
                                  }
                                  this._dirAlternater = !this._dirAlternater;
                                  break;
@@ -1381,9 +1381,9 @@ var Emitter = Class(Entity,{
                  {
                      if (!this._bypassWeight && !this._bypassSpeed && !parentEffect.IsBypassWeight())
                      {
-                         e.SetSpeedVecX(sin(e.GetEntityDirection() / 180.0* M_PI));
-                         e.SetSpeedVecY(cos(e.GetEntityDirection() / 180.0* M_PI));
-                         e.SetAngle(Vector2.GetDirection(0, 0, e.GetSpeedVecX(), -e.GetSpeedVecY()));
+                         e.SetSpeedVecX(Math.sin(e.GetEntityDirection() / 180.0* M_PI));
+                         e.SetSpeedVecY(Math.cos(e.GetEntityDirection() / 180.0* M_PI));
+                         e.SetAngle(GetDirection(0, 0, e.GetSpeedVecX(), -e.GetSpeedVecY()));
                      }
                      else
                      {
@@ -1462,7 +1462,8 @@ var Emitter = Class(Entity,{
                  // get the relative angle
                  if (!this._relative)
                  {  // @todo dan Set(cos(this._angle  ??
-                     e._matrix.Set(cos(e._angle / 180.0* M_PI), sin(e._angle / 180.0* M_PI), -sin(e._angle / 180.0* M_PI), cos(e._angle / 180.0* M_PI));
+                     var radians = e._angle / 180.0* M_PI;
+                     e._matrix.Set(Math.cos(radians), Math.sin(radians), -Math.sin(radians), Math.cos(radians));
                      e._matrix.TransformSelf(this._parent.GetMatrix());
                  }
                  e._relativeAngle = this._parent.GetRelativeAngle() + e._angle;
@@ -1517,9 +1518,9 @@ var Emitter = Class(Entity,{
                  if (e._oldWX != e._wx && e._oldWY != e._wy)
                  {
                      if (e._relative)
-                         e._angle = Vector2.GetDirection(e._oldX, e._oldY, e._x, e._y);
+                         e._angle = GetDirection(e._oldX, e._oldY, e._x, e._y);
                      else
-                         e._angle = Vector2.GetDirection(e._oldWX, e._oldWY, e._wx, e._wy);
+                         e._angle = GetDirection(e._oldWX, e._oldWY, e._wx, e._wy);
 
                      if (Math.abs(e._oldAngle - e._angle) > 180)
                      {

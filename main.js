@@ -57,6 +57,12 @@ function Init()
   g_particleManager.SetOrigin(0, 0);
 
   var e = EffectsLibrary.GetEffect("Fireballs/FireBall1");
+  //var e = EffectsLibrary.GetEffect("Stylised/Stylised Ground");
+//  var e = EffectsLibrary.GetEffect("Stylised/Stylised 4");
+//var e = EffectsLibrary.GetEffect("Multi Stage Explosions/Multi Stage Explosion 7");
+
+//var e = EffectsLibrary.GetEffect("Ground Explosions/Mushroom 2");
+
   e.CompileAll();
 
   var eCopy = new Effect(e,g_particleManager);
@@ -66,30 +72,12 @@ function Init()
 var g_drawSpriteCalls = 0;
 function DrawSprite(sprite, px, py, tv, x, y, rotation, scaleX, scaleY, r, g, b, a, blend)
 {
-//    tint(r,g,b);
+  //console.log(a);
+  var screenPosX = px - x * scaleX;
+  var screenPosY = py - y * scaleY;
 
-//sprite.sqrtFrames * sprite.width
-
-
-//g_context.drawImage( sprite.m_image, sprite.GetFrameX(tv), sprite.GetFrameY(tv), sprite._width, sprite._height, 0, 0, sprite._width, sprite._height );
-
-//g_context.drawImage( sprite.m_image, sprite.GetFrameX(tv), sprite.GetFrameY(tv), sprite._width, sprite._height, x, y, sprite._width * scaleX, sprite._height * scaleY  );
-
-var screenPosX = px - x * scaleX;
-var screenPosY = py - y * scaleY;
-
-g_context.drawImage( sprite.m_image, sprite.GetFrameX(tv), sprite.GetFrameY(tv), sprite._width, sprite._height, screenPosX, screenPosY, sprite._width * scaleX, sprite._height * scaleY );
-
-
-//g_context.drawImage( sprite.m_image, sprite.GetFrameX(tv), sprite.GetFrameY(tv), sprite._width, sprite._height, px, py, sprite._width * scaleX, sprite._height * scaleY );
-
-
-//  g_context.drawImage( sprite.m_image, 0, 0, that.width / numberOfFrames, that.height, 0, 0, that.width / numberOfFrames, that.height );
-
-
-//    translate(px,py);
-//    image(sprite.m_image,0,0);
-//    translate(-px,-py);
+  g_context.globalAlpha = a;
+  g_context.drawImage( sprite.m_image, sprite.GetFrameX(tv), sprite.GetFrameY(tv), sprite._width, sprite._height, screenPosX, screenPosY, sprite._width * scaleX, sprite._height * scaleY );
 
     g_drawSpriteCalls++;
 }
@@ -104,7 +92,21 @@ function mainLoop()
 
   g_drawSpriteCalls = 0;
   g_particleManager.DrawParticles();
-  console.log(g_drawSpriteCalls);
+//  console.log(g_drawSpriteCalls);
+
+
+// Tint testing
+/*
+var images = EffectsLibrary.GetShapes();
+var sprite = images[5];
+var tv = 0;
+var scaleX = 1;
+var scaleY = 1;
+var screenPosX = 100;
+var screenPosY = 100;
+g_context.drawImage( sprite.m_image, sprite.GetFrameX(tv), sprite.GetFrameY(tv), sprite._width, sprite._height, screenPosX, screenPosY, sprite._width * scaleX, sprite._height * scaleY );
+*/
+
 }
 
 document.addEventListener( "DOMContentLoaded", Init, false );

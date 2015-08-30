@@ -215,8 +215,8 @@ var Entity = Class({
        if (this._updateSpeed && this._speed)
        {
            this._pixelsPerSecond = this._speed / currentUpdateTime;
-           this._speedVec.x = sin(this._direction / 180.0 * M_PI) * this._pixelsPerSecond;
-           this._speedVec.y = cos(this._direction / 180.0 * M_PI) * this._pixelsPerSecond;
+           this._speedVec.x = Math.sin(this._direction / 180.0 * M_PI) * this._pixelsPerSecond;
+           this._speedVec.y = Math.cos(this._direction / 180.0 * M_PI) * this._pixelsPerSecond;
 
            this._x += this._speedVec.x * this._z;
            this._y -= this._speedVec.y * this._z;
@@ -636,7 +636,7 @@ var Entity = Class({
 
     GetEntityDirection:function()
     {
-        return _direction;
+        return this._direction;
     },
 
     SetEntityDirection:function( direction )
@@ -840,6 +840,11 @@ var Entity = Class({
   GetHeight:function()
   {
       return this._height;
+  },
+
+  GetParent:function()
+  {
+      return this._parent;
   },
 
 });

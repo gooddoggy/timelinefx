@@ -128,13 +128,24 @@ function RandomBetween(low,high)
   return Lerp(low,high,RandomUnit());
 }
 
-  function GetDistance2D( fromx, fromy, tox, toy, fast /*= false*/ )
-  {
-      w = tox - fromx;
-      h = toy - fromy;
+function GetDistance2D( fromx, fromy, tox, toy, fast /*= false*/ )
+{
+    w = tox - fromx;
+    h = toy - fromy;
 
-      if (GetDefaultArg(fast,false))
-          return w * w + h * h;
-      else
-          return Math.sqrt(w * w + h * h);
-  }
+    if (GetDefaultArg(fast,false))
+        return w * w + h * h;
+    else
+        return Math.sqrt(w * w + h * h);
+}
+
+/**
+ * Get the direction from 1 point to another
+ * Thanks to "Snarkbait" for this little code snippit
+ * @return Angle of difference
+ */
+function GetDirection( fromx, fromy, tox, toy )
+{
+    // arcus tangens, convert to degrees, add 450 and normalize to 360.
+    return Math.fmod((Math.atan2(toy - fromy, tox - fromx) / M_PI * 180.0 + 450.0), 360.0);
+}

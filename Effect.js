@@ -1096,4 +1096,36 @@ var Effect = Class(Entity,{
         return this._currentHeight;
     },
 
+    GetEllipseArc:function()
+    {
+        return this._ellipseArc;
+    },
+
+    GetEllipseOffset:function()
+    {
+        return this._ellipseOffset;
+    },
+
+    GetEmissionType:function()
+    {
+        return this._emissionType;
+    },
+
+    GetParentEmitter:function()
+    {
+        return this._parentEmitter;
+    },
+
+    GetMGX:function()
+    {
+        return this._mgx;
+    },
+
+    GetMGY:function()
+    {
+        return this._mgy;
+    },
+
+
+
 });

@@ -87,15 +87,6 @@ var Vector2 = Class({
       return x * v.x + y * v.y;
   },
 
-  /**
-   * Get the direction from 1 point to another
-   * Thanks to "Snarkbait" for this little code snippit
-   * @return Angle of difference
-   */
-  GetDirection:function( fromx, fromy, tox, toy )
-  {
-      // arcus tangens, convert to degrees, add 450 and normalize to 360.
-      return Math.fmod((Math.atan2(toy - fromy, tox - fromx) / M_PI * 180.0 + 450.0), 360.0);
-  },
+
 
 });
