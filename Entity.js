@@ -241,16 +241,10 @@ var Entity = Class({
            this._z = this._parent._z;
            this._matrix.TransformSelf(this._parent._matrix);
            var rotVec = this._parent._matrix.TransformVector(this._x, this._y);
-           if (this._z !== 1.0)
-           {
-               this._wx = this._parent._wx + rotVec.x * this._z;
-               this._wy = this._parent._wy + rotVec.y * this._z;
-           }
-           else
-           {
-               this._wx = this._parent._wx + rotVec.x;
-               this._wy = this._parent._wy + rotVec.y;
-           }
+
+           this._wx = this._parent._wx + rotVec.x * this._z;
+           this._wy = this._parent._wy + rotVec.y * this._z;
+
            this._relativeAngle = this._parent._relativeAngle + this._angle;
        }
        else
@@ -316,16 +310,9 @@ var Entity = Class({
             this._z = this._parent._z;
             this._matrix.TransformSelf(this._parent._matrix);
             var rotVec = this._parent._matrix.TransformVector(this._x, this._y);
-            if (this._z !== 1.0)
-            {
-                this._wx = this._parent._wx + rotVec.x * this._z;
-                this._wy = this._parent._wy + rotVec.y * this._z;
-            }
-            else
-            {
-                this._wx = this._parent._wx + rotVec.x;
-                this._wy = this._parent._wy + rotVec.y;
-            }
+
+            this._wx = this._parent._wx + rotVec.x * this._z;
+            this._wy = this._parent._wy + rotVec.y * this._z;            
         }
         else
         {
@@ -344,20 +331,10 @@ var Entity = Class({
 
     UpdateBoundingBox:function()
     {
-        if (this._z !== 1.0)
-        {
-            this._collisionXMin = this._AABB_MinWidth * this._scaleX * this._z;
-            this._collisionYMin = this._AABB_MinHeight * this._scaleY * this._z;
-            this._collisionXMax = this._AABB_MaxWidth * this._scaleX * this._z;
-            this._collisionYMax = this._AABB_MaxHeight * this._scaleY * this._z;
-        }
-        else
-        {
-            this._collisionXMin = this._AABB_MinWidth * this._scaleX;
-            this._collisionYMin = this._AABB_MinHeight * this._scaleY;
-            this._collisionXMax = this._AABB_MaxWidth * this._scaleX;
-            this._collisionYMax = this._AABB_MaxHeight * this._scaleY;
-        }
+        this._collisionXMin = this._AABB_MinWidth * this._scaleX * this._z;
+        this._collisionYMin = this._AABB_MinHeight * this._scaleY * this._z;
+        this._collisionXMax = this._AABB_MaxWidth * this._scaleX * this._z;
+        this._collisionYMax = this._AABB_MaxHeight * this._scaleY * this._z;
 
         this._AABB_XMin = this._collisionXMin;
         this._AABB_YMin = this._collisionYMin;
