@@ -89,7 +89,9 @@ function OnImageLoaded(imageIndex)
 function Init()
 {
   var path = "data/Explosions/";
-  g_xml = loadXMLDoc( path + "Test_DATA2.XML" );
+  //g_xml = loadXMLDoc( path + "Test_DATA2.XML" );
+g_xml = loadXMLDoc( path + "DATA.XML" );
+
   EffectsLibrary.Init();
   EffectsLibrary.Load( g_xml );
   var images = EffectsLibrary.GetShapes();
@@ -106,8 +108,8 @@ function Init()
     images[i].m_image = g_images[i];
   }
 
-  var w = 600;
-  var h = 400;
+  var w = 800;
+  var h = 600;
   g_canvas = document.getElementById( "rendercanvas" );
   g_canvas.width = w;
   g_canvas.height = h;
@@ -115,12 +117,15 @@ function Init()
 
   g_particleManager.SetScreenSize(w,h);
   g_particleManager.SetOrigin(0, 0);
-
 }
 
 function OnAllLoaded()
 {
   var e = EffectsLibrary.GetEffect("Fireballs/FireBall1");
+
+//var e = EffectsLibrary.GetEffect("Fireballs/FireBall Explosion Variation Debrie");
+
+
 //  var e = EffectsLibrary.GetEffect("Stylised/Stylised Ground");
 //  var e = EffectsLibrary.GetEffect("Stylised/Stylised 4");
 //var e = EffectsLibrary.GetEffect("Multi Stage Explosions/Multi Stage Explosion 7");
@@ -156,8 +161,8 @@ var g_drawStats = [];
 function DrawSprite(sprite, px, py, tv, x, y, rotation, scaleX, scaleY, r, g, b, a, blendMode)
 {
   //console.log(a);
-  var screenPosX = px - x * scaleX;
-  var screenPosY = py - y * scaleY;
+
+//  console.log(rotation);
 
   // attempting tint
 /*
@@ -187,6 +192,16 @@ console.log("g= " + g);
 console.log("b= " + b);
 */
 
+g_context.save();
+
+// argh, have to correctly figure out where to rotate around.. oh
+
+
+var screenPosX = - x * scaleX;
+var screenPosY = - y * scaleY;
+
+g_context.translate(px,py);
+g_context.rotate(rotation / 180 * M_PI);
 
 if(blendMode === Blend.BMLightBlend)
   g_context.globalCompositeOperation = 'lighter';
@@ -218,7 +233,7 @@ g_context.drawImage( sprite.m_rgbbk[1], sprite.GetFrameX(tv), sprite.GetFrameY(t
 g_context.globalAlpha =  a * b;
 g_context.drawImage( sprite.m_rgbbk[2], sprite.GetFrameX(tv), sprite.GetFrameY(tv), sprite._width, sprite._height, screenPosX, screenPosY, sprite._width * scaleX, sprite._height * scaleY );
 
-
+g_context.restore();
 
     g_drawSpriteCalls++;
 }
