@@ -95,18 +95,6 @@ var g_defaultEffect =
 var Effect = Class(Entity,{
   constructor: function(other, particleManager) {
 
-/*
-    var c = new CopyHelper(other,this);
-
-    c.copy("_class",TypePoint);
-    c.copy("_currentEffectFrame",0);
-
-    //  console.log(this._lockAspect);
-    //  console.log(this["_lockAspect"]);
-
-    // or mixin?
-*/
-
     Effect.$super.call(this,other);        // Call parent's constructor
 
     if(other === undefined)
@@ -856,28 +844,6 @@ var Effect = Class(Entity,{
       }
     );
 
-
-/*
-    var amt = xml.getElementsByTagName("AMOUNT");
-    console.log(amt);
-    for(var i=0;i<amt.length;i++)
-    {
-        var elem = amt[i];
-        console.log(elem);
-    }
-    */
-
-    // Child()
-    // Sibling()
-/*
-    for (var attrnode = node.child("AMOUNT"); attrnode; attrnode = attrnode.next_sibling("AMOUNT"))
-    {
-        attr = e.
-        (attrnode.attribute("FRAME").as_float(), attrnode.attribute("VALUE").as_float());
-        LoadAttributeNode(attrnode, attr);
-    }
-*/
-
   },
 
   ReadAttribute:function(xml,fn,tag)
@@ -1126,6 +1092,12 @@ var Effect = Class(Entity,{
         return this._mgy;
     },
 
-
+    GetImages:function(images)
+    {
+      for (var i=0;i<this._children.length;i++)
+      {
+          this._children[i].GetImages(images);
+      }
+    },
 
 });

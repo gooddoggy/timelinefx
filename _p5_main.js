@@ -101,10 +101,12 @@ function setup() {
 var g_drawSpriteCalls = 0;
 function DrawSprite(sprite, px, py, tv, x, y, rotation, scaleX, scaleY, r, g, b, a, blend)
 {
-    tint(r,g,b);
+  //  tint(r,g,b);
 
     translate(px,py);
     image(sprite.m_image,0,0);
+//    g_context.drawImage( sprite.m_image, sprite.GetFrameX(tv), sprite.GetFrameY(tv), sprite._width, sprite._height, screenPosX, screenPosY, sprite._width * scaleX, sprite._height * scaleY );
+
     translate(-px,-py);
 
     //console.log(a);

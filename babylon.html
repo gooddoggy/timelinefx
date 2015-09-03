@@ -1,0 +1,273 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Babylon</title>
+  <style>
+    html,
+    body {
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    #renderCanvas {
+      width: 100%;
+      height: 100%;
+      touch-action: none;
+    }
+  </style>
+
+  <script src="./extern/hand.minified-1.2.js"></script>
+  <script src="./extern/babylon.max.2.2.js"></script>
+
+
+  <script language="javascript" src="./extern/jsface.min.js"></script>
+
+  <script language="javascript" src="Utils.js"></script>
+  <script language="javascript" src="Matrix2.js"></script>
+  <script language="javascript" src="Vector2.js"></script>
+  <script language="javascript" src="Entity.js"></script>
+  <script language="javascript" src="Particle.js"></script>
+  <script language="javascript" src="Effect.js"></script>
+  <script language="javascript" src="Emitter.js"></script>
+  <script language="javascript" src="EmitterArray.js"></script>
+  <script language="javascript" src="AnimImage.js"></script>
+
+  <script language="javascript" src="AttributeNode.js"></script>
+  <script language="javascript" src="ParticleManager.js"></script>
+  <script language="javascript" src="EffectsLibrary.js"></script>
+
+
+
+</head>
+
+<body>
+  <canvas id="renderCanvas"></canvas>
+  <script type="text/javascript">
+
+
+  var SpriteGroup = Class({
+   constructor: function(animImage) {
+     // width/height are *frame* width/height
+      this.m_animImage = animImage;
+
+      var filename = path + stripFilePath( animImage.GetFilename() );
+
+        // crap, doesn't handle non-square images/cells.. do we have any?
+      this.m_spriteManager = new BABYLON.SpriteManager(filename, filename, 256, animImage._width, g_scene);
+
+      // Intrusively adding ourselves
+      animImage.m_spriteGroup = this;
+
+      this.m_allocated = [];
+      this.m_free = [];
+    },
+
+    Allocate:function(r,g,b,a, frame, scaleX, scaleY)
+    {
+      var sprite = null;
+      if(this.m_free.length > 0)
+        sprite = this.m_free.pop();
+      else
+        sprite = new BABYLON.Sprite("fire", this.m_spriteManager);
+
+    //  sprite.size = 3;
+    //  sprite.position.y = 2.0;
+
+      sprite.cellIndex = frame;
+      sprite.width = this.m_animImage._width * scaleX / 100;
+      sprite.height = this.m_animImage._height * scaleX  / 100;
+
+      sprite.color.r = r;
+      sprite.color.g = g;
+      sprite.color.b = b;
+      sprite.color.a = a;
+
+      this.m_allocated.push(sprite);
+    },
+
+    BeginFrame:function()
+    {
+      var cnt = 0;
+      while(this.m_allocated.length > 0)
+      {
+        cnt++;
+        this.m_free.push( this.m_allocated.pop() );
+      }
+
+  //    console.log("Moved to freelist:" + cnt);
+    },
+
+    EndFrame:function()
+    {
+        var cnt = 0;
+        while(this.m_free.length > 0)
+        {
+          cnt++;
+          this.m_free.pop().dispose();
+        }
+    //    console.log("Disposed:" + cnt);
+    }
+
+
+});
+
+
+  var g_particleManager = new ParticleManager( 1000, 1 );
+  var g_xml = null;
+  var g_scene = null;
+  var g_sprites = [];
+  var path = "data/Explosions/";
+
+  function Init()
+  {
+
+    g_xml = loadXMLDoc( path + "DATA.XML" );
+    EffectsLibrary.Init();
+    EffectsLibrary.Load( g_xml );
+    var images = EffectsLibrary.GetShapes();
+
+//    for ( var i = 0; i < images.length; i++ )
+    {
+  //    g_sprites.push(new SpriteGroup(images[i]));
+      /*
+
+      var filename = path + stripFilePath( images[ i ].GetFilename() );
+
+      g_images[i] = new Image();
+      g_images[i].onload = OnImageLoaded.bind(null,i);
+      g_images[i].src = filename;
+
+      // Intrusively adding our render image
+      images[i].m_image = g_images[i];
+      */
+    }
+
+    // ?
+    var w = 600;
+    var h = 400;
+
+    g_particleManager.SetScreenSize(w,h);
+    g_particleManager.SetOrigin(0, 0);
+
+    var e = EffectsLibrary.GetEffect("Fireballs/FireBall1");
+    //var e = EffectsLibrary.GetEffect("Stylised/Stylised Ground");
+  //  var e = EffectsLibrary.GetEffect("Stylised/Stylised 4");
+  //var e = EffectsLibrary.GetEffect("Multi Stage Explosions/Multi Stage Explosion 7");
+
+  //var e = EffectsLibrary.GetEffect("Ground Explosions/Mushroom 2");
+
+  var requiredImages = [];
+  e.GetImages(requiredImages);
+
+  console.log(requiredImages);
+  for( var imageIndex in requiredImages )
+  {
+    var sg = new SpriteGroup(images[imageIndex]);
+    g_sprites[imageIndex] = sg;
+
+//    sg.Allocate(1,0.5,0.5,1)
+
+
+
+//    PrepareSprites(imageIndex);
+    //CreateTintBuffer(imageIndex);
+    //SplitChannels(imageIndex);
+    //console.log(imageIndex);
+  }
+
+  // Now tint all if required.
+
+    e.CompileAll();
+
+    var eCopy = new Effect(e,g_particleManager);
+    g_particleManager.AddEffect(eCopy);
+
+    engine.runRenderLoop(function() {
+
+      for( var index in g_sprites )
+      {
+        g_sprites[index].BeginFrame();
+      }
+
+      //g_sprites[0].Allocate(1,0.5,0.5,1);
+
+      g_particleManager.Update();
+      g_particleManager.DrawParticles();
+
+      g_scene.render();
+
+      for( var index in g_sprites )
+      {
+        g_sprites[index].EndFrame();
+      }
+    });
+
+  }
+
+  function DrawSprite(sprite, px, py, tv, x, y, rotation, scaleX, scaleY, r, g, b, a, blend)
+  {
+    //console.log(a);
+    var screenPosX = px - x * scaleX;
+    var screenPosY = py - y * scaleY;
+
+    sprite.m_spriteGroup.Allocate(r/255,g/255,b/255,a,tv,scaleX, scaleY);
+}
+
+
+    var canvas = document.querySelector("#renderCanvas");
+    var engine = new BABYLON.Engine(canvas, true);
+    var camera;
+
+    var createScene = function() {
+      var scene = new BABYLON.Scene(engine);
+      scene.clearColor = new BABYLON.Color3(0, 0, 0);
+
+      camera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 2, Math.PI / 2.8, 10, new BABYLON.Vector3(0, 0, 0), scene);
+      camera.inertia = 0.75;
+      camera.lowerBetaLimit = Math.PI / 4;
+      camera.upperBetaLimit = Math.PI / 2 - Math.PI / 40;
+      camera.lowerRadiusLimit = 4;
+      camera.attachControl(canvas, false, false);
+
+      var light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
+      light.intensity = .5;
+
+      var sphere = BABYLON.Mesh.CreateSphere("sphere1", 16, 0.2, scene);
+    //  var ground = BABYLON.Mesh.CreateGround("ground1", 6, 6, 2, scene);
+      return scene;
+    };
+
+    g_scene = createScene();
+    Init();
+
+    /*
+    var sprite = new BABYLON.Sprite("fire", spriteManager);
+    sprite.playAnimation(0, 32, true, 20);
+    sprite.size = 4;
+    sprite.position.y = 2.0;
+*/
+/*
+    var spriteManager = new BABYLON.SpriteManager("fire", "fire1.png", 10, 256, scene);
+    var sprite = new BABYLON.Sprite("fire", spriteManager);
+    sprite.playAnimation(0, 32, true, 20);
+    sprite.size = 4;
+    //sprite.position.y = 2.0;
+*/
+
+//    scene.debugLayer.show();
+
+
+
+    window.addEventListener("resize", function() {
+      engine.resize();
+    });
+
+  </script>
+</body>
+
+</html>

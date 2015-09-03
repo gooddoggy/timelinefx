@@ -1,7 +1,8 @@
 var Blend =
 {
-  BMAlphaBlend:0,
-  BMLightBlend:1
+  BMAlphaBlend:3,
+  BMLightBlend:4
+  // check loading values are one of these
 };
 
 var g_defaultEntity =
@@ -312,7 +313,7 @@ var Entity = Class({
             var rotVec = this._parent._matrix.TransformVector(this._x, this._y);
 
             this._wx = this._parent._wx + rotVec.x * this._z;
-            this._wy = this._parent._wy + rotVec.y * this._z;            
+            this._wy = this._parent._wy + rotVec.y * this._z;
         }
         else
         {

@@ -217,9 +217,6 @@ var Emitter = Class(Entity,{
     var path = parent.GetPath() + "/" + this.GetName();
     this.SetPath(path);
 
-  //  this.SetImage( x.GetChildAttr("SHAPE_INDEX","VALUE") );
-//    this.SetImage(x.GetChildAttrAsInt("SHAPE_INDEX","VALUE"));
-
     var imgNode = xml.getElementsByTagName("SHAPE_INDEX")[0];
     this.SetImage(AsInt(imgNode.innerHTML));
 
@@ -1250,7 +1247,7 @@ var Emitter = Class(Entity,{
                      // height
                      scaleTemp = this.GetEmitterScaleY(0);
                      sizeTemp = 0;
-                     e.SetScaleVariationY(RandomBetween(this._currentSizeYVariation));
+                     e.SetScaleVariationY(Random(this._currentSizeYVariation));
                      e.SetHeight(e.GetScaleVariationY() + this._currentSizeY);
                      if (scaleTemp !== 0)
                      {
@@ -1489,7 +1486,7 @@ var Emitter = Class(Entity,{
      {
          e._rptAgeA += EffectsLibrary.GetCurrentUpdateTime() * this._alphaRepeat;
          e._alpha = this.GetEmitterAlpha(e._rptAgeA, e._lifeTime) * parentEffect.GetCurrentAlpha();
-         console.log("e._alpha:" + e._alpha);
+
          if (e._rptAgeA > e._lifeTime && e._aCycles < this._alphaRepeat)
          {
              e._rptAgeA -= e._lifeTime;
@@ -1499,9 +1496,6 @@ var Emitter = Class(Entity,{
      else
      {
          e._alpha = this.GetEmitterAlpha(e._age, e._lifeTime) * parentEffect.GetCurrentAlpha();
-         //console.log("e._alpha:" + e._alpha);
-        // console.log("1:" + this.GetEmitterAlpha(e._age, e._lifeTime));
-        // console.log("2:" + parentEffect.GetCurrentAlpha());
      }
 
      // angle changes
@@ -1666,7 +1660,7 @@ var Emitter = Class(Entity,{
      {
          if (!this._bypassWeight && !parentEffect.IsBypassWeight())
          {
-             if (e._speed != 0)
+             if (e._speed !== 0)
              {
                  e._speedVec.x = e._speedVec.x / EffectsLibrary.GetCurrentUpdateTime();
                  e._speedVec.y = e._speedVec.y / EffectsLibrary.GetCurrentUpdateTime() - e._gravity;
@@ -1889,12 +1883,7 @@ var Emitter = Class(Entity,{
      // No idea what units we're supposed to be using here
     // return this._parentEffect.GetLifeMaxValue();
 
-    //console.log( this._cLifeVariation.GetMaxValue());
-    //console.log(this._cLife.GetMaxValue());
-     //console.log(this._parentEffect.GetLifeMaxValue());
-     //return 100;
 
-    // return longestLife;
  },
 
  GetEmitterLife:function( frame )
@@ -2070,6 +2059,12 @@ var Emitter = Class(Entity,{
  SetPath:function( path )
  {
      this._path = path;
+ },
+
+ GetImages:function(images)
+ {
+    if(this._image)
+      images[this._image._index] = this._image;
  },
 
 

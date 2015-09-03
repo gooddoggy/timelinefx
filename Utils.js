@@ -149,3 +149,18 @@ function GetDirection( fromx, fromy, tox, toy )
     // arcus tangens, convert to degrees, add 450 and normalize to 360.
     return Math.fmod((Math.atan2(toy - fromy, tox - fromx) / M_PI * 180.0 + 450.0), 360.0);
 }
+
+function loadXMLDoc( filename )
+{
+  if ( window.XMLHttpRequest )
+  {
+    xhttp = new XMLHttpRequest();
+  }
+  else // code for IE5 and IE6
+  {
+    xhttp = new ActiveXObject( "Microsoft.XMLHTTP" );
+  }
+  xhttp.open( "GET", filename, false );
+  xhttp.send();
+  return xhttp.responseXML;
+}

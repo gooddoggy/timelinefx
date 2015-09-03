@@ -398,7 +398,8 @@ var ParticleManager = Class({
                py = (py * this._camtz) + this._centerY + (this._camtz * this._camty);
            }
 
-           if (px > this._vpX - p.GetImageDiameter() && px < this._vpX + this._vpW + p.GetImageDiameter() && py > this._vpY - p.GetImageDiameter() && py < this._vpY + this._vpH + p.GetImageDiameter())
+          var imageDiam = p.GetImageDiameter();
+           if (px > this._vpX - imageDiam && px < this._vpX + this._vpW + imageDiam && py > this._vpY - imageDiam && py < this._vpY + this._vpH + imageDiam)
            {
                if (p.GetAvatar())
                {
@@ -467,7 +468,7 @@ var ParticleManager = Class({
                   // tidy with above
                   tv = Math.round(tv) % p.GetAvatar().GetFramesCount();
 
-                   DrawSprite(sprite, px, py, tv, x, y, rotation, scaleX, scaleY, r, g, b, a, blend === Blend.BMLightBlend);
+                   DrawSprite(sprite, px, py, tv, x, y, rotation, scaleX, scaleY, r, g, b, a, blend);
                    // ++rendercount
                }
            }
