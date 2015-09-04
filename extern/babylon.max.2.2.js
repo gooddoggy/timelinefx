@@ -20397,7 +20397,32 @@ var BABYLON;
             engine.bindBuffers(this._vertexBuffer, this._indexBuffer, this._vertexDeclaration, this._vertexStrideSize, effect);
             // Draw order            	    
 	    
+	    engine.setDepthFunctionToLessOrEqual();
+            effect.setBool("alphaTest", true);
+            engine.setColorWrite(false);
+            engine.draw(true, 0, max * 6);
+            engine.setColorWrite(true);
+            effect.setBool("alphaTest", false);
+	    
+          //  engine.setAlphaMode(BABYLON.Engine.ALPHA_COMBINE);
+             engine.setDepthWrite(false);
+	    
+	  //  engine._alphaState.setAlphaBlendFunctionParameters(engine._gl.SRC_ALPHA, engine._gl.ONE_MINUS_SRC_ALPHA, engine._gl.ONE, engine._gl.ONE_MINUS_SRC_ALPHA);
+	    
+	    
+	    // darker, but no contrast/ definition 
+             engine._alphaState.setAlphaBlendFunctionParameters(engine._gl.SRC_ALPHA, engine._gl.ONE_MINUS_SRC_ALPHA, engine._gl.ONE, engine._gl.ONE);
+	    
+	    // gives bright / lighter?
+            // engine._alphaState.setAlphaBlendFunctionParameters(engine._gl.SRC_ALPHA, engine._gl.ONE, engine._gl.ONE, engine._gl.ONE);
+              
+	    engine._alphaState.alphaBlend = true;
+	    
+	    engine.draw(true, 0, max * 6);
+            engine.setAlphaMode(BABYLON.Engine.ALPHA_DISABLE);
+	    
 	    // sjl
+	    /*
             engine.setDepthFunctionToLessOrEqual();
             effect.setBool("alphaTest", false);
             engine.setColorWrite(false);
@@ -20410,13 +20435,14 @@ var BABYLON;
 	      engine.setDepthWrite(false);
              //       engine._alphaState.setAlphaBlendFunctionParameters(engine._gl.SRC_ALPHA, engine._gl.ONE_MINUS_SRC_ALPHA, engine._gl.ONE, engine._gl.ONE);
 	    
-	     engine._alphaState.setAlphaBlendFunctionParameters(engine._gl.SRC_ALPHA, engine._gl.ONE_MINUS_SRC_ALPHA, engine._gl.SRC_ALPHA, engine._gl.SRC_ALPHA);
+	     engine._alphaState.setAlphaBlendFunctionParameters(engine._gl.SRC_ALPHA, engine._gl.ONE_MINUS_SRC_ALPHA, engine._gl.ONE, engine._gl.ONE);
                    
+	    
                     engine._alphaState.alphaBlend = true;
 	    
             engine.draw(true, 0, max * 6);
             engine.setAlphaMode(BABYLON.Engine.ALPHA_DISABLE);
-        
+        */
 	    };
         SpriteManager.prototype.dispose = function () {
             if (this._vertexBuffer) {

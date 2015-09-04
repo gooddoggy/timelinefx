@@ -86,6 +86,7 @@
       sprite.color.g = g;
       sprite.color.b = b;
       sprite.color.a = a;
+    //  sprite.color.a = 1;
 
       this.m_allocated.push(sprite);
     },
@@ -117,16 +118,38 @@
 });
 
 
+var g_spawnKillCnt = 0;
+ function OnParticleSpawned(p)
+ {
+   g_spawnKillCnt++;
+   //console.log("OnParticleSpawned:"+g_spawnKillCnt);
+ }
+
+ function OnParticleKilled(p)
+ {
+   g_spawnKillCnt--;
+  // console.log("OnParticleSpawned:"+g_spawnKillCnt);
+ }
+
+
+
   var g_particleManager = new ParticleManager( 1000, 1 );
+
+  g_particleManager.onParticleSpawnCB = OnParticleSpawned;
+  g_particleManager.onParticleKilledCB = OnParticleKilled;
+
   var g_xml = null;
   var g_scene = null;
   var g_sprites = [];
   var path = "data/Explosions/";
 
+  var g_drawCount = 0;
+
   function Init()
   {
 
-    g_xml = loadXMLDoc( path + "DATA.XML" );
+  //  g_xml = loadXMLDoc( path + "DATA.XML" );
+    g_xml = loadXMLDoc( path + "Test_DATA1.XML" );
     EffectsLibrary.Init();
     EffectsLibrary.Load( g_xml );
     var images = EffectsLibrary.GetShapes();
@@ -161,6 +184,11 @@
 
   //var e = EffectsLibrary.GetEffect("Ground Explosions/Mushroom 2");
 
+
+  var emitters = [];
+  e.CollectEmitters(emitters);
+    console.log(emitters);
+
   var requiredImages = [];
   e.GetImages(requiredImages);
 
@@ -194,10 +222,14 @@
         g_sprites[index].BeginFrame();
       }
 
+      g_drawCount = 0;
+
       //g_sprites[0].Allocate(1,0.5,0.5,1);
 
       g_particleManager.Update();
       g_particleManager.DrawParticles();
+
+  //    console.log(g_drawCount);
 
       g_scene.render();
 
@@ -216,6 +248,8 @@
     var screenPosY = py - y * scaleY;
 
     sprite.m_spriteGroup.Allocate(r/255,g/255,b/255,a,tv,scaleX, scaleY);
+
+    g_drawCount++;
 }
 
 

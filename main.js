@@ -249,7 +249,7 @@ function mainLoop()
   g_drawSpriteCalls = 0;
   g_drawStats = [];
   g_particleManager.DrawParticles();
-  console.log(g_drawStats);
+//  console.log(g_drawStats);
 
 //  console.log(g_drawSpriteCalls);
 

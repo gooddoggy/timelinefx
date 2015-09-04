@@ -127,6 +127,9 @@ var ParticleManager = Class({
 
   ReleaseParticle : function( p )
   {
+    if(this.onParticleKilledCB)
+       this.onParticleKilledCB(p);
+
       this._inUseCount--;
       this._unused.push(p);
       if (!p.IsGroupParticles())
@@ -403,9 +406,8 @@ var ParticleManager = Class({
            {
                if (p.GetAvatar())
                {
-                   var sprite = p.GetAvatar();
                    var x, y;
-
+                   var sprite = p.GetAvatar();
                    if (p.GetEmitter().IsHandleCenter())
                    {
                        x = sprite.GetWidth() / 2.0;
@@ -416,9 +418,6 @@ var ParticleManager = Class({
                        x = p.GetHandleX();
                        y = p.GetHandleY();
                    }
-
-                   //SetBlend(p.GetEmitter()->GetBlendMode());
-                   var blend = p.GetEmitter().GetBlendMode();
 
                    var rotation;
 
@@ -463,13 +462,14 @@ var ParticleManager = Class({
                    {
                        tv = p.GetCurrentFrame();
                    }
-                  // console.log(p);
-
                   // tidy with above
                   tv = Math.round(tv) % p.GetAvatar().GetFramesCount();
 
+                  var blend = p.GetEmitter().GetBlendMode();
+
+
                    DrawSprite(sprite, px, py, tv, x, y, rotation, scaleX, scaleY, r, g, b, a, blend);
-                   // ++rendercount
+
                }
            }
        }

@@ -1100,4 +1100,12 @@ var Effect = Class(Entity,{
       }
     },
 
+    CollectEmitters:function(emitters)
+    {
+      for (var i=0;i<this._children.length;i++)
+      {
+          emitters.push(this._children[i]);
+      }
+      // todo: recursive + sub effects
+    },
 });

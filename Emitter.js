@@ -945,6 +945,7 @@ var Emitter = Class(Entity,{
              {
 //                 ++EffectsLibrary.particlesCreated;
 
+
                  // -----Link to its emitter and assign the control source (which is this emitter)----
                  e.SetEmitter(this);
                  e.SetParent(this);
@@ -1443,9 +1444,6 @@ var Emitter = Class(Entity,{
                  else
                      e._currentFrame = this._currentFrame;
 
-                 // add any sub children
-                 //e._runChildren = false;
-
                  for (var i=0;i<this._effects.length;i++)
                  {
                      var newEffect = new Effect(this._effects[i], pm);
@@ -1470,6 +1468,8 @@ var Emitter = Class(Entity,{
                  // capture old values for tweening
                  e.Capture();
 
+                 if(pm.onParticleSpawnCB)
+                    pm.onParticleSpawnCB(e);
              }
          }
          this._counter -= intCounter;
