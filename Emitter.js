@@ -81,7 +81,7 @@ var g_defaultEmitter =
 var Emitter = Class(Entity,{
 
  constructor: function(other,pm) {
-    Emitter.$super.call(this,other);        // Call parent'sructor
+    Emitter.$super.call(this,other);        // Call parent consructor
 
     this._effects = [];
     this._childrenOwner = false;         // the Particles are managing by pool

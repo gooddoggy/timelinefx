@@ -23,6 +23,15 @@ function stripFilePath(filename)
 
 Math.fmod = function (a,b) { return Number((a - (Math.floor(a / b) * b)).toPrecision(8)); };
 
+Math.degrees = function(rad)
+ {
+ return rad*(180/Math.PI);
+ }
+
+Math.radians = function(deg)
+ {
+ return deg * (Math.PI/180);
+ }
 
 var CopyHelper = Class({
  constructor: function(fromObj,toObj) {

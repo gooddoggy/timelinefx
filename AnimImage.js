@@ -8,7 +8,7 @@ var AnimImage = Class({
     this._index = 0;
     this._frames = 1;
     this._imageSourceName = "";
-    this._sqrtFrames = 1;
+    this._horizCells = 1;
   },
 
   LoadFromXML:function(xml)
@@ -19,7 +19,9 @@ var AnimImage = Class({
     this._height = attr.getNamedItem("HEIGHT").nodeValue;
     this._frames = attr.getNamedItem("FRAMES").nodeValue;
     this._index = attr.getNamedItem("INDEX").nodeValue;
-    this._sqrtFrames = Math.sqrt(this._frames);
+
+    // We don't actually have this until we load the image - we don't have the actually image width at this point (only the cells/frames)
+    this._horizCells = Math.sqrt(this._frames);
 
   //  console.log(this);
   },
@@ -71,12 +73,12 @@ var AnimImage = Class({
 
   GetFrameX:function(frameIndex)
   {
-    return this._width * (frameIndex % this._sqrtFrames);
+    return this._width * (frameIndex % this._horizCells);
   },
 
   GetFrameY:function(frameIndex)
   {
-    return this._height * Math.floor(frameIndex / this._sqrtFrames);
+    return this._height * Math.floor(frameIndex / this._horizCells);
   },
 
   SetFilename:function( filename )
