@@ -51,7 +51,8 @@ var XMLHelper = Class({
   },
   GetAttr:function(attrName)
   {
-    return this.m_attr.getNamedItem(attrName).nodeValue;
+    var attr = this.m_attr.getNamedItem(attrName);
+    return attr ? attr.nodeValue : null;
   },
   GetAttrAsInt:function(attrName)
   {
@@ -104,6 +105,16 @@ function ForEachInXMLNodeList(nodelist,fn)
   for(var i=0;i<nodelist.length;i++)
   {
     fn(nodelist[i]);
+  }
+}
+
+function ForEachXMLChild(xmlNode, tag, fn)
+{
+  var nodelist = xmlNode.getElementsByTagName(tag);
+  for(var i=0;i<nodelist.length;i++)
+  {
+    if(nodelist[i].parentElement == xmlNode)
+      fn(nodelist[i]);
   }
 }
 
@@ -172,4 +183,14 @@ function loadXMLDoc( filename )
   xhttp.open( "GET", filename, false );
   xhttp.send();
   return xhttp.responseXML;
+}
+
+function debugTrack(img, msg)
+{
+  var name = img._imageSourceName;
+  if( !g_seenSprites[name] )
+  {
+    console.log(msg + " :" + name);
+    g_seenSprites[name] = img;
+  }
 }

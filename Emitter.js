@@ -287,7 +287,7 @@ var Emitter = Class(Entity,{
 
   ReadAttribute:function(xml,fn,tag)
   {
-    ForEachInXMLNodeList(xml.getElementsByTagName(tag), function(n){
+    ForEachXMLChild(xml, tag, function(n){
         var attr = fn(parseFloat(GetNodeAttrValue(n,"FRAME")), parseFloat(GetNodeAttrValue(n,"VALUE")));
         attr.LoadFromXML(n.getElementsByTagName("CURVE")[0]);
       }
@@ -848,6 +848,7 @@ var Emitter = Class(Entity,{
 
  UpdateSpawns:function( eSingle /*= null*/ )
  {
+
      var intCounter;
      var qty;
      var er;
@@ -997,13 +998,13 @@ var Emitter = Class(Entity,{
                  case TypeArea:
                      if (parentEffect.GetEmitAtPoints())
                      {
-                         if (parentEffect.GetSpawnDirection() == -1)
+                         if (parentEffect._spawnDirection == -1)
                          {
-                             this._gx += parentEffect.GetSpawnDirection();
+                             this._gx += parentEffect._spawnDirection;
                              if (this._gx < 0)
                              {
                                  this._gx = parentEffect.GetMGX() - 1;
-                                 this._gy += parentEffect.GetSpawnDirection();
+                                 this._gy += parentEffect._spawnDirection;
                                  if (this._gy < 0)
                                      this._gy = parentEffect.GetMGY() - 1;
                              }
@@ -1027,13 +1028,13 @@ var Emitter = Class(Entity,{
                              e.SetY((-parentEffect.GetHandleY()));
                          }
 
-                         if (parentEffect.GetSpawnDirection() == 1)
+                         if (parentEffect._spawnDirection == 1)
                          {
-                             this._gx += parentEffect.GetSpawnDirection();
+                             this._gx += parentEffect._spawnDirection;
                              if (this._gx >= parentEffect.GetMGX())
                              {
                                  this._gx = 0;
-                                 this._gy += parentEffect.GetSpawnDirection();
+                                 this._gy += parentEffect._spawnDirection;
                                  if (this._gy >= parentEffect.GetMGY())
                                      this._gy = 0;
                              }
@@ -1068,7 +1069,7 @@ var Emitter = Class(Entity,{
                              if (parentEffect.GetMGX() === 0)
                                  parentEffect.SetMGX(1);
 
-                             this._gx += parentEffect.GetSpawnDirection();
+                             this._gx += parentEffect._spawnDirection;
                              if (this._gx >= parentEffect.GetMGX())
                              {
                                  this._gx = 0;
@@ -1103,9 +1104,9 @@ var Emitter = Class(Entity,{
                      {
                          if (parentEffect.GetEmitAtPoints())
                          {
-                             if (parentEffect.GetSpawnDirection() == -1)
+                             if (parentEffect._spawnDirection == -1)
                              {
-                                 this._gx += parentEffect.GetSpawnDirection();
+                                 this._gx += parentEffect._spawnDirection;
                                  if (this._gx < 0)
                                      this._gx = parentEffect.GetMGX() - 1;
                              }
@@ -1120,9 +1121,9 @@ var Emitter = Class(Entity,{
                              }
                              e.SetY((-parentEffect.GetHandleY()));
 
-                             if (parentEffect.GetSpawnDirection() == 1)
+                             if (parentEffect._spawnDirection == 1)
                              {
-                                 this._gx += parentEffect.GetSpawnDirection();
+                                 this._gx += parentEffect._spawnDirection;
                                  if (this._gx >= parentEffect.GetMGX())
                                      this._gx = 0;
                              }
@@ -1135,7 +1136,7 @@ var Emitter = Class(Entity,{
                      }
                      else
                      {
-                         if (parentEffect.GetDistanceSetByLife())
+                         if (parentEffect._distanceSetByLife)
                          {
                              e.SetX((-parentEffect.GetHandleX()));
                              e.SetY((-parentEffect.GetHandleY()));
@@ -1144,9 +1145,9 @@ var Emitter = Class(Entity,{
                          {
                              if (parentEffect.GetEmitAtPoints())
                              {
-                                 if (parentEffect.GetSpawnDirection() == -1)
+                                 if (parentEffect._spawnDirection == -1)
                                  {
-                                     this._gx += parentEffect.GetSpawnDirection();
+                                     this._gx += parentEffect._spawnDirection;
                                      if (this._gx < 0)
                                          this._gx = parentEffect.GetMGX() - 1;
                                  }
@@ -1161,9 +1162,9 @@ var Emitter = Class(Entity,{
                                  }
                                  e.SetY((-parentEffect.GetHandleY()));
 
-                                 if (parentEffect.GetSpawnDirection() == 1)
+                                 if (parentEffect._spawnDirection == 1)
                                  {
-                                     this._gx += parentEffect.GetSpawnDirection();
+                                     this._gx += parentEffect._spawnDirection;
                                      if (this._gx >= parentEffect.GetMGX())
                                          this._gx = 0;
                                  }
@@ -1363,7 +1364,7 @@ var Emitter = Class(Entity,{
                  // ------ e._lockedAngle = _lockedAngle
                  if (!this._bypassSpin)
                  {
-                     e.SetSpinVariation(RandomBetween(-this._currentSpinVariation, this._currentSpinVariation) + this._currentSpin);    // @todo dan currentSpin?
+                     e.SetSpinVariation(RandomBetween(-this._currentSpinVariation, this._currentSpinVariation) + this._currentSpin);
                  }
 
                  // weight
@@ -1381,7 +1382,7 @@ var Emitter = Class(Entity,{
                      {
                          e.SetSpeedVecX(Math.sin(e.GetEntityDirection() / 180.0* M_PI));
                          e.SetSpeedVecY(Math.cos(e.GetEntityDirection() / 180.0* M_PI));
-                         e.SetAngle(GetDirection(0, 0, e.GetSpeedVecX(), -e.GetSpeedVecY()));
+                         e.SetAngle(GetDirection(0, 0, e._speedVec.x, -e._speedVec.y));
                      }
                      else
                      {
@@ -1456,7 +1457,7 @@ var Emitter = Class(Entity,{
 
                  // get the relative angle
                  if (!this._relative)
-                 {  // @todo dan Set(cos(this._angle  ??
+                 {
                      var radians = e._angle / 180.0* M_PI;
                      e._matrix.Set(Math.cos(radians), Math.sin(radians), -Math.sin(radians), Math.cos(radians));
                      e._matrix.TransformSelf(this._parent.GetMatrix());
@@ -1544,14 +1545,14 @@ var Emitter = Class(Entity,{
          switch (parentEffect.GetClass())
          {
          case TypeLine:
-             if (parentEffect.GetDistanceSetByLife())
+             if (parentEffect._distanceSetByLife)
              {
                  var life = e._age / e._lifeTime;
                  e._x = (life * parentEffect.GetCurrentWidth()) - parentEffect.GetHandleX();
              }
              else
              {
-                 switch (parentEffect.GetEndBehavior())
+                 switch (parentEffect._endBehavior)
                  {
                  case EndKill:
                      if (e._x > parentEffect.GetCurrentWidth() - parentEffect.GetHandleX() || e._x < 0 - parentEffect.GetHandleX())
@@ -1844,7 +1845,7 @@ var Emitter = Class(Entity,{
 
      if (this._cR.GetAttributesCount() <= 1)
      {
-         this._bRed = this.GetEmitterR(0, 1.0) !== 0;             // @todo dan ???
+         this._bRed = this.GetEmitterR(0, 1.0) !== 0;
          this._bGreen = this.GetEmitterG(0, 1.0) !== 0;
          this._bBlue = this.GetEmitterB(0, 1.0) !== 0;
          this._bypassColor = true;
@@ -2065,6 +2066,11 @@ var Emitter = Class(Entity,{
  {
     if(this._image)
       images[this._image._index] = this._image;
+
+    for (var i=0;i<this._effects.length;i++)
+    {
+      this._effects[i].GetImages(images);
+    }
  },
 
 

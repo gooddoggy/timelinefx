@@ -106,6 +106,7 @@ var ParticleManager = Class(
   GrabParticle: function( effect, pool, layer /*= 0*/ )
   {
     layer = GetDefaultArg( layer, 0 );
+
     if ( this._unused.length > 0 )
     {
       var p = this._unused.pop();
@@ -116,7 +117,7 @@ var ParticleManager = Class(
       if ( pool )
         effect.AddInUse( layer, p );
       else
-        this._inUse[ effect.GetEffectLayer() ][ layer ].push( p ); // CHECK
+        this._inUse[ effect.GetEffectLayer() ][ layer ].push( p );
 
       this._inUseCount++;
 
@@ -160,7 +161,7 @@ var ParticleManager = Class(
 
     var layers = 0;
     var startLayer = 0;
-    if ( layer == -1 || layer >= _effectLayers )
+    if ( layer == -1 || layer >= this._effectLayers )
     {
       layers = this._effectLayers - 1;
     }
@@ -402,7 +403,9 @@ var ParticleManager = Class(
         // effect
         var subeffects = plist[ j ].GetChildren();
         for ( var k = 0; k < subeffects.length; k++ )
+        {
           this.DrawEffect( subeffects[ k ] );
+        }
       }
     }
   },
@@ -450,10 +453,10 @@ var ParticleManager = Class(
           var tx = 0;
           if ( p.GetEmitter().IsAngleRelative() )
           {
-            if ( fabsf( p.GetOldRelativeAngle() - p.GetRelativeAngle() ) > 180 )
-              tx = Lerp( p.GetOldRelativeAngle() - 360, p.GetRelativeAngle(), _currentTween );
+            if ( Math.abs( p.GetOldRelativeAngle() - p.GetRelativeAngle() ) > 180 )
+              tx = Lerp( p.GetOldRelativeAngle() - 360, p.GetRelativeAngle(), this._currentTween );
             else
-              tx = Lerp( p.GetOldRelativeAngle(), p.GetRelativeAngle(), _currentTween );
+              tx = Lerp( p.GetOldRelativeAngle(), p.GetRelativeAngle(), this._currentTween );
           }
           rotation = tv + tx + this._angleTweened;
 
@@ -474,7 +477,7 @@ var ParticleManager = Class(
             tv = Lerp( p.GetOldCurrentFrame(), p.GetCurrentFrame(), this._currentTween );
             if ( tv < 0 )
             {
-              tv = p.GetAvatar().GetFramesCount() + ( fmod( tv, p.GetAvatar().GetFramesCount() ) );
+              tv = p.GetAvatar().GetFramesCount() + ( Math.fmod( tv, p.GetAvatar().GetFramesCount() ) );
               if ( tv == p.GetAvatar().GetFramesCount() )
                 tv = 0;
             }

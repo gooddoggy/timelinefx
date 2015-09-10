@@ -93,7 +93,7 @@ var Particle = Class( Entity,
       {
         this._particleManager.ReleaseParticle( this );
         if ( this._emitter.IsGroupParticles() )
-          this._emitter.GetParentEffect().RemoveInUse( _layer, this );
+          this._emitter.GetParentEffect().RemoveInUse( this._layer, this );
 
         this.Reset();
         return false; // RemoveChild

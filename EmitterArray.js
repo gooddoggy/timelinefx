@@ -69,7 +69,7 @@ var EmitterArray = Class({
       }
       else
       {
-          this._changes = new Array(1);
+          this._changes = [0];
       }
 
       this._compiled = true;
@@ -99,7 +99,7 @@ var EmitterArray = Class({
       }
       else
       {
-          this._changes = new Array(1);
+          this._changes = [0];
       }
       this._compiled = true;
   },

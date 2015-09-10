@@ -104,21 +104,6 @@ var EffectsLibrary = Class(
     // Traverse top down
     this.m_currentFolder = null;
     this.LoadEffectElements( xml.getElementsByTagName("EFFECTS")[0].children );
-
-  /*
-
-    var effects = xml.getElementsByTagName("EFFECT");
-
-    for (var i=0;i<effects.length;i++)
-    {
-      console.log(effects[i].attributes.getNamedItem("NAME").nodeValue);
-    }
-
-    console.log(effects.length);
-*/
-//    console.log(this._shapeList);
-
-//    console.log(xml.getElementsByTagName("SHAPES"));
   },
 
   LoadEffectElements:function(effects)
@@ -133,9 +118,6 @@ var EffectsLibrary = Class(
       {
         var e = new Effect();
         e.LoadFromXML(effects[i]);
-
-  // slow.. compile when creating?
-  //      e.CompileAll();
 
         this.AddEffect(e);
       }

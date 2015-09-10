@@ -201,12 +201,6 @@ var Effect = Class( Entity,
   SetParticleManager: function( particleManager )
   {
     this._particleManager = particleManager;
-
-    // todo: is this required?
-    // for (var i=0;i<this._children.length;i++)
-    // {
-    //     this._children[i].SetParticleManagerOnEffects(particleManager);
-    // }
   },
 
   Update: function()
@@ -472,7 +466,7 @@ var Effect = Class( Entity,
   SetVelocity: function( velocity )
   {
     this._overrideVelocity = true;
-    this._currentVelocity = velocity; // @todo dan _currentAmount
+    this._currentVelocity = velocity;
   },
 
   SetSpin: function( spin )
@@ -567,9 +561,9 @@ var Effect = Class( Entity,
 
   CompileAll: function()
   {
-    if(this._isCompiled)
+    if ( this._isCompiled )
       return;
-      
+
     this.CompileLife();
     this.CompileAmount();
     this.CompileSizeX();
@@ -822,9 +816,7 @@ var Effect = Class( Entity,
     this.ReadAttribute( xml, this.AddHeight.bind( this ), "AREA_HEIGHT" );
 
     this.ReadAttribute( xml, this.AddAngle.bind( this ), "ANGLE" );
-    this.ReadAttribute( xml, this.AddStretch.bind( this ), "STRETCH" );
-
-    if ( xml.getElementsByTagName( "STRETCH" ).length === 0 )
+    if(!this.ReadAttribute( xml, this.AddStretch.bind( this ), "STRETCH" ))
     {
       this.AddStretch( 0, 1.0 );
     }
@@ -832,7 +824,8 @@ var Effect = Class( Entity,
     this.ReadAttribute( xml, this.AddStretch.bind( this ), "GLOBAL_ZOOM" );
 
     var _this = this;
-    ForEachInXMLNodeList( xml.getElementsByTagName( "PARTICLE" ), function( n )
+
+    ForEachXMLChild( xml, "PARTICLE", function( n )
     {
       var emit = new Emitter();
       emit.LoadFromXML( n, _this );
@@ -848,7 +841,9 @@ var Effect = Class( Entity,
     {
       var attr = fn( parseFloat( GetNodeAttrValue( n, "FRAME" ) ), parseFloat( GetNodeAttrValue( n, "VALUE" ) ) );
       attr.LoadFromXML( n.getElementsByTagName( "CURVE" )[ 0 ] );
+      return true;
     }
+    return false;
   },
 
   AddAmount: function( f, v )
@@ -1093,14 +1088,5 @@ var Effect = Class( Entity,
     {
       this._children[ i ].GetImages( images );
     }
-  },
-
-  CollectEmitters: function( emitters )
-  {
-    for ( var i = 0; i < this._children.length; i++ )
-    {
-      emitters.push( this._children[ i ] );
-    }
-    // todo: recursive + sub effects
   },
 } );
