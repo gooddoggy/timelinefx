@@ -1,132 +1,144 @@
-
-function GetDefaultArg(arg, def) {
- return (typeof arg == 'undefined' ? def : arg);
+function GetDefaultArg( arg, def )
+{
+  return ( typeof arg == 'undefined' ? def : arg );
 }
 
-function RemoveFromList(array,elem)
+function RemoveFromList( array, elem )
 {
-  var index = array.indexOf(elem);
-  if (index > -1) {
-    array.splice(index, 1);
+  var index = array.indexOf( elem );
+  if ( index > -1 )
+  {
+    array.splice( index, 1 );
   }
 }
-
-function TLFXLOG(mask,msg){}
 
 var M_PI = 3.14159265358979323846;
 
-function stripFilePath(filename)
+function stripFilePath( filename )
 {
-  var index = Math.max(filename.lastIndexOf('/'),filename.lastIndexOf('\\'));
-  return filename.substring(index + 1);
+  var index = Math.max( filename.lastIndexOf( '/' ), filename.lastIndexOf( '\\' ) );
+  return filename.substring( index + 1 );
 }
 
-Math.fmod = function (a,b) { return Number((a - (Math.floor(a / b) * b)).toPrecision(8)); };
+Math.fmod = function( a, b )
+{
+  return Number( ( a - ( Math.floor( a / b ) * b ) ).toPrecision( 8 ) );
+};
 
-Math.degrees = function(rad)
- {
- return rad*(180/Math.PI);
- }
+Math.degrees = function( rad )
+{
+  return rad * ( 180 / Math.PI );
+};
 
-Math.radians = function(deg)
- {
- return deg * (Math.PI/180);
- }
+Math.radians = function( deg )
+{
+  return deg * ( Math.PI / 180 );
+};
 
-var CopyHelper = Class({
- constructor: function(fromObj,toObj) {
+var CopyHelper = Class(
+{
+  constructor: function( fromObj, toObj )
+  {
     this.m_fromObj = fromObj;
     this.m_toObj = toObj;
   },
-  copy: function(key,defaultVal)
+  copy: function( key, defaultVal )
   {
-    this.m_toObj[key] = this.m_fromObj ? this.m_fromObj[key] : defaultVal;
+    this.m_toObj[ key ] = this.m_fromObj ? this.m_fromObj[ key ] : defaultVal;
   }
-});
+} );
 
-var XMLHelper = Class({
- constructor: function(xml) {
+var XMLHelper = Class(
+{
+  constructor: function( xml )
+  {
     this.m_xml = xml;
     this.m_attr = xml.attributes;
   },
-  GetAttr:function(attrName)
+  GetAttr: function( attrName )
   {
-    var attr = this.m_attr.getNamedItem(attrName);
+    var attr = this.m_attr.getNamedItem( attrName );
     return attr ? attr.nodeValue : null;
   },
-  GetAttrAsInt:function(attrName)
+  GetAttrAsInt: function( attrName )
   {
-    return parseInt(this.GetAttr(attrName));
+    return parseInt( this.GetAttr( attrName ) );
   },
-  GetAttrAsFloat:function(attrName)
+  GetAttrAsFloat: function( attrName )
   {
-    return parseFloat(this.GetAttr(attrName));
+    return parseFloat( this.GetAttr( attrName ) );
   },
-  GetAttrAsBool:function(attrName)
+  GetAttrAsBool: function( attrName )
   {
-    return this.GetAttrAsInt(attrName) > 0;
+    return this.GetAttrAsInt( attrName ) > 0;
   },
 
-  GetChildAttr:function(childName,attrName)
+  GetChildAttr: function( childName, attrName )
   {
-    var childNode = this.m_xml.getElementsByTagName(childName)[0];
-    if(childNode)
-      return GetXMLAttrSafe(childNode,attrName,null);
+    var childNode = this.m_xml.getElementsByTagName( childName )[ 0 ];
+    if ( childNode )
+      return GetXMLAttrSafe( childNode, attrName, null );
     return null;
   },
 
-  HasChildAttr:function(attrName)
+  HasChildAttr: function( attrName )
   {
-    return this.GetChildAttr(attrName) !== null;
+    return this.GetChildAttr( attrName ) !== null;
   },
 
-  GetChildAttrAsInt:function(attrName)
+  GetChildAttrAsInt: function( attrName )
   {
-    return parseInt(this.GetChildAttr(attrName));
+    return parseInt( this.GetChildAttr( attrName ) );
   },
-  GetChildAttrAsBool:function(attrName)
+  GetChildAttrAsBool: function( attrName )
   {
-    return this.GetChildAttrAsInt(attrName) > 0;
+    return this.GetChildAttrAsInt( attrName ) > 0;
   },
 
-});
+} );
 
-function AsInt(x) { return parseInt(x); }
-function AsBool(x) { return x > 0; }
-
-
-function GetNodeAttrValue(elem,attrName)
+function AsInt( x )
 {
-  return elem.attributes.getNamedItem(attrName).nodeValue;
+  return parseInt( x );
 }
 
-function ForEachInXMLNodeList(nodelist,fn)
+function AsBool( x )
 {
-  for(var i=0;i<nodelist.length;i++)
+  return x > 0;
+}
+
+function GetNodeAttrValue( elem, attrName )
+{
+  return elem.attributes.getNamedItem( attrName ).nodeValue;
+}
+
+function ForEachInXMLNodeList( nodelist, fn )
+{
+  for ( var i = 0; i < nodelist.length; i++ )
   {
-    fn(nodelist[i]);
+    fn( nodelist[ i ] );
   }
 }
 
-function ForEachXMLChild(xmlNode, tag, fn)
+function ForEachXMLChild( xmlNode, tag, fn )
 {
-  var nodelist = xmlNode.getElementsByTagName(tag);
-  for(var i=0;i<nodelist.length;i++)
+  var nodelist = xmlNode.getElementsByTagName( tag );
+  for ( var i = 0; i < nodelist.length; i++ )
   {
-    if(nodelist[i].parentElement == xmlNode)
-      fn(nodelist[i]);
+    if ( nodelist[ i ].parentElement == xmlNode )
+      fn( nodelist[ i ] );
   }
 }
 
-function GetXMLAttrSafe(xmlNode,attrName,defaultResult /* ="" */)
+function GetXMLAttrSafe( xmlNode, attrName, defaultResult /* ="" */ )
 {
-  var attr = xmlNode.attributes ? xmlNode.attributes.getNamedItem(attrName) : null;
-  return attr ? attr.nodeValue : GetDefaultArg(defaultResult,"");
+  var attr = xmlNode.attributes ? xmlNode.attributes.getNamedItem( attrName ) : null;
+  return attr ? attr.nodeValue : GetDefaultArg( defaultResult, "" );
 }
 
-function Lerp(a,b,fract)
+function Lerp( a, b, fract )
 {
-  return a + fract * (b - a);
+  return a + fract * ( b - a );
 }
 
 // http://stackoverflow.com/questions/521295/javascript-random-seeds
@@ -138,25 +150,25 @@ function RandomUnit()
   return x - Math.floor( x );
 }
 
-function Random(mag)
+function Random( mag )
 {
   return RandomUnit() * mag;
 }
 
-function RandomBetween(low,high)
+function RandomBetween( low, high )
 {
-  return Lerp(low,high,RandomUnit());
+  return Lerp( low, high, RandomUnit() );
 }
 
 function GetDistance2D( fromx, fromy, tox, toy, fast /*= false*/ )
 {
-    w = tox - fromx;
-    h = toy - fromy;
+  w = tox - fromx;
+  h = toy - fromy;
 
-    if (GetDefaultArg(fast,false))
-        return w * w + h * h;
-    else
-        return Math.sqrt(w * w + h * h);
+  if ( GetDefaultArg( fast, false ) )
+    return w * w + h * h;
+  else
+    return Math.sqrt( w * w + h * h );
 }
 
 /**
@@ -166,8 +178,8 @@ function GetDistance2D( fromx, fromy, tox, toy, fast /*= false*/ )
  */
 function GetDirection( fromx, fromy, tox, toy )
 {
-    // arcus tangens, convert to degrees, add 450 and normalize to 360.
-    return Math.fmod((Math.atan2(toy - fromy, tox - fromx) / M_PI * 180.0 + 450.0), 360.0);
+  // arcus tangens, convert to degrees, add 450 and normalize to 360.
+  return Math.fmod( ( Math.atan2( toy - fromy, tox - fromx ) / M_PI * 180.0 + 450.0 ), 360.0 );
 }
 
 function loadXMLDoc( filename )
@@ -185,12 +197,7 @@ function loadXMLDoc( filename )
   return xhttp.responseXML;
 }
 
-function debugTrack(img, msg)
+function toHex( r, g, b )
 {
-  var name = img._imageSourceName;
-  if( !g_seenSprites[name] )
-  {
-    console.log(msg + " :" + name);
-    g_seenSprites[name] = img;
-  }
+  return ( ( r << 16 ) + ( g << 8 ) + b );
 }

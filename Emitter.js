@@ -710,10 +710,6 @@ var Emitter = Class( Entity,
     intCounter = Math.floor( this._counter );
     if ( intCounter >= 1 || ( this._singleParticle && !this._startedSpawning ) )
     {
-      //TLFXLOG(PARTICLES, ("spawned: %d", intCounter));
-
-      //     console.log("spawned:" + intCounter);
-
       if ( !this._startedSpawning && this._singleParticle )
       {
         switch ( parentEffect.GetClass() )

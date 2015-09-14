@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A layout example with a side menu that hides on mobile, just like the Pure website.">
+  <title>timelinefxjs</title>
+  <link rel="stylesheet" href="./pure-min.css">
+  <link rel="stylesheet" href="./side-menu.css">
+  <style>
+    .custom-restricted-width {
+      width: 1000em;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="layout">
+    <!-- Menu toggle -->
+    <a href="#menu" id="menuLink" class="menu-link">
+      <!-- Hamburger icon -->
+      <span></span>
+    </a>
+    <div id="menu">
+      <div class="pure-menu"> <a class="pure-menu-heading" href="#">timelinefxjs demo</a>
+        <ul class="pure-menu-list" id="fxMenu">
+          <li class="pure-menu-item"><a href="#" class="pure-menu-link" onClick="Home('fx name')">Home and a long string</a></li>
+          <li class="pure-menu-item"><a href="#" class="pure-menu-link">About</a></li>
+          <li class="pure-menu-item" class="menu-item-divided pure-menu-selected"> <a href="#" class="pure-menu-link">Services</a> </li>
+          <li class="pure-menu-item"><a href="#" class="pure-menu-link">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div id="main">
+      <div class="header">
+        <h1>timelinefxjs demo</h1>
+        <h2>JavaScript port of the <a href="pixijs">timelinefx</a> particle system
+          <br>with <a href="pixijs">pixijs</a> rendering</h2>
+      </div>
+      <div class="content">
+        <p>Select a particle effect from the menu at left.</p>
+        <p> The timelinefxjs Github repository (including this demo) can be found here </p>
+        <p> This demo works best in modern browsers with WebGL support. While pixijs will fallback to canvas rendering, performance will sufffer particulary for effects with many particles. The timelinefxjs module itself is independant of rendering, meaning
+          it can be used with your own html5 renderer or gameengine. </p>
+      </div>
+    </div>
+  </div>
+  <script src="./ui.js"></script>
+  <script>
+
+  function Home(e)
+  {
+    console.log(e);
+  }
+
+    console.log("loaded");
+    var ul = document.getElementById("fxMenu");
+    var li = document.createElement("li");
+    li.className = "pure-menu-item";
+    li.appendChild(document.createTextNode("Four"));
+    li.innerHTML = "<a href=\"#\" class=\"pure-menu-link\">Dynamic</a>";
+    //li.setAttribute("class", "pure-menu-item");
+    ul.appendChild(li);
+  </script>
+</body>
+
+</html>

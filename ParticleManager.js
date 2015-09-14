@@ -83,7 +83,7 @@ var ParticleManager = Class(
     {
       this._currentTime += EffectsLibrary.GetUpdateTime();
       this._currentTick++;
-      //TLFXLOG(PARTICLES, ("tick: %d time: %f", this._currentTick, this.GetCurrentTime()));
+
       for ( var i = 0; i < this._effectLayers; i++ )
       {
         var list = this._effects[ i ];

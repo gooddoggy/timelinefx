@@ -8,15 +8,14 @@ var g_stage = null;
 var g_renderer = null;
 var g_loadingTextures = [];
 //var g_path = "data/single_dust/";
-var g_path = "data/Explosions/";
+var g_path = "data/FireandSmoke/";
 
 var g_currentEffect = null;
 var g_restarting = false;
 var g_autoLoop = true;
-var g_seenSprites = [];
 
 var g_uniqueEffects = [];
-var g_effectIndex = 0;
+var g_effectIndex = 23;
 
 function IsEnabled(p)
 {
@@ -26,8 +25,6 @@ function IsEnabled(p)
 
 function OnTextureLoaded( animImage )
 {
-//  console.log( animImage.m_pixiTexture.baseTexture.width );
-
   var totalWidth = animImage.m_pixiTexture.baseTexture.width;
 
   animImage._horizCells = totalWidth / animImage._width;
@@ -133,7 +130,6 @@ console.log("--");
       {
         g_uniqueEffects.push(e);
       }
-      //  console.log(eName.split("/"));
   }
 
   CreateEffect();
@@ -148,10 +144,6 @@ function OnParticleSpawned( p )
   if(!IsEnabled(p)) return;
 
   var animImage = p.GetAvatar();
-
-  //debugTrack(animImage, "OnParticleSpawned");
-
-  //console.log(p._emitter._name);
 
   if ( p.m_pixiSprite )
   {
@@ -196,10 +188,6 @@ function OnParticleKilled( p )
   //   console.log("OnParticleKilled:"+g_spawnKillCnt);
 }
 
-function toHex( r, g, b )
-{
-  return ( ( r << 16 ) + ( g << 8 ) + b );
-}
 
 var g_renderCnt = 0;
 function DrawSprite( p, sprite, px, py, tv, x, y, rotation, scaleX, scaleY, r, g, b, a, blendMode )
@@ -207,16 +195,6 @@ function DrawSprite( p, sprite, px, py, tv, x, y, rotation, scaleX, scaleY, r, g
   if(!IsEnabled(p)) return;
 
 p.m_pixiSprite.visible = true;
-
-//  debugTrack(sprite, "DrawSprite");
-
-//    if( stripFilePath( sprite.GetFilename() ) !== "Smoke1.png" )
-    {
-//      debugTrack(sprite, "DrawSprite");
-    }
-  //    return;
-
-    //console.log(blendMode);
 
  g_renderCnt++;
   p.m_pixiSprite.texture = sprite.m_pixiFrames[ tv ];
@@ -266,11 +244,7 @@ function animate()
   g_particleManager.DrawParticles();
 
   //console.log(g_renderCnt);
-  //dude.texture = frame[tick % 4];
 
-  //  dude.visible = (tick != 2);
-
-  // time to render the stage!
   g_renderer.render( g_stage );
   // request another animation frame...
   requestAnimationFrame( animate );
@@ -280,8 +254,6 @@ function animate()
     CreateEffect();
     g_restarting = false;
   }
-
-  //tick++;
 }
 
 window.onkeydown = function( e )
@@ -295,69 +267,9 @@ window.onkeydown = function( e )
  //g_particleManager.ClearInUse();
  //g_particleManager.ClearAll();
 
-
   g_effectIndex = (g_effectIndex + 1) % g_uniqueEffects.length;
 
   g_restarting = true;
   //CreateEffect();
   //  console.log( g_loadingTextures );
 };
-
-
-
-/*
-var frame = [];
-function run()
-{
-  var renderer = PIXI.autoDetectRenderer( 800, 600 );
-  document.body.appendChild( renderer.view );
-  // create the root of the scene graph
-  var stage = new PIXI.Container();
-
-  // create a new Sprite that uses the image name that we just generated as its source
-
-  var t = PIXI.Texture.fromImage('./data/explosions/Fog-Group.png');
-  frame[0] = new PIXI.Texture(t, new PIXI.Rectangle(0, 0, 256, 256));
-  frame[1] = new PIXI.Texture(t, new PIXI.Rectangle(256, 0, 256, 256));
-  frame[2] = new PIXI.Texture(t, new PIXI.Rectangle(0, 256, 256, 256));
-  frame[3] = new PIXI.Texture(t, new PIXI.Rectangle(256, 256, 256, 256));
-
-  //var dude = PIXI.Sprite.fromImage('./data/explosions/Fog-Group.png');
-  var dude = new PIXI.Sprite(frame[1]);
-
-//  var dude = PIXI.Sprite.fromImage('./data/explosions/fire3.png' );
-
-  // set the anchor point so the texture is centerd on the sprite
-  dude.anchor.set( 0.5 );
-  // set a random scale for the dude - no point them all being the same size!
-  dude.scale.set( 0.8 + Math.random() * 0.3 );
-  dude.position.x = Math.random() * renderer.width;
-  dude.position.y = Math.random() * renderer.height;
-  dude.tint = Math.random() * 0xFFFFFF;
-
-  stage.addChild( dude );
-
-  requestAnimationFrame( animate );
-
-  var tick = 0;
-  function animate()
-  {
-    dude.texture = frame[tick % 4];
-
-  //  dude.visible = (tick != 2);
-
-    // time to render the stage!
-    renderer.render( stage );
-    // request another animation frame...
-    requestAnimationFrame( animate );
-
-    //tick++;
-  }
-
-  window.onkeydown = function( e )
-  {
-//    stage.removeChild( dude );
-    tick++;
-  };
-}
-*/
