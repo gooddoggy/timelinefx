@@ -28,8 +28,7 @@ var EmitterArray = Class({
 
   SetCompiled:function( frame, value )
   {
-  //   if (frame >= 0 && frame < this._changes.length)
-         this._changes[frame] = value;
+    this._changes[frame] = value;
   },
 
   GetLife:function()
@@ -231,7 +230,7 @@ var EmitterArray = Class({
               return lasty - p * (lasty - it.value);
           }
           lasty = it.value;
-          lastf = frame/* - 1*/;
+          lastf = frame;
           if (bezier) lastec = it;
       }
       return lasty;
@@ -264,6 +263,5 @@ var EmitterArray = Class({
 
       return max;
   }
-
 
 });

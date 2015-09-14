@@ -20,10 +20,9 @@ var AnimImage = Class({
     this._frames = attr.getNamedItem("FRAMES").nodeValue;
     this._index = attr.getNamedItem("INDEX").nodeValue;
 
-    // We don't actually have this until we load the image - we don't have the actually image width at this point (only the cells/frames)
+    // We don't actually know this until we load the image as we don't have the actually image width at this point (only the cells/frames)
+    // Must be set once the image is loaded if we have sprite sheets with different horizontal/vertical number of cells/frames
     this._horizCells = Math.sqrt(this._frames);
-
-  //  console.log(this);
   },
 
   SetMaxRadius:function( radius )

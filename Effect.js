@@ -801,27 +801,27 @@ var Effect = Class( Entity,
     }
 
     // todo: pass in EmitterArray instend of bound function (and remove boilerplate functions)
-    this.ReadAttribute( xml, this.AddAmount.bind( this ), "AMOUNT" );
-    this.ReadAttribute( xml, this.AddLife.bind( this ), "LIFE" );
-    this.ReadAttribute( xml, this.AddSizeX.bind( this ), "SIZEX" );
-    this.ReadAttribute( xml, this.AddSizeY.bind( this ), "SIZEY" );
-    this.ReadAttribute( xml, this.AddVelocity.bind( this ), "VELOCITY" );
-    this.ReadAttribute( xml, this.AddWeight.bind( this ), "WEIGHT" );
-    this.ReadAttribute( xml, this.AddSpin.bind( this ), "SPIN" );
+    this.ReadAttribute( xml, this._cAmount, "AMOUNT" );
+    this.ReadAttribute( xml, this._cLife, "LIFE" );
+    this.ReadAttribute( xml, this._cSizeX, "SIZEX" );
+    this.ReadAttribute( xml, this._cSizeY, "SIZEY" );
+    this.ReadAttribute( xml, this._cVelocity, "VELOCITY" );
+    this.ReadAttribute( xml, this._cWeight, "WEIGHT" );
+    this.ReadAttribute( xml, this._cSpin, "SPIN" );
 
-    this.ReadAttribute( xml, this.AddAlpha.bind( this ), "ALPHA" );
-    this.ReadAttribute( xml, this.AddEmissionAngle.bind( this ), "EMISSIONANGLE" );
-    this.ReadAttribute( xml, this.AddEmissionRange.bind( this ), "EMISSIONRANGE" );
-    this.ReadAttribute( xml, this.AddWidth.bind( this ), "AREA_WIDTH" );
-    this.ReadAttribute( xml, this.AddHeight.bind( this ), "AREA_HEIGHT" );
+    this.ReadAttribute( xml, this._cAlpha, "ALPHA" );
+    this.ReadAttribute( xml, this._cEmissionAngle, "EMISSIONANGLE" );
+    this.ReadAttribute( xml, this._cEmissionRange, "EMISSIONRANGE" );
+    this.ReadAttribute( xml, this._cWidth, "AREA_WIDTH" );
+    this.ReadAttribute( xml, this._cHeight, "AREA_HEIGHT" );
 
-    this.ReadAttribute( xml, this.AddAngle.bind( this ), "ANGLE" );
-    if(!this.ReadAttribute( xml, this.AddStretch.bind( this ), "STRETCH" ))
+    this.ReadAttribute( xml, this._cEffectAngle, "ANGLE" );
+    if(!this.ReadAttribute( xml, this._cStretch, "STRETCH" ))
     {
       this.AddStretch( 0, 1.0 );
     }
 
-    this.ReadAttribute( xml, this.AddStretch.bind( this ), "GLOBAL_ZOOM" );
+    this.ReadAttribute( xml, this._cGlobalZ, "GLOBAL_ZOOM" );
 
     var _this = this;
 
@@ -834,91 +834,21 @@ var Effect = Class( Entity,
 
   },
 
-  ReadAttribute: function( xml, fn, tag )
+  ReadAttribute: function( xml, emitArray, tag )
   {
-    var n = xml.getElementsByTagName( tag )[ 0 ];
-    if ( n )
-    {
-      var attr = fn( parseFloat( GetNodeAttrValue( n, "FRAME" ) ), parseFloat( GetNodeAttrValue( n, "VALUE" ) ) );
-      attr.LoadFromXML( n.getElementsByTagName( "CURVE" )[ 0 ] );
-      return true;
-    }
-    return false;
-  },
-
-  AddAmount: function( f, v )
-  {
-    return this._cAmount.Add( f, v );
-  },
-
-  AddLife: function( f, v )
-  {
-    return this._cLife.Add( f, v );
-  },
-
-  AddSizeX: function( f, v )
-  {
-    return this._cSizeX.Add( f, v );
-  },
-
-  AddSizeY: function( f, v )
-  {
-    return this._cSizeY.Add( f, v );
-  },
-
-  AddVelocity: function( f, v )
-  {
-    return this._cVelocity.Add( f, v );
-  },
-
-  AddWeight: function( f, v )
-  {
-    return this._cWeight.Add( f, v );
-  },
-
-  AddSpin: function( f, v )
-  {
-    return this._cSpin.Add( f, v );
-  },
-
-  AddAlpha: function( f, v )
-  {
-    return this._cAlpha.Add( f, v );
-  },
-
-  AddEmissionAngle: function( f, v )
-  {
-    return this._cEmissionAngle.Add( f, v );
-  },
-
-  AddEmissionRange: function( f, v )
-  {
-    return this._cEmissionRange.Add( f, v );
-  },
-
-  AddWidth: function( f, v )
-  {
-    return this._cWidth.Add( f, v );
-  },
-
-  AddHeight: function( f, v )
-  {
-    return this._cHeight.Add( f, v );
-  },
-
-  AddAngle: function( f, v )
-  {
-    return this._cEffectAngle.Add( f, v );
+    var result = false;
+    ForEachXMLChild(xml, tag, function(n){
+        var attr = emitArray.Add( parseFloat( GetNodeAttrValue( n, "FRAME" ) ), parseFloat( GetNodeAttrValue( n, "VALUE" ) ) );
+        attr.LoadFromXML(n.getElementsByTagName("CURVE")[0]);
+        result = true;
+      }
+    );
+    return result;
   },
 
   AddStretch: function( f, v )
   {
     return this._cStretch.Add( f, v );
-  },
-
-  AddGlobalZ: function( f, v )
-  {
-    return this._cGlobalZ.Add( f, v );
   },
 
   GetPath: function()
@@ -930,7 +860,6 @@ var Effect = Class( Entity,
   {
     return this._cLife.GetMaxValue();
   },
-
 
   GetCurrentAmount: function()
   {
