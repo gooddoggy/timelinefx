@@ -774,7 +774,7 @@ var Emitter = Class( Entity,
       for ( var c = 1; c <= intCounter; ++c )
       {
         this._startedSpawning = true;
-        // assert(pm);
+
         if ( !eSingle )
         {
           e = pm.GrabParticle( parentEffect, this._groupParticles, this._zLayer );
@@ -786,9 +786,6 @@ var Emitter = Class( Entity,
 
         if ( e )
         {
-          //                 ++EffectsLibrary.particlesCreated;
-
-
           // -----Link to its emitter and assign the control source (which is this emitter)----
           e.SetEmitter( this );
           e.SetParent( this );
@@ -930,7 +927,7 @@ var Emitter = Class( Entity,
                 e.SetX( Math.cos( th / 180.0 * M_PI ) * tx - parentEffect.GetHandleX() + tx );
                 e.SetY( -Math.sin( th / 180.0 * M_PI ) * ty - parentEffect.GetHandleY() + ty );
 
-                if ( !e.IsRelative() )
+                if ( e.IsRelative() )
                 {
                   var rotvec = this._parent.GetMatrix().TransformVector( e.GetX(), e.GetY() );
 

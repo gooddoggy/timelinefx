@@ -419,7 +419,7 @@ var ParticleManager = Class(
 
       if ( this._angle !== 0 )
       {
-        var rotVec = this._matrix.TransformVector( new Vector2( this._px, this._py ) );
+        var rotVec = this._matrix.TransformVector( new Vector2( px, py ) );
         px = ( rotVec.x * this._camtz ) + this._centerX + ( this._camtz * this._camtx );
         py = ( rotVec.y * this._camtz ) + this._centerY + ( this._camtz * this._camty );
       }

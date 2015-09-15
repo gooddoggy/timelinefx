@@ -8,18 +8,18 @@ var g_stage = null;
 var g_renderer = null;
 var g_loadingTextures = [];
 //var g_path = "data/single_dust/";
-var g_path = "data/FireandSmoke/";
+var g_path = "data/Explosions2/";
 
 var g_currentEffect = null;
 var g_restarting = false;
 var g_autoLoop = true;
 
 var g_uniqueEffects = [];
-var g_effectIndex = 23;
+var g_effectIndex = 0;
 
 function IsEnabled(p)
 {
-//  return p._emitter._name !== "Copy of fire";
+// return p._emitter._name == "Blast Wave";
   return true;
 }
 
@@ -141,23 +141,18 @@ var g_spawnKillCnt = 0;
 
 function OnParticleSpawned( p )
 {
-  if(!IsEnabled(p)) return;
+  //if(!IsEnabled(p)) return;
 
   var animImage = p.GetAvatar();
 
   if ( p.m_pixiSprite )
   {
-    //if(animImage._imageSourceName === "Z:\\PartcleShapes\\Explosions\\Smoke\\ExplosionCloud.png")
-    //Z:\\PartcleShapes\\Explosions\Smoke\Smoke1.png
-  //  if( stripFilePath( animImage.GetFilename() ) !== "Smoke1.png" )
-    {
-      g_stage.addChild( p.m_pixiSprite );
-    //  console.log("adding to stage");
-    }
+    p.m_pixiSprite.texture = animImage.m_pixiFrames[ 0 ];
   }
   else
   {
     p.m_pixiSprite = new PIXI.Sprite( animImage.m_pixiFrames[ 0 ] );
+  }
 
     var emit = p.GetEmitter();
     if ( p.GetEmitter().IsHandleCenter() )
@@ -169,9 +164,10 @@ function OnParticleSpawned( p )
       p.m_pixiSprite.anchor.x = p.GetHandleX() / animImage._width;
       p.m_pixiSprite.anchor.y = p.GetHandleY() / animImage._height;
     }
-  }
+
 
   p.m_pixiSprite.visible = false;
+  g_stage.addChild( p.m_pixiSprite );
 
   g_spawnKillCnt++;
 //    console.log("OnParticleSpawned:"+g_spawnKillCnt);
@@ -179,7 +175,7 @@ function OnParticleSpawned( p )
 
 function OnParticleKilled( p )
 {
-  if(!IsEnabled(p)) return;
+  //if(!IsEnabled(p)) return;
 
   g_spawnKillCnt--;
 
@@ -213,6 +209,7 @@ p.m_pixiSprite.visible = true;
   p.m_pixiSprite.blendMode = PIXI.BLEND_MODES.NORMAL;  // or should the default be something else?
   if ( blendMode == Blend.BMLightBlend )
       p.m_pixiSprite.blendMode = PIXI.BLEND_MODES.SCREEN;
+
 /*
       p.m_pixiSprite.blendMode = PIXI.BLEND_MODES.NORMAL;  // or should the default be something else?
       if ( blendMode == Blend.BMLightBlend )
