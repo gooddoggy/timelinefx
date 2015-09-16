@@ -8,7 +8,7 @@ var g_stage = null;
 var g_renderer = null;
 var g_loadingTextures = [];
 //var g_path = "data/single_dust/";
-var g_path = "data/Explosions2/";
+var g_path = "data/demo/";
 
 var g_currentEffect = null;
 var g_restarting = false;
@@ -89,9 +89,6 @@ function CreateEffect()
       var filename = g_path + stripFilePath( animImage.GetFilename() );
 
       animImage.m_pixiTexture = PIXI.Texture.fromImage( filename );
-
-//      console.log( filename );
-//      console.log( animImage );
 
       g_loadingTextures.push( animImage );
     }

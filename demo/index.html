@@ -13,6 +13,25 @@
       width: 1000em;
     }
   </style>
+
+  <script language="javascript" src="../extern/pixi.min.js"></script>
+  <script language="javascript" src="../extern/jsface.min.js"></script>
+
+  <script language="javascript" src="../Utils.js"></script>
+  <script language="javascript" src="../Matrix2.js"></script>
+  <script language="javascript" src="../Vector2.js"></script>
+  <script language="javascript" src="../Entity.js"></script>
+  <script language="javascript" src="../Particle.js"></script>
+  <script language="javascript" src="../Effect.js"></script>
+  <script language="javascript" src="../Emitter.js"></script>
+  <script language="javascript" src="../EmitterArray.js"></script>
+  <script language="javascript" src="../AnimImage.js"></script>
+  <script language="javascript" src="../AttributeNode.js"></script>
+  <script language="javascript" src="../ParticleManager.js"></script>
+  <script language="javascript" src="../EffectsLibrary.js"></script>
+
+  <script language="javascript" src="main.js"></script>
+
 </head>
 
 <body>
@@ -23,12 +42,14 @@
       <span></span>
     </a>
     <div id="menu">
-      <div class="pure-menu"> <a class="pure-menu-heading" href="#">timelinefxjs demo</a>
+      <div class="pure-menu"> <a class="pure-menu-heading" href="#" onClick="Home('fx name')">timelinefxjs demo</a>
         <ul class="pure-menu-list" id="fxMenu">
+<!--
           <li class="pure-menu-item"><a href="#" class="pure-menu-link" onClick="Home('fx name')">Home and a long string</a></li>
           <li class="pure-menu-item"><a href="#" class="pure-menu-link">About</a></li>
           <li class="pure-menu-item" class="menu-item-divided pure-menu-selected"> <a href="#" class="pure-menu-link">Services</a> </li>
           <li class="pure-menu-item"><a href="#" class="pure-menu-link">Contact</a></li>
+-->
         </ul>
       </div>
     </div>
@@ -41,8 +62,8 @@
       <div class="content">
         <p>Select a particle effect from the menu at left.</p>
         <p> The timelinefxjs Github repository (including this demo) can be found here </p>
-        <p> This demo works best in modern browsers with WebGL support. While pixijs will fallback to canvas rendering, performance will sufffer particulary for effects with many particles. The timelinefxjs module itself is independant of rendering, meaning
-          it can be used with your own html5 renderer or gameengine. </p>
+        <p> This demo works best in modern browsers with WebGL support. While pixijs will fallback to canvas mode rendering, performance will sufffer particulary for effects with many particles. The timelinefxjs module itself is independant of rendering, meaning
+          it can be integrated with other html5 game engines or renderers. </p>
       </div>
     </div>
   </div>
@@ -51,9 +72,14 @@
 
   function Home(e)
   {
+    var main = document.getElementById( "main" );
+    //main.style.display = 'none';
+    //main.style.display = 'none';
+
     console.log(e);
   }
 
+/*
     console.log("loaded");
     var ul = document.getElementById("fxMenu");
     var li = document.createElement("li");
@@ -62,6 +88,7 @@
     li.innerHTML = "<a href=\"#\" class=\"pure-menu-link\">Dynamic</a>";
     //li.setAttribute("class", "pure-menu-item");
     ul.appendChild(li);
+*/
   </script>
 </body>
 

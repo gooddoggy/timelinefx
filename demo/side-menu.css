@@ -86,7 +86,7 @@ appears on the left side of the page.
     left: 0;
     bottom: 0;
     z-index: 1000; /* so the menu or its navicon stays above all content */
-    background: #191818;
+    background: #000000;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
 }
@@ -96,7 +96,7 @@ appears on the left side of the page.
     #menu a {
         color: #999;
         border: none;
-        padding: 0.6em 0 0.6em 0.6em;
+        padding: 0.4em 0 0.4em 0.6em;
     }
 
     /*
