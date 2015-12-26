@@ -25,6 +25,8 @@ function StartEffect()
 
 function PlayEffect( name )
 {
+  HideHome();
+
   if ( g_currentEffectInstance )
     g_currentEffectInstance.SoftKill();
 
@@ -32,7 +34,6 @@ function PlayEffect( name )
   g_currentEffectPrototype.CompileAll();
 
   console.log( "PlayEffect:" + name );
-  //  StartEffect();
 }
 
 function RegisterEffect( e, name )
@@ -66,23 +67,31 @@ function RegisterEffect( e, name )
       var filename = g_path + stripFilePath( animImage.GetFilename() );
       animImage.m_pixiTexture = PIXI.Texture.fromImage( filename );
       g_loadingTextures.push( animImage );
-      //  console.log(filename);
     }
   }
-
-
 }
+
+var g_particleCountText;
 
 function Init()
 {
-  var w = 800;
-  var h = 600;
+  var w = window.innerWidth - 250;
+  var h = window.innerHeight-4;
   g_renderer = PIXI.autoDetectRenderer( w, h );
-  document.body.appendChild( g_renderer.view );
+
+  var fxdiv = document.getElementById('fxdiv');
+  fxdiv.appendChild( g_renderer.view );
 
   g_stage = new PIXI.Container();
 
-  g_xml = loadXMLDoc( g_path + "DATA.XML" );
+  // create some white text using the Snippet webfont
+  		g_particleCountText = new PIXI.Text("Active Particles:", {font: "12px Courier New", fill: "white", align: "center"});
+  		g_particleCountText.position.x = 0.8 * w;
+  		g_particleCountText.position.y = 0.95 * h;
+      g_stage.addChild(g_particleCountText);
+
+
+  g_xml = loadXMLDoc( g_path + "data.xml" );
 
   g_particleManager.SetScreenSize( w, h );
   EffectsLibrary.Init();
@@ -122,8 +131,6 @@ function OnTextureLoaded( animImage )
       // Weird that it needs -1
       var rect = new PIXI.Rectangle( x, y, animImage.GetWidth() - 1, animImage.GetHeight() - 1 );
 
-      //    console.log(animImage._imageSourceName);
-      //    console.log( rect );
       animImage.m_pixiFrames[ f ] = new PIXI.Texture( animImage.m_pixiTexture, rect );
     }
   }
@@ -221,6 +228,7 @@ function Animate()
   // request another animation frame...
   requestAnimationFrame( Animate );
 
+  g_particleCountText.setText("Active Particles:" + g_particleManager.GetParticlesInUse());
 
   if ( g_particleManager.GetParticlesInUse() === 0 )
   {

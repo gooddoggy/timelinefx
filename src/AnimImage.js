@@ -20,7 +20,8 @@ var AnimImage = Class({
     this._frames = attr.getNamedItem("FRAMES").nodeValue;
     this._index = attr.getNamedItem("INDEX").nodeValue;
 
-    // We don't actually know this until we load the image as we don't have the actually image width at this point (only the cells/frames)
+    // Note that we don't actually know this until we load the image, as we don't have the total image dimensions
+    // i.e. we have the size of each cell/frame, and the number of cells, but we don't know the arrangement (e.g. 2x4 or 1x8)
     // Must be set once the image is loaded if we have sprite sheets with different horizontal/vertical number of cells/frames
     this._horizCells = Math.sqrt(this._frames);
   },

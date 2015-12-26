@@ -1,11 +1,5 @@
 var Particle = Class( Entity,
 {
-  $const:
-  {
-    MIN_AGE: 1,
-    MAX_AGE: 150
-  },
-
   constructor: function()
   {
     Particle.$super.call( this ); // Call parent's constructor
