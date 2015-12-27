@@ -5,16 +5,19 @@ Allows particle system effects created in the standalone TimelineFX tool to be l
 
 Basic usage:
 ------------
+* Unzip TimelineFX .eff file containing xml and images.
+* Place those assets where they can be accessed from your javascript.
+
 ```
 // Create particle manager and fx library
 var particleManager = new ParticleManager( /* particle limit = */ 1000, /* layers = */ 1 );
 EffectsLibrary.Init();
 EffectsLibrary.Load( xml );
-  
+
 // Grab an effect prototype
 var effectPrototype = EffectsLibrary.GetEffect( "explosion" );
 effectPrototype.CompileAll();
-  
+
 // Create/spawn an effect instance
 var currentEffectInstance = new Effect( effectPrototype, particleManager );
 particleManager.AddEffect( currentEffectInstance );``
