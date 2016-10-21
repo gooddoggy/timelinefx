@@ -927,7 +927,7 @@ var Emitter = Class( Entity,
                 e.SetX( Math.cos( th / 180.0 * M_PI ) * tx - parentEffect.GetHandleX() + tx );
                 e.SetY( -Math.sin( th / 180.0 * M_PI ) * ty - parentEffect.GetHandleY() + ty );
 
-                if ( e.IsRelative() )
+                if ( !e.IsRelative() )
                 {
                   var rotvec = this._parent.GetMatrix().TransformVector( e.GetX(), e.GetY() );
 
